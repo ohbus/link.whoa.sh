@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class WhoaApplication
 
 fun main(args: Array<String>) {
-	runApplication<WhoaApplication>(*args)
+    runApplication<WhoaApplication>(*args)
 }

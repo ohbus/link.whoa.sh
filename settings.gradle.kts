@@ -1,1 +1,1 @@
-rootProject.name = "whoa"
+rootProject.name = "link.whoa"
