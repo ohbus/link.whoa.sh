@@ -40,6 +40,17 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.METHOD_NOT_ALLOWED)
     }
 
+    @ExceptionHandler(ShortCodeAlreadyExistsException::class)
+    fun handleShortCodeAlreadyExistsException(ex: ShortCodeAlreadyExistsException): ResponseEntity<ErrorResponse> {
+        val errorResponse =
+            ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ShortCodeAlreadyExistsException.ERROR_CODE.toString(),
+                ex.message,
+            )
+        return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
+    }
+
     @ExceptionHandler(InternalServerErrorException::class)
     fun handleInternalServerErrorException(ex: InternalServerErrorException): ResponseEntity<ErrorResponse> {
         val errorResponse =

@@ -9,10 +9,10 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "url_analytics")
-data class UrlAnalytics(
+data class UrlAnalyticsEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "url_id", nullable = false)
-    val url: Url,
+    val urlEntity: UrlEntity,
     @Column(name = "user_agent")
     val userAgent: String?,
     @Column(name = "ip_address")

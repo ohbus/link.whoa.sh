@@ -6,7 +6,7 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "urls")
-data class Url(
+data class UrlEntity(
     @Column(name = "original_url", nullable = false)
     val originalUrl: String,
     @Column(name = "short_code", nullable = false, unique = true)

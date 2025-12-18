@@ -1,8 +1,9 @@
 package com.subhrodip.oss.whoa.link.services
 
-import com.subhrodip.oss.whoa.link.domain.Url
+import com.subhrodip.oss.whoa.link.domain.UrlEntity
 import com.subhrodip.oss.whoa.link.dto.CreateShortUrlRequest
 import com.subhrodip.oss.whoa.link.dto.CreateShortUrlResponse
+import com.subhrodip.oss.whoa.link.exceptions.ShortCodeAlreadyExistsException
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -21,15 +22,24 @@ class UrlWriteService(
     private val shortCodeChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
 
     fun createShortUrl(request: CreateShortUrlRequest): CreateShortUrlResponse {
-        val shortCode = generateUniqueShortCode()
-        val url =
-            Url(
+        val shortCode =
+            if (request.shortCode.isNullOrBlank()) {
+                generateUniqueShortCode()
+            } else {
+                if (urlRepository.findByShortCode(request.shortCode) != null) {
+                    throw ShortCodeAlreadyExistsException("Short code '${request.shortCode}' already exists")
+                }
+                request.shortCode
+            }
+
+        val urlEntity =
+            UrlEntity(
                 originalUrl = request.url,
                 shortCode = shortCode,
             )
-        urlRepository.save(url)
+        urlRepository.save(urlEntity)
         return CreateShortUrlResponse(
-            originalUrl = url.originalUrl,
+            originalUrl = urlEntity.originalUrl,
             shortUrl = "$baseUrl/$shortCode",
         )
     }

@@ -1,7 +1,7 @@
 package com.subhrodip.oss.whoa.link.services
 
-import com.subhrodip.oss.whoa.link.domain.Url
-import com.subhrodip.oss.whoa.link.domain.UrlAnalytics
+import com.subhrodip.oss.whoa.link.domain.UrlEntity
+import com.subhrodip.oss.whoa.link.domain.UrlAnalyticsEntity
 import com.subhrodip.oss.whoa.link.dto.UrlAnalyticsResponse
 import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
@@ -22,13 +22,13 @@ class AnalyticsService(
     @Async
     @Transactional
     fun trackAnalytics(
-        url: Url,
+        urlEntity: UrlEntity,
         userAgent: String?,
         ipAddress: String?,
     ) {
         val analytics =
-            UrlAnalytics(
-                url = url,
+            UrlAnalyticsEntity(
+                urlEntity = urlEntity,
                 userAgent = userAgent,
                 ipAddress = ipAddress,
             )
@@ -38,7 +38,7 @@ class AnalyticsService(
     @Transactional(readOnly = true)
     fun getUrlAnalytics(shortCode: String): UrlAnalyticsResponse {
         val url = urlRepository.findByShortCode(shortCode) ?: throw UrlNotFoundException("URL not found for short code: $shortCode")
-        val clicks = urlAnalyticsRepository.countByUrl(url)
+        val clicks = urlAnalyticsRepository.countByUrlEntityId(url.id)
         return UrlAnalyticsResponse(
             originalUrl = url.originalUrl,
             shortUrl = "$baseUrl/${url.shortCode}",
