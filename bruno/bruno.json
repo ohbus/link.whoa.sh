@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "link.whoa.sh",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

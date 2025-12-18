@@ -1,0 +1,22 @@
+meta {
+  name: create short url
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base.url}}/api/v1/urls
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "url": "subho.xyz"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

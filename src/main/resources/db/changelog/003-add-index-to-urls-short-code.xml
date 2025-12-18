@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="003-add-index-to-urls-short-code" author="whoa-app">
+        <createIndex indexName="idx_urls_short_code"
+                     tableName="urls"
+                     unique="true">
+            <column name="short_code"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
