@@ -6,6 +6,7 @@ plugins {
     kotlin("plugin.jpa") version "2.2.21"
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
     id("jacoco")
+    id("org.sonarqube") version "7.2.1.6560"
 }
 
 group = "com.subhrodip.oss"
@@ -92,5 +93,12 @@ tasks.jacocoTestReport {
         xml.required = true
         csv.required = false
         html.required = false
+    }
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "ohbus_link.whoa.sh")
+        property("sonar.organization", "ohbus")
     }
 }

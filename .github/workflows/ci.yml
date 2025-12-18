@@ -22,8 +22,11 @@ jobs:
 
   build:
     name: Build and Analyze
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     needs: format-checker
+    permissions:
+      contents: read
+      packages: write
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
@@ -35,6 +38,12 @@ jobs:
         java-version: '21'
         distribution: 'microsoft'
         cache: 'gradle'
+    - name: Cache SonarQube packages
+      uses: actions/cache@v5
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
     - name: Build and analyze
       run: ./gradlew build sonar --info
       env:
@@ -47,3 +56,18 @@ jobs:
         report_paths: '**/test/TEST-*.xml'
         require_tests: true
         annotate_notice: false
+    - name: Log in to the Container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ci.Dockerfile
+        push: true
+        tags: |
+          ghcr.io/${{ github.repository }}:${{ github.sha }}
+          ghcr.io/${{ github.repository }}:latest
