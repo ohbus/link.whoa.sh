@@ -18,7 +18,7 @@ class UrlReadService(
     ): String {
         val url = urlRepository.findByShortCode(shortCode) ?: throw UrlNotFoundException("URL not found for short code: $shortCode")
         analyticsService.trackAnalytics(url, userAgent, ipAddress)
-        // If original URL does not contain a protocol, return http:// by default
+        // If the original URL does not contain a protocol, return http:// by default
         if (!url.originalUrl.startsWith("http")) {
             return "https://${url.originalUrl}"
         }

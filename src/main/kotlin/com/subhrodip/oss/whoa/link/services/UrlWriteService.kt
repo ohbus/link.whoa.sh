@@ -19,7 +19,7 @@ class UrlWriteService(
     private lateinit var baseUrl: String
 
     private val random = SecureRandom()
-    private val shortCodeChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
+    private val shortCodeChars = "abcdefghijklmnopqrstuvwxyz".toCharArray()
 
     fun createShortUrl(request: CreateShortUrlRequest): CreateShortUrlResponse {
         val shortCode =
