@@ -1,0 +1,26 @@
+name: CI Master
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-slim
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v5
+      with:
+        java-version: '21'
+        distribution: 'microsoft'
+        cache: 'gradle'
+
+    - name: Build with Gradle
+      run: ./gradlew build
