@@ -74,10 +74,11 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
 }
 
 ktlint {
-    version.set("1.8.0") // Use the ktlint version 1.8.0
+    version.set("1.8.0")
     debug.set(true)
     verbose.set(true)
     android.set(false)

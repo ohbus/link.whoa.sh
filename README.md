@@ -68,6 +68,22 @@ This project uses JUnit 5 for testing. To execute the test suite, run:
 
 A test report will be generated in the `build/reports/tests/test/` directory.
 
+## Code Quality
+
+This project uses [ktlint](https://ktlint.github.io/) for enforcing Kotlin coding standards.
+
+To format your code according to the project's ktlint rules, run:
+
+```sh
+./gradlew ktlintFormat
+```
+
+To check for any formatting violations without applying fixes, run:
+
+```sh
+./gradlew ktlintCheck
+```
+
 ## Contributing
 
 Contributions are welcome! Please feel free to open a pull request or submit an issue.

@@ -2,6 +2,7 @@ package com.subhrodip.oss.whoa.link.exceptions
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -18,7 +19,10 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.NOT_FOUND)
     }
 
-    @ExceptionHandler(ValidationException::class)
+    @ExceptionHandler(
+        ValidationException::class,
+        MethodArgumentNotValidException::class,
+    )
     fun handleValidationException(ex: ValidationException): ResponseEntity<ErrorResponse> {
         val errorResponse =
             ErrorResponse(
