@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service
 class UrlCacheService(
     private val urlRepository: UrlRepository,
 ) {
-
     @Cacheable(value = ["urls"], key = "'url:' + #shortCode", unless = "#result == null")
     fun getCachedUrl(shortCode: String): UrlDto {
         val entity =
@@ -26,10 +25,9 @@ class UrlCacheService(
     }
 
     @CachePut(value = ["urls"], key = "'url:' + #urlEntity.shortCode")
-    fun putInCache(urlEntity: UrlEntity): UrlDto {
-        return UrlDto(
+    fun putInCache(urlEntity: UrlEntity): UrlDto =
+        UrlDto(
             originalUrl = urlEntity.originalUrl,
             shortCode = urlEntity.shortCode,
         )
-    }
 }

@@ -34,7 +34,7 @@ class UrlReadServiceTest {
         val originalUrl = "https://example.com"
         val urlEntity = UrlEntity(originalUrl = originalUrl, shortCode = shortCode)
         val urlDto = UrlDto(originalUrl = originalUrl, shortCode = shortCode)
-        
+
         `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
         `when`(urlRepository.findByShortCode(shortCode)).thenReturn(urlEntity)
 
@@ -50,7 +50,7 @@ class UrlReadServiceTest {
         val originalUrl = "example.com"
         val urlEntity = UrlEntity(originalUrl = originalUrl, shortCode = shortCode)
         val urlDto = UrlDto(originalUrl = originalUrl, shortCode = shortCode)
-        
+
         `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
         `when`(urlRepository.findByShortCode(shortCode)).thenReturn(urlEntity)
 
@@ -66,7 +66,7 @@ class UrlReadServiceTest {
         val originalUrl = "https://example.com"
         val urlEntity = UrlEntity(originalUrl = originalUrl, shortCode = shortCode)
         val urlDto = UrlDto(originalUrl = originalUrl, shortCode = shortCode)
-        
+
         `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
         `when`(urlRepository.findByShortCode(shortCode)).thenReturn(urlEntity)
         `when`(urlCacheService.getCachedUrl("Abcdef")).thenThrow(UrlNotFoundException("Not found"))

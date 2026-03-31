@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.CachePut
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.security.SecureRandom
+
 @Service
 @Transactional
 class UrlWriteService(
@@ -51,7 +52,6 @@ class UrlWriteService(
     }
 
     private fun generateUniqueShortCode(): String {
-
         var shortCode: String
         do {
             shortCode =

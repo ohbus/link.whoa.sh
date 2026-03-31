@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension
 
 @ExtendWith(MockitoExtension::class)
 class UrlCacheServiceTest {
-
     @Mock
     private lateinit var urlRepository: UrlRepository
 
@@ -47,7 +46,7 @@ class UrlCacheServiceTest {
     @Test
     fun `test putInCache converts entity to DTO`() {
         val entity = UrlEntity(originalUrl = "https://example.com", shortCode = "test")
-        
+
         val result = urlCacheService.putInCache(entity)
 
         assertEquals(entity.originalUrl, result.originalUrl)
