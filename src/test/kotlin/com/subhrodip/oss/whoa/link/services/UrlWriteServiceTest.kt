@@ -13,12 +13,16 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.verify
 import org.springframework.test.util.ReflectionTestUtils
 
 @ExtendWith(MockitoExtension::class)
 class UrlWriteServiceTest {
     @Mock
     private lateinit var urlRepository: UrlRepository
+
+    @Mock
+    private lateinit var urlCacheService: UrlCacheService
 
     @InjectMocks
     private lateinit var urlWriteService: UrlWriteService
@@ -34,6 +38,7 @@ class UrlWriteServiceTest {
 
         assertEquals("https://example.com", response.originalUrl)
         assertEquals(28, response.shortUrl.length) // http://localhost:8844/ + 6 chars
+        verify(urlCacheService).putInCache(any())
     }
 
     @Test
@@ -47,6 +52,7 @@ class UrlWriteServiceTest {
 
         assertEquals("https://example.com", response.originalUrl)
         assertEquals("http://localhost:8844/custom", response.shortUrl)
+        verify(urlCacheService).putInCache(any())
     }
 
     @Test

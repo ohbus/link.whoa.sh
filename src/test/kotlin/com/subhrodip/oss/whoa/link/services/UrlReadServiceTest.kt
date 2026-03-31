@@ -1,6 +1,7 @@
 package com.subhrodip.oss.whoa.link.services
 
 import com.subhrodip.oss.whoa.link.domain.UrlEntity
+import com.subhrodip.oss.whoa.link.dto.UrlDto
 import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -21,6 +22,9 @@ class UrlReadServiceTest {
     @Mock
     private lateinit var analyticsService: AnalyticsService
 
+    @Mock
+    private lateinit var urlCacheService: UrlCacheService
+
     @InjectMocks
     private lateinit var urlReadService: UrlReadService
 
@@ -29,6 +33,9 @@ class UrlReadServiceTest {
         val shortCode = "abcdef"
         val originalUrl = "https://example.com"
         val urlEntity = UrlEntity(originalUrl = originalUrl, shortCode = shortCode)
+        val urlDto = UrlDto(originalUrl = originalUrl, shortCode = shortCode)
+        
+        `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
         `when`(urlRepository.findByShortCode(shortCode)).thenReturn(urlEntity)
 
         val result = urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")
@@ -42,6 +49,9 @@ class UrlReadServiceTest {
         val shortCode = "abcdef"
         val originalUrl = "example.com"
         val urlEntity = UrlEntity(originalUrl = originalUrl, shortCode = shortCode)
+        val urlDto = UrlDto(originalUrl = originalUrl, shortCode = shortCode)
+        
+        `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
         `when`(urlRepository.findByShortCode(shortCode)).thenReturn(urlEntity)
 
         val result = urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")
@@ -55,8 +65,11 @@ class UrlReadServiceTest {
         val shortCode = "abcdef"
         val originalUrl = "https://example.com"
         val urlEntity = UrlEntity(originalUrl = originalUrl, shortCode = shortCode)
+        val urlDto = UrlDto(originalUrl = originalUrl, shortCode = shortCode)
+        
+        `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
         `when`(urlRepository.findByShortCode(shortCode)).thenReturn(urlEntity)
-        `when`(urlRepository.findByShortCode("Abcdef")).thenReturn(null)
+        `when`(urlCacheService.getCachedUrl("Abcdef")).thenThrow(UrlNotFoundException("Not found"))
 
         val result = urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")
 
@@ -69,7 +82,7 @@ class UrlReadServiceTest {
     @Test
     fun `test getOriginalUrl not found`() {
         val shortCode = "abcdef"
-        `when`(urlRepository.findByShortCode(shortCode)).thenReturn(null)
+        `when`(urlCacheService.getCachedUrl(shortCode)).thenThrow(UrlNotFoundException("Not found"))
 
         assertThrows<UrlNotFoundException> {
             urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")

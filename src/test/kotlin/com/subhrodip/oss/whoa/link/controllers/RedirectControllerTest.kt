@@ -1,11 +1,15 @@
 package com.subhrodip.oss.whoa.link.controllers
 
 import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
+import com.subhrodip.oss.whoa.link.services.AnalyticsService
+import com.subhrodip.oss.whoa.link.services.UrlCacheService
 import com.subhrodip.oss.whoa.link.services.UrlReadService
+import com.subhrodip.oss.whoa.link.services.UrlWriteService
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
+import org.springframework.cache.CacheManager
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -19,6 +23,18 @@ class RedirectControllerTest {
 
     @MockitoBean
     private lateinit var urlReadService: UrlReadService
+
+    @MockitoBean
+    private lateinit var urlWriteService: UrlWriteService
+
+    @MockitoBean
+    private lateinit var analyticsService: AnalyticsService
+
+    @MockitoBean
+    private lateinit var urlCacheService: UrlCacheService
+
+    @MockitoBean
+    private lateinit var cacheManager: CacheManager
 
     @Test
     fun `should redirect to original url when short code exists`() {
