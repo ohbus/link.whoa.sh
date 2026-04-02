@@ -198,6 +198,24 @@
           </tbody>
         </table>
       </div>
+      
+      <!-- Pagination Controls -->
+      @if (totalUrlCount() > pageSize()) {
+        <div class="flex items-center justify-between px-2 pt-4">
+          <div class="text-[10px] font-label text-outline uppercase tracking-widest">
+            Showing {{ pageIndex() * pageSize() + 1 }} to {{ (pageIndex() + 1) * pageSize() > totalUrlCount() ? totalUrlCount() : (pageIndex() + 1) * pageSize() }} of {{ totalUrlCount() }} links
+          </div>
+          <div class="flex items-center gap-2">
+            <button (click)="previousPage()" [disabled]="pageIndex() === 0" class="p-2 bg-surface-container border border-outline-variant rounded-lg text-outline hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+              <span class="material-symbols-outlined text-sm">chevron_left</span>
+            </button>
+            <span class="text-xs font-bold text-primary font-mono px-2">PAGE {{ pageIndex() + 1 }} / {{ totalPages() }}</span>
+            <button (click)="nextPage()" [disabled]="pageIndex() >= totalPages() - 1" class="p-2 bg-surface-container border border-outline-variant rounded-lg text-outline hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+              <span class="material-symbols-outlined text-sm">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      }
     </div>
   </div>
 </main>

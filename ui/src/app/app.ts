@@ -48,12 +48,19 @@ export class AppComponent implements OnInit {
     series: [{ name: 'Clicks', type: 'area', data: [], color: '#bac3ff', fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(186, 195, 255, 0.5)'], [1, 'rgba(186, 195, 255, 0)']] } }]
   };
 
+  // Pagination State
+  pageIndex = signal<number>(0);
+  pageSize = signal<number>(10);
+  totalUrlCount = signal<number>(0);
+
   // Dexie live query bound to a signal
   urls = signal<LocalUrl[]>([]);
   
   globalClicks = computed(() => {
     return this.urls().reduce((sum, url) => sum + url.totalClicks, 0);
   });
+
+  totalPages = computed(() => Math.ceil(this.totalUrlCount() / this.pageSize()));
 
   isBackendHealthy = this.api.isBackendHealthy;
   isSyncing = this.sync.isSyncing;
@@ -66,6 +73,25 @@ export class AppComponent implements OnInit {
         series: [{ name: 'Clicks', type: 'area', data: data, color: '#bac3ff', fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(186, 195, 255, 0.5)'], [1, 'rgba(186, 195, 255, 0)']] } }]
       };
     });
+
+    // Re-subscribe to URLs when pageIndex or pageSize changes
+    effect(() => {
+      const index = this.pageIndex();
+      const size = this.pageSize();
+      
+      const urlsObservable = liveQuery(() => 
+        this.db.db.urls
+          .orderBy('createdAt')
+          .reverse()
+          .offset(index * size)
+          .limit(size)
+          .toArray()
+      );
+      
+      urlsObservable.subscribe(data => {
+        this.urls.set(data);
+      });
+    });
   }
 
   ngOnInit() {
@@ -76,11 +102,23 @@ export class AppComponent implements OnInit {
     this.api.checkHealth();
     setInterval(() => this.api.checkHealth(), 60000);
 
-    // Subscribe to Dexie LiveQuery
-    const urlsObservable = liveQuery(() => this.db.db.urls.orderBy('createdAt').reverse().toArray());
-    urlsObservable.subscribe(data => {
-      this.urls.set(data);
+    // Subscribe to total count for pagination
+    const countObservable = liveQuery(() => this.db.db.urls.count());
+    countObservable.subscribe(count => {
+      this.totalUrlCount.set(count);
     });
+  }
+
+  nextPage() {
+    if (this.pageIndex() < this.totalPages() - 1) {
+      this.pageIndex.set(this.pageIndex() + 1);
+    }
+  }
+
+  previousPage() {
+    if (this.pageIndex() > 0) {
+      this.pageIndex.set(this.pageIndex() - 1);
+    }
   }
 
   toggleSidebar() {
