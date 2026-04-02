@@ -12,28 +12,27 @@
 # Error details
 
 ```
-Test timeout of 30000ms exceeded.
+Test timeout of 60000ms exceeded.
 ```
 
 ```
-Error: locator.fill: Test timeout of 30000ms exceeded.
+Error: locator.click: Test timeout of 60000ms exceeded.
 Call log:
-  - waiting for getByTestId('destination-url-input')
-    - locator resolved to <input disabled type="text" id="destination-url" data-testid="destination-url-input" placeholder="https://very-long-and-boring-url.com/analytics/dashboard" class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant focus:ring-2 focus:ring-primary rounded-lg py-4 px-5 text-white placeholder-slate-600 transition-all font-body ng-untouched ng-pristine"/>
-    - fill("https://sync-test-1.com")
-  - attempting fill action
-    2 × waiting for element to be visible, enabled and editable
+  - waiting for getByTestId('execute-shorten-btn')
+    - locator resolved to <button data-testid="execute-shorten-btn" class="px-8 py-4 bg-primary text-on-primary font-black uppercase tracking-widest text-sm rounded-lg hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"> Execute Shorten </button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
       - element is not enabled
-    - retrying fill action
+    - retrying click action
     - waiting 20ms
-    2 × waiting for element to be visible, enabled and editable
+    2 × waiting for element to be visible, enabled and stable
       - element is not enabled
-    - retrying fill action
+    - retrying click action
       - waiting 100ms
-    57 × waiting for element to be visible, enabled and editable
-       - element is not enabled
-     - retrying fill action
-       - waiting 500ms
+    114 × waiting for element to be visible, enabled and stable
+        - element is not enabled
+      - retrying click action
+        - waiting 500ms
 
 ```
 
@@ -49,7 +48,7 @@ Call log:
       - generic [ref=e8]:
         - generic [ref=e9]: analytics
         - generic [ref=e10]: "Global Clicks:"
-        - generic [ref=e12]: 1,322
+        - generic [ref=e12]: "0"
     - generic [ref=e13]:
       - button "bar_chart" [ref=e14] [cursor=pointer]:
         - generic [ref=e15]: bar_chart
@@ -75,13 +74,13 @@ Call log:
           - paragraph [ref=e35]: Scale your presence with hyper-shortened redirects.
         - generic [ref=e36]:
           - generic [ref=e37]: System Status
-          - generic [ref=e38]: Backend Offline
+          - generic [ref=e38]: Backend Active
       - generic [ref=e40]:
         - generic [ref=e42]:
           - generic [ref=e43]:
             - text: Destination URL
             - generic [ref=e44]:
-              - textbox "Destination URL" [disabled] [ref=e45]:
+              - textbox "Destination URL" [ref=e45]:
                 - /placeholder: https://very-long-and-boring-url.com/analytics/dashboard
               - generic [ref=e46]: link
           - group [ref=e47]:
@@ -94,9 +93,9 @@ Call log:
         - generic [ref=e55]:
           - generic [ref=e56]:
             - heading "Efficiency Pulse" [level=3] [ref=e57]
-            - paragraph [ref=e58]: 0% Uptime
+            - paragraph [ref=e58]: 100% Uptime
           - generic [ref=e59]:
-            - generic [ref=e60]: 0ms
+            - generic [ref=e60]: 21ms
             - generic [ref=e61]: Avg Latency
       - generic [ref=e63]:
         - generic [ref=e64]:
@@ -115,82 +114,82 @@ Call log:
               - columnheader "Created" [ref=e78]
               - columnheader "Action" [ref=e79]
           - rowgroup [ref=e80]:
-            - row "dev001 https://github.com/ohbus/link.whoa.sh localhost:8844/dev001 content_copy 233 FEB 18, 2026 more_vert" [ref=e81] [cursor=pointer]:
-              - cell "dev001 https://github.com/ohbus/link.whoa.sh" [ref=e82]:
+            - row "szidks https://sync-test-1.com localhost:8844/szidks content_copy 0 APR 02, 2026 more_vert" [ref=e81] [cursor=pointer]:
+              - cell "szidks https://sync-test-1.com" [ref=e82]:
                 - generic [ref=e83]:
-                  - generic [ref=e84]: dev001
-                  - generic "https://github.com/ohbus/link.whoa.sh" [ref=e85]
-              - cell "localhost:8844/dev001 content_copy" [ref=e86]:
+                  - generic [ref=e84]: szidks
+                  - generic "https://sync-test-1.com" [ref=e85]
+              - cell "localhost:8844/szidks content_copy" [ref=e86]:
                 - generic [ref=e87]:
-                  - code [ref=e88]: localhost:8844/dev001
+                  - code [ref=e88]: localhost:8844/szidks
                   - generic [ref=e89]: content_copy
-              - cell "233" [ref=e90]:
-                - generic [ref=e92]: "233"
-              - cell "FEB 18, 2026" [ref=e93]
+              - cell "0" [ref=e90]:
+                - generic [ref=e92]: "0"
+              - cell "APR 02, 2026" [ref=e93]
               - cell "more_vert" [ref=e94]:
                 - button "more_vert" [ref=e95]:
                   - generic [ref=e96]: more_vert
-            - row "dev005 https://www.postgresql.org/docs/ localhost:8844/dev005 content_copy 180 JAN 27, 2026 more_vert" [ref=e97] [cursor=pointer]:
-              - cell "dev005 https://www.postgresql.org/docs/" [ref=e98]:
+            - row "dev004 https://angular.dev/overview localhost:8844/dev004 content_copy 178 MAR 22, 2026 more_vert" [ref=e97] [cursor=pointer]:
+              - cell "dev004 https://angular.dev/overview" [ref=e98]:
                 - generic [ref=e99]:
-                  - generic [ref=e100]: dev005
-                  - generic "https://www.postgresql.org/docs/" [ref=e101]
-              - cell "localhost:8844/dev005 content_copy" [ref=e102]:
+                  - generic [ref=e100]: dev004
+                  - generic "https://angular.dev/overview" [ref=e101]
+              - cell "localhost:8844/dev004 content_copy" [ref=e102]:
                 - generic [ref=e103]:
-                  - code [ref=e104]: localhost:8844/dev005
+                  - code [ref=e104]: localhost:8844/dev004
                   - generic [ref=e105]: content_copy
-              - cell "180" [ref=e106]:
-                - generic [ref=e108]: "180"
-              - cell "JAN 27, 2026" [ref=e109]
+              - cell "178" [ref=e106]:
+                - generic [ref=e108]: "178"
+              - cell "MAR 22, 2026" [ref=e109]
               - cell "more_vert" [ref=e110]:
                 - button "more_vert" [ref=e111]:
                   - generic [ref=e112]: more_vert
-            - row "dev006 https://docker.com localhost:8844/dev006 content_copy 170 JAN 21, 2026 more_vert" [ref=e113] [cursor=pointer]:
-              - cell "dev006 https://docker.com" [ref=e114]:
+            - row "dev005 https://www.postgresql.org/docs/ localhost:8844/dev005 content_copy 131 MAR 13, 2026 more_vert" [ref=e113] [cursor=pointer]:
+              - cell "dev005 https://www.postgresql.org/docs/" [ref=e114]:
                 - generic [ref=e115]:
-                  - generic [ref=e116]: dev006
-                  - generic "https://docker.com" [ref=e117]
-              - cell "localhost:8844/dev006 content_copy" [ref=e118]:
+                  - generic [ref=e116]: dev005
+                  - generic "https://www.postgresql.org/docs/" [ref=e117]
+              - cell "localhost:8844/dev005 content_copy" [ref=e118]:
                 - generic [ref=e119]:
-                  - code [ref=e120]: localhost:8844/dev006
+                  - code [ref=e120]: localhost:8844/dev005
                   - generic [ref=e121]: content_copy
-              - cell "170" [ref=e122]:
-                - generic [ref=e124]: "170"
-              - cell "JAN 21, 2026" [ref=e125]
+              - cell "131" [ref=e122]:
+                - generic [ref=e124]: "131"
+              - cell "MAR 13, 2026" [ref=e125]
               - cell "more_vert" [ref=e126]:
                 - button "more_vert" [ref=e127]:
                   - generic [ref=e128]: more_vert
-            - row "dev002 https://spring.io/projects/spring-boot localhost:8844/dev002 content_copy 175 JAN 17, 2026 more_vert" [ref=e129] [cursor=pointer]:
-              - cell "dev002 https://spring.io/projects/spring-boot" [ref=e130]:
+            - row "dev007 https://news.ycombinator.com localhost:8844/dev007 content_copy 109 MAR 08, 2026 more_vert" [ref=e129] [cursor=pointer]:
+              - cell "dev007 https://news.ycombinator.com" [ref=e130]:
                 - generic [ref=e131]:
-                  - generic [ref=e132]: dev002
-                  - generic "https://spring.io/projects/spring-boot" [ref=e133]
-              - cell "localhost:8844/dev002 content_copy" [ref=e134]:
+                  - generic [ref=e132]: dev007
+                  - generic "https://news.ycombinator.com" [ref=e133]
+              - cell "localhost:8844/dev007 content_copy" [ref=e134]:
                 - generic [ref=e135]:
-                  - code [ref=e136]: localhost:8844/dev002
+                  - code [ref=e136]: localhost:8844/dev007
                   - generic [ref=e137]: content_copy
-              - cell "175" [ref=e138]:
-                - generic [ref=e140]: "175"
-              - cell "JAN 17, 2026" [ref=e141]
+              - cell "109" [ref=e138]:
+                - generic [ref=e140]: "109"
+              - cell "MAR 08, 2026" [ref=e141]
               - cell "more_vert" [ref=e142]:
                 - button "more_vert" [ref=e143]:
                   - generic [ref=e144]: more_vert
-            - row "dev003 https://kotlinlang.org/docs/home.html localhost:8844/dev003 content_copy 84 JAN 16, 2026 more_vert" [ref=e145] [cursor=pointer]:
-              - cell "dev003 https://kotlinlang.org/docs/home.html" [ref=e146]:
+            - row "dev006 https://docker.com localhost:8844/dev006 content_copy 220 FEB 01, 2026 more_vert" [ref=e145] [cursor=pointer]:
+              - cell "dev006 https://docker.com" [ref=e146]:
                 - generic [ref=e147]:
-                  - generic [ref=e148]: dev003
-                  - generic "https://kotlinlang.org/docs/home.html" [ref=e149]
-              - cell "localhost:8844/dev003 content_copy" [ref=e150]:
+                  - generic [ref=e148]: dev006
+                  - generic "https://docker.com" [ref=e149]
+              - cell "localhost:8844/dev006 content_copy" [ref=e150]:
                 - generic [ref=e151]:
-                  - code [ref=e152]: localhost:8844/dev003
+                  - code [ref=e152]: localhost:8844/dev006
                   - generic [ref=e153]: content_copy
-              - cell "84" [ref=e154]:
-                - generic [ref=e156]: "84"
-              - cell "JAN 16, 2026" [ref=e157]
+              - cell "220" [ref=e154]:
+                - generic [ref=e156]: "220"
+              - cell "FEB 01, 2026" [ref=e157]
               - cell "more_vert" [ref=e158]:
                 - button "more_vert" [ref=e159]:
                   - generic [ref=e160]: more_vert
-            - row "dev008 https://reddit.com localhost:8844/dev008 content_copy 223 JAN 12, 2026 more_vert" [ref=e161] [cursor=pointer]:
+            - row "dev008 https://reddit.com localhost:8844/dev008 content_copy 102 JAN 20, 2026 more_vert" [ref=e161] [cursor=pointer]:
               - cell "dev008 https://reddit.com" [ref=e162]:
                 - generic [ref=e163]:
                   - generic [ref=e164]: dev008
@@ -199,42 +198,57 @@ Call log:
                 - generic [ref=e167]:
                   - code [ref=e168]: localhost:8844/dev008
                   - generic [ref=e169]: content_copy
-              - cell "223" [ref=e170]:
-                - generic [ref=e172]: "223"
-              - cell "JAN 12, 2026" [ref=e173]
+              - cell "102" [ref=e170]:
+                - generic [ref=e172]: "102"
+              - cell "JAN 20, 2026" [ref=e173]
               - cell "more_vert" [ref=e174]:
                 - button "more_vert" [ref=e175]:
                   - generic [ref=e176]: more_vert
-            - row "dev007 https://news.ycombinator.com localhost:8844/dev007 content_copy 59 DEC 22, 2025 more_vert" [ref=e177] [cursor=pointer]:
-              - cell "dev007 https://news.ycombinator.com" [ref=e178]:
+            - row "dev003 https://kotlinlang.org/docs/home.html localhost:8844/dev003 content_copy 173 JAN 16, 2026 more_vert" [ref=e177] [cursor=pointer]:
+              - cell "dev003 https://kotlinlang.org/docs/home.html" [ref=e178]:
                 - generic [ref=e179]:
-                  - generic [ref=e180]: dev007
-                  - generic "https://news.ycombinator.com" [ref=e181]
-              - cell "localhost:8844/dev007 content_copy" [ref=e182]:
+                  - generic [ref=e180]: dev003
+                  - generic "https://kotlinlang.org/docs/home.html" [ref=e181]
+              - cell "localhost:8844/dev003 content_copy" [ref=e182]:
                 - generic [ref=e183]:
-                  - code [ref=e184]: localhost:8844/dev007
+                  - code [ref=e184]: localhost:8844/dev003
                   - generic [ref=e185]: content_copy
-              - cell "59" [ref=e186]:
-                - generic [ref=e188]: "59"
-              - cell "DEC 22, 2025" [ref=e189]
+              - cell "173" [ref=e186]:
+                - generic [ref=e188]: "173"
+              - cell "JAN 16, 2026" [ref=e189]
               - cell "more_vert" [ref=e190]:
                 - button "more_vert" [ref=e191]:
                   - generic [ref=e192]: more_vert
-            - row "dev004 https://angular.dev/overview localhost:8844/dev004 content_copy 198 DEC 18, 2025 more_vert" [ref=e193] [cursor=pointer]:
-              - cell "dev004 https://angular.dev/overview" [ref=e194]:
+            - row "dev002 https://spring.io/projects/spring-boot localhost:8844/dev002 content_copy 59 DEC 15, 2025 more_vert" [ref=e193] [cursor=pointer]:
+              - cell "dev002 https://spring.io/projects/spring-boot" [ref=e194]:
                 - generic [ref=e195]:
-                  - generic [ref=e196]: dev004
-                  - generic "https://angular.dev/overview" [ref=e197]
-              - cell "localhost:8844/dev004 content_copy" [ref=e198]:
+                  - generic [ref=e196]: dev002
+                  - generic "https://spring.io/projects/spring-boot" [ref=e197]
+              - cell "localhost:8844/dev002 content_copy" [ref=e198]:
                 - generic [ref=e199]:
-                  - code [ref=e200]: localhost:8844/dev004
+                  - code [ref=e200]: localhost:8844/dev002
                   - generic [ref=e201]: content_copy
-              - cell "198" [ref=e202]:
-                - generic [ref=e204]: "198"
-              - cell "DEC 18, 2025" [ref=e205]
+              - cell "59" [ref=e202]:
+                - generic [ref=e204]: "59"
+              - cell "DEC 15, 2025" [ref=e205]
               - cell "more_vert" [ref=e206]:
                 - button "more_vert" [ref=e207]:
                   - generic [ref=e208]: more_vert
+            - row "dev001 https://github.com/ohbus/link.whoa.sh localhost:8844/dev001 content_copy 157 DEC 13, 2025 more_vert" [ref=e209] [cursor=pointer]:
+              - cell "dev001 https://github.com/ohbus/link.whoa.sh" [ref=e210]:
+                - generic [ref=e211]:
+                  - generic [ref=e212]: dev001
+                  - generic "https://github.com/ohbus/link.whoa.sh" [ref=e213]
+              - cell "localhost:8844/dev001 content_copy" [ref=e214]:
+                - generic [ref=e215]:
+                  - code [ref=e216]: localhost:8844/dev001
+                  - generic [ref=e217]: content_copy
+              - cell "157" [ref=e218]:
+                - generic [ref=e220]: "157"
+              - cell "DEC 13, 2025" [ref=e221]
+              - cell "more_vert" [ref=e222]:
+                - button "more_vert" [ref=e223]:
+                  - generic [ref=e224]: more_vert
 ```
 
 # Test source
@@ -280,9 +294,9 @@ Call log:
   38 |   test('should only sync visible links in background', async ({ page }) => {
   39 |     // 1. Create 15 links
   40 |     for (let i = 1; i <= 15; i++) {
-> 41 |       await page.getByTestId('destination-url-input').fill(`https://sync-test-${i}.com`);
-     |                                                       ^ Error: locator.fill: Test timeout of 30000ms exceeded.
-  42 |       await page.getByTestId('execute-shorten-btn').click();
+  41 |       await page.getByTestId('destination-url-input').fill(`https://sync-test-${i}.com`);
+> 42 |       await page.getByTestId('execute-shorten-btn').click();
+     |                                                     ^ Error: locator.click: Test timeout of 60000ms exceeded.
   43 |     }
   44 | 
   45 |     // 2. Scroll to bottom

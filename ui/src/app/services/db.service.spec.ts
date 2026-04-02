@@ -1,29 +1,38 @@
-import 'fake-indexeddb/auto';
+import { FDBFactory } from 'fake-indexeddb';
 import { TestBed } from '@angular/core/testing';
 import { DbService } from './db.service';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('DbService', () => {
   let service: DbService;
 
   beforeEach(async () => {
+    // 1. Completely isolate the IndexedDB environment for this test
+    const freshIndexedDB = new FDBFactory();
+    // @ts-ignore
+    global.indexedDB = freshIndexedDB;
+    // @ts-ignore
+    global.IDBKeyRange = freshIndexedDB.IDBKeyRange; // Might be needed by Dexie
+
     DbService.skipSeeding = true;
     TestBed.configureTestingModule({
       providers: [DbService]
     });
     service = TestBed.inject(DbService);
-    
-    // Fast clear
-    await service.db.urls.clear();
-    await service.db.analytics.clear();
-  }, 20000); // 20s timeout for DB init in CI
+  });
+
+  afterEach(async () => {
+    if (service && service.db) {
+      await service.db.close();
+    }
+  });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
   it('should add a URL correctly', async () => {
-    await service.addUrl('abc', 'https://example.com', 'http://localhost:8844/abc', 123456789);
+    await service.addUrl('abc', 'https://example.com', 'http://127.0.0.1:8844/abc', 123456789);
     
     const urls = await service.getUrls();
     expect(urls.length).toBe(1);
@@ -34,8 +43,8 @@ describe('DbService', () => {
 
   it('should bulk add URLs correctly', async () => {
     const links = [
-      { shortCode: 'code1', originalUrl: 'https://url1.com', shortUrl: 'http://localhost:8844/code1', clicks: 5 },
-      { shortCode: 'code2', originalUrl: 'https://url2.com', shortUrl: 'http://localhost:8844/code2', clicks: 10 }
+      { shortCode: 'code1', originalUrl: 'https://url1.com', shortUrl: 'http://127.0.0.1:8844/code1', clicks: 5 },
+      { shortCode: 'code2', originalUrl: 'https://url2.com', shortUrl: 'http://127.0.0.1:8844/code2', clicks: 10 }
     ];
 
     await service.bulkAddUrls(links);
@@ -48,7 +57,7 @@ describe('DbService', () => {
   });
 
   it('should update analytics and add snapshot', async () => {
-    await service.addUrl('abc', 'https://example.com', 'http://localhost:8844/abc');
+    await service.addUrl('abc', 'https://example.com', 'http://127.0.0.1:8844/abc');
     
     await service.updateAnalytics('abc', 50);
     

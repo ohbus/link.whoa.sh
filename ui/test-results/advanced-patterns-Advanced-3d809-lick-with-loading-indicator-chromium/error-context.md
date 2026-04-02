@@ -12,13 +12,230 @@
 # Error details
 
 ```
-Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:8844
-Call log:
-  - → POST http://127.0.0.1:8844/api/testing/reset
-    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36
-    - accept: */*
-    - accept-encoding: gzip,deflate,br
+Test timeout of 60000ms exceeded.
+```
 
+```
+Error: locator.fill: Test timeout of 60000ms exceeded.
+Call log:
+  - waiting for getByTestId('custom-path-input')
+    - locator resolved to <input type="text" placeholder="my-custom-path" data-testid="custom-path-input" class="flex-1 bg-surface-container-lowest border-none ring-1 ring-outline-variant focus:ring-2 focus:ring-primary rounded-lg py-3 px-4 text-white font-mono ng-untouched ng-pristine ng-valid"/>
+    - fill("drawer-test")
+  - attempting fill action
+    2 × waiting for element to be visible, enabled and editable
+      - element is not visible
+    - retrying fill action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and editable
+      - element is not visible
+    - retrying fill action
+      - waiting 100ms
+    117 × waiting for element to be visible, enabled and editable
+        - element is not visible
+      - retrying fill action
+        - waiting 500ms
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - button "Toggle Sidebar" [ref=e5] [cursor=pointer]:
+        - generic [ref=e6]: menu_open
+      - generic [ref=e7]: link.whoa.sh
+      - generic [ref=e8]:
+        - generic [ref=e9]: analytics
+        - generic [ref=e10]: "Global Clicks:"
+        - generic [ref=e12]: "0"
+    - generic [ref=e13]:
+      - button "bar_chart" [ref=e14] [cursor=pointer]:
+        - generic [ref=e15]: bar_chart
+      - button "settings" [ref=e16] [cursor=pointer]:
+        - generic [ref=e17]: settings
+  - complementary [ref=e18]:
+    - generic [ref=e19]:
+      - heading "Link.Whoa" [level=2] [ref=e20]
+      - paragraph [ref=e21]: Precision Shortening
+    - navigation [ref=e22]:
+      - link "grid_view Dashboard" [ref=e23] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=e24]: grid_view
+        - generic [ref=e25]: Dashboard
+    - button "add Shorten URL" [ref=e27] [cursor=pointer]:
+      - generic [ref=e28]: add
+      - generic [ref=e29]: Shorten URL
+  - main [ref=e30]:
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - heading "COMMAND CENTER" [level=1] [ref=e34]
+          - paragraph [ref=e35]: Scale your presence with hyper-shortened redirects.
+        - generic [ref=e36]:
+          - generic [ref=e37]: System Status
+          - generic [ref=e38]: Backend Active
+      - generic [ref=e40]:
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - text: Destination URL
+            - generic [ref=e44]:
+              - textbox "Destination URL" [active] [ref=e45]:
+                - /placeholder: https://very-long-and-boring-url.com/analytics/dashboard
+                - text: https://example.com
+              - generic [ref=e46]: link
+          - group [ref=e47]:
+            - generic "tune Custom Short Code expand_more" [ref=e48] [cursor=pointer]:
+              - generic [ref=e49]:
+                - generic [ref=e50]: tune
+                - generic [ref=e51]: Custom Short Code
+              - generic [ref=e52]: expand_more
+          - button "Execute Shorten" [ref=e54] [cursor=pointer]
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - heading "Efficiency Pulse" [level=3] [ref=e57]
+            - paragraph [ref=e58]: 100% Uptime
+          - generic [ref=e59]:
+            - generic [ref=e60]: 21ms
+            - generic [ref=e61]: Avg Latency
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - heading "Active Registry" [level=3] [ref=e65]
+          - generic [ref=e66]:
+            - button "filter_list" [ref=e67] [cursor=pointer]:
+              - generic [ref=e68]: filter_list
+            - button "download" [ref=e69] [cursor=pointer]:
+              - generic [ref=e70]: download
+        - table [ref=e72]:
+          - rowgroup [ref=e73]:
+            - row "Original URL Short URL Clicks Created Action" [ref=e74]:
+              - columnheader "Original URL" [ref=e75]
+              - columnheader "Short URL" [ref=e76]
+              - columnheader "Clicks" [ref=e77]
+              - columnheader "Created" [ref=e78]
+              - columnheader "Action" [ref=e79]
+          - rowgroup [ref=e80]:
+            - row "dev004 https://angular.dev/overview localhost:8844/dev004 content_copy 123 MAR 27, 2026 more_vert" [ref=e81] [cursor=pointer]:
+              - cell "dev004 https://angular.dev/overview" [ref=e82]:
+                - generic [ref=e83]:
+                  - generic [ref=e84]: dev004
+                  - generic "https://angular.dev/overview" [ref=e85]
+              - cell "localhost:8844/dev004 content_copy" [ref=e86]:
+                - generic [ref=e87]:
+                  - code [ref=e88]: localhost:8844/dev004
+                  - generic [ref=e89]: content_copy
+              - cell "123" [ref=e90]:
+                - generic [ref=e92]: "123"
+              - cell "MAR 27, 2026" [ref=e93]
+              - cell "more_vert" [ref=e94]:
+                - button "more_vert" [ref=e95]:
+                  - generic [ref=e96]: more_vert
+            - row "dev002 https://spring.io/projects/spring-boot localhost:8844/dev002 content_copy 86 MAR 26, 2026 more_vert" [ref=e97] [cursor=pointer]:
+              - cell "dev002 https://spring.io/projects/spring-boot" [ref=e98]:
+                - generic [ref=e99]:
+                  - generic [ref=e100]: dev002
+                  - generic "https://spring.io/projects/spring-boot" [ref=e101]
+              - cell "localhost:8844/dev002 content_copy" [ref=e102]:
+                - generic [ref=e103]:
+                  - code [ref=e104]: localhost:8844/dev002
+                  - generic [ref=e105]: content_copy
+              - cell "86" [ref=e106]:
+                - generic [ref=e108]: "86"
+              - cell "MAR 26, 2026" [ref=e109]
+              - cell "more_vert" [ref=e110]:
+                - button "more_vert" [ref=e111]:
+                  - generic [ref=e112]: more_vert
+            - row "dev008 https://reddit.com localhost:8844/dev008 content_copy 228 MAR 11, 2026 more_vert" [ref=e113] [cursor=pointer]:
+              - cell "dev008 https://reddit.com" [ref=e114]:
+                - generic [ref=e115]:
+                  - generic [ref=e116]: dev008
+                  - generic "https://reddit.com" [ref=e117]
+              - cell "localhost:8844/dev008 content_copy" [ref=e118]:
+                - generic [ref=e119]:
+                  - code [ref=e120]: localhost:8844/dev008
+                  - generic [ref=e121]: content_copy
+              - cell "228" [ref=e122]:
+                - generic [ref=e124]: "228"
+              - cell "MAR 11, 2026" [ref=e125]
+              - cell "more_vert" [ref=e126]:
+                - button "more_vert" [ref=e127]:
+                  - generic [ref=e128]: more_vert
+            - row "dev005 https://www.postgresql.org/docs/ localhost:8844/dev005 content_copy 97 MAR 09, 2026 more_vert" [ref=e129] [cursor=pointer]:
+              - cell "dev005 https://www.postgresql.org/docs/" [ref=e130]:
+                - generic [ref=e131]:
+                  - generic [ref=e132]: dev005
+                  - generic "https://www.postgresql.org/docs/" [ref=e133]
+              - cell "localhost:8844/dev005 content_copy" [ref=e134]:
+                - generic [ref=e135]:
+                  - code [ref=e136]: localhost:8844/dev005
+                  - generic [ref=e137]: content_copy
+              - cell "97" [ref=e138]:
+                - generic [ref=e140]: "97"
+              - cell "MAR 09, 2026" [ref=e141]
+              - cell "more_vert" [ref=e142]:
+                - button "more_vert" [ref=e143]:
+                  - generic [ref=e144]: more_vert
+            - row "dev006 https://docker.com localhost:8844/dev006 content_copy 139 FEB 06, 2026 more_vert" [ref=e145] [cursor=pointer]:
+              - cell "dev006 https://docker.com" [ref=e146]:
+                - generic [ref=e147]:
+                  - generic [ref=e148]: dev006
+                  - generic "https://docker.com" [ref=e149]
+              - cell "localhost:8844/dev006 content_copy" [ref=e150]:
+                - generic [ref=e151]:
+                  - code [ref=e152]: localhost:8844/dev006
+                  - generic [ref=e153]: content_copy
+              - cell "139" [ref=e154]:
+                - generic [ref=e156]: "139"
+              - cell "FEB 06, 2026" [ref=e157]
+              - cell "more_vert" [ref=e158]:
+                - button "more_vert" [ref=e159]:
+                  - generic [ref=e160]: more_vert
+            - row "dev007 https://news.ycombinator.com localhost:8844/dev007 content_copy 243 JAN 04, 2026 more_vert" [ref=e161] [cursor=pointer]:
+              - cell "dev007 https://news.ycombinator.com" [ref=e162]:
+                - generic [ref=e163]:
+                  - generic [ref=e164]: dev007
+                  - generic "https://news.ycombinator.com" [ref=e165]
+              - cell "localhost:8844/dev007 content_copy" [ref=e166]:
+                - generic [ref=e167]:
+                  - code [ref=e168]: localhost:8844/dev007
+                  - generic [ref=e169]: content_copy
+              - cell "243" [ref=e170]:
+                - generic [ref=e172]: "243"
+              - cell "JAN 04, 2026" [ref=e173]
+              - cell "more_vert" [ref=e174]:
+                - button "more_vert" [ref=e175]:
+                  - generic [ref=e176]: more_vert
+            - row "dev001 https://github.com/ohbus/link.whoa.sh localhost:8844/dev001 content_copy 50 DEC 31, 2025 more_vert" [ref=e177] [cursor=pointer]:
+              - cell "dev001 https://github.com/ohbus/link.whoa.sh" [ref=e178]:
+                - generic [ref=e179]:
+                  - generic [ref=e180]: dev001
+                  - generic "https://github.com/ohbus/link.whoa.sh" [ref=e181]
+              - cell "localhost:8844/dev001 content_copy" [ref=e182]:
+                - generic [ref=e183]:
+                  - code [ref=e184]: localhost:8844/dev001
+                  - generic [ref=e185]: content_copy
+              - cell "50" [ref=e186]:
+                - generic [ref=e188]: "50"
+              - cell "DEC 31, 2025" [ref=e189]
+              - cell "more_vert" [ref=e190]:
+                - button "more_vert" [ref=e191]:
+                  - generic [ref=e192]: more_vert
+            - row "dev003 https://kotlinlang.org/docs/home.html localhost:8844/dev003 content_copy 198 DEC 29, 2025 more_vert" [ref=e193] [cursor=pointer]:
+              - cell "dev003 https://kotlinlang.org/docs/home.html" [ref=e194]:
+                - generic [ref=e195]:
+                  - generic [ref=e196]: dev003
+                  - generic "https://kotlinlang.org/docs/home.html" [ref=e197]
+              - cell "localhost:8844/dev003 content_copy" [ref=e198]:
+                - generic [ref=e199]:
+                  - code [ref=e200]: localhost:8844/dev003
+                  - generic [ref=e201]: content_copy
+              - cell "198" [ref=e202]:
+                - generic [ref=e204]: "198"
+              - cell "DEC 29, 2025" [ref=e205]
+              - cell "more_vert" [ref=e206]:
+                - button "more_vert" [ref=e207]:
+                  - generic [ref=e208]: more_vert
 ```
 
 # Test source
@@ -28,8 +245,7 @@ Call log:
   2   | 
   3   | test.describe('Advanced Data Patterns & Monkey Testing', () => {
   4   |   test.beforeEach(async ({ page, request }) => {
-> 5   |     await request.post('http://127.0.0.1:8844/api/testing/reset');
-      |                   ^ Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:8844
+  5   |     await request.post('http://127.0.0.1:8844/api/testing/reset');
   6   |     await page.goto('/#/');
   7   |     await page.evaluate(async () => { await indexedDB.deleteDatabase('WhoaDatabase'); });
   8   |     await page.reload();
@@ -116,7 +332,8 @@ Call log:
   89  |   test('should handle immediate drawer click with loading indicator', async ({ page, context }) => {
   90  |     const code = 'drawer-test';
   91  |     await page.getByTestId('destination-url-input').fill('https://example.com');
-  92  |     await page.getByTestId('custom-path-input').fill(code);
+> 92  |     await page.getByTestId('custom-path-input').fill(code);
+      |                                                 ^ Error: locator.fill: Test timeout of 60000ms exceeded.
   93  |     await page.getByTestId('execute-shorten-btn').click();
   94  | 
   95  |     // 1. Intercept analytics call and delay it to see loading state
@@ -130,4 +347,32 @@ Call log:
   103 | 
   104 |     // 3. Verify loading pulse is visible
   105 |     await expect(page.getByTestId('drawer-sync-status')).toBeVisible();
+  106 |     
+  107 |     // 4. Wait for it to finish
+  108 |     await expect(page.getByTestId('drawer-sync-status')).toBeHidden();
+  109 |     await expect(page.getByTestId('drawer-total-clicks')).toContainText('0');
+  110 |   });
+  111 | 
+  112 |   test('should gracefully handle offline transition and recovery', async ({ page, context }) => {
+  113 |     // 1. Initial State: Online
+  114 |     await expect(page.getByTestId('system-status')).toContainText('Backend Active');
+  115 | 
+  116 |     // 2. Go Offline (Mock error for health check)
+  117 |     await context.route('**/actuator/health', route => route.fulfill({ status: 503 }));
+  118 |     
+  119 |     // Wait for heartbeat
+  120 |     await expect(page.getByTestId('system-status')).toContainText('Backend Offline', { timeout: 15000 });
+  121 |     
+  122 |     // Create button should be disabled
+  123 |     await expect(page.getByTestId('execute-shorten-btn')).toBeDisabled();
+  124 | 
+  125 |     // 3. Recover
+  126 |     await context.unroute('**/actuator/health');
+  127 |     await expect(page.getByTestId('system-status')).toContainText('Backend Active', { timeout: 15000 });
+  128 |     
+  129 |     // Create button should be re-enabled
+  130 |     await expect(page.getByTestId('execute-shorten-btn')).toBeEnabled();
+  131 |   });
+  132 | });
+  133 | 
 ```

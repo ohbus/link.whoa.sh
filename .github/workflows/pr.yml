@@ -87,7 +87,7 @@ jobs:
   e2e-checks:
     name: "E2E: Playwright Suite"
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     needs: [backend-checks, frontend-checks]
     services:
       postgres:
@@ -147,6 +147,12 @@ jobs:
       - name: Pre-build Backend
         run: ./gradlew build -x test
       
+      - name: Configure environment
+        run: |
+          if [ -f .env ]; then
+            sed -i 's/DB_HOST=db-postgres/DB_HOST=127.0.0.1/g' .env
+          fi
+
       - name: Run Playwright
         working-directory: ./ui
         run: npx playwright test

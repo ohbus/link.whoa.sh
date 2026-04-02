@@ -14,6 +14,16 @@ export default defineConfig({
     include: ['src/**/*.{spec,test}.ts'],
     reporters: ['default', 'junit'],
     outputFile: './test-results/junit.xml',
+    /* 
+     * IndexedDB (via fake-indexeddb) can be flakey with parallel execution in CI.
+     * We enforce a single thread to ensure deterministic database state.
+     */
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        singleThread: true,
+      }
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

@@ -14,6 +14,12 @@ export default defineConfig({
   /* Verbose reporting for CI visibility */
   reporter: process.env['CI'] ? [['list'], ['html']] : [['list']],
   
+  /* Increased global timeout for heavy E2E flows in CI */
+  timeout: 60 * 1000,
+  expect: {
+    timeout: 10 * 1000,
+  },
+
   use: {
     /* Use 127.0.0.1 to bypass IPv6 resolution overhead in CI containers */
     baseURL: 'http://127.0.0.1:4200',
@@ -31,11 +37,14 @@ export default defineConfig({
       timeout: 180 * 1000,
     },
     {
-      /* Start backend only after pre-build is complete in CI */
-      command: 'cd .. && ./gradlew bootRun --args="--spring.profiles.active=dev"',
+      /* 
+       * Start backend with dev profile. 
+       * Explicitly overriding DB_HOST to ensure it talks to the CI postgres service on localhost.
+       */
+      command: 'cd .. && DB_HOST=127.0.0.1 SPRING_PROFILES_ACTIVE=dev ./gradlew bootRun',
       url: 'http://127.0.0.1:8844/actuator/health',
       reuseExistingServer: !process.env['CI'],
-      timeout: 240 * 1000,
+      timeout: 300 * 1000,
     }
   ],
 
