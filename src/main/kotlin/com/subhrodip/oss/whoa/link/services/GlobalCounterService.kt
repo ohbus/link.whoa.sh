@@ -6,6 +6,8 @@ import io.micrometer.core.annotation.Counted
 import io.micrometer.core.annotation.Timed
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.env.Environment
+import org.springframework.core.env.Profiles
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.util.concurrent.atomic.AtomicLong
@@ -15,7 +17,8 @@ private val log = KotlinLogging.logger {}
 
 @Service
 class GlobalCounterService(
-    private val urlAnalyticsRepository: UrlAnalyticsRepository
+    private val urlAnalyticsRepository: UrlAnalyticsRepository,
+    private val environment: Environment
 ) {
     private val globalClicks = AtomicLong(0)
 
@@ -40,11 +43,22 @@ class GlobalCounterService(
     /**
      * Periodically increments the counter to simulate real-time activity (Dopamine effect).
      * Defaults to every 10 seconds.
+     * Hard-gated to NEVER run in production environments.
      */
     @Timed(value = "whoa.simulation.traffic.time", description = "Execution time for traffic simulation task")
     @Counted(value = "whoa.simulation.traffic.count", description = "Number of traffic simulation cycles")
     @Scheduled(fixedDelayString = "\${app.analytics.simulation.interval-ms:10000}")
     fun simulateTraffic() {
+        // Hard profile gate: Never simulate in production
+        if (environment.acceptsProfiles(Profiles.of("prod"))) {
+            return
+        }
+
+        // Logic gate: handle manual disablement via config
+        if (minIncrement == 0 && maxIncrement == 0) {
+            return
+        }
+        
         val increment = Random.nextLong(minIncrement.toLong(), maxIncrement.toLong() + 1)
         val newValue = globalClicks.addAndGet(increment)
         log.debug { "Simulated traffic increment: +$increment. New global total: $newValue" }
