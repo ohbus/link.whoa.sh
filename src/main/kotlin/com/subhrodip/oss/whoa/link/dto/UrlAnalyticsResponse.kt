@@ -6,5 +6,5 @@ data class UrlAnalyticsResponse(
     val originalUrl: String,
     val shortUrl: String,
     val clicks: Long,
-    val createdAt: OffsetDateTime? = null
+    val createdAt: OffsetDateTime? = null,
 )

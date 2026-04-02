@@ -19,7 +19,6 @@ import java.time.OffsetDateTime
 
 @ExtendWith(MockitoExtension::class)
 class UrlReadPaginationTest {
-
     @Mock
     private lateinit var urlRepository: UrlRepository
 
@@ -42,17 +41,18 @@ class UrlReadPaginationTest {
 
     @Test
     fun `getPagedUrls returns first page correctly`() {
-        val urls = listOf(
-            UrlEntity("url1", "code1").apply { 
-                id = 1L
-                createdAt = OffsetDateTime.now().minusMinutes(1) 
-            },
-            UrlEntity("url2", "code2").apply { 
-                id = 2L
-                createdAt = OffsetDateTime.now().minusMinutes(2) 
-            }
-        )
-        
+        val urls =
+            listOf(
+                UrlEntity("url1", "code1").apply {
+                    id = 1L
+                    createdAt = OffsetDateTime.now().minusMinutes(1)
+                },
+                UrlEntity("url2", "code2").apply {
+                    id = 2L
+                    createdAt = OffsetDateTime.now().minusMinutes(2)
+                },
+            )
+
         `when`(urlRepository.findLatest(any())).thenReturn(urls)
         `when`(urlAnalyticsRepository.countByUrlIds(any())).thenReturn(emptyList())
 
@@ -65,21 +65,22 @@ class UrlReadPaginationTest {
 
     @Test
     fun `getPagedUrls identifies hasMore correctly`() {
-        val urls = listOf(
-            UrlEntity("url1", "code1").apply { 
-                id = 1L
-                createdAt = OffsetDateTime.now().minusMinutes(1) 
-            },
-            UrlEntity("url2", "code2").apply { 
-                id = 2L
-                createdAt = OffsetDateTime.now().minusMinutes(2) 
-            },
-            UrlEntity("url3", "code3").apply { 
-                id = 3L
-                createdAt = OffsetDateTime.now().minusMinutes(3) 
-            }
-        )
-        
+        val urls =
+            listOf(
+                UrlEntity("url1", "code1").apply {
+                    id = 1L
+                    createdAt = OffsetDateTime.now().minusMinutes(1)
+                },
+                UrlEntity("url2", "code2").apply {
+                    id = 2L
+                    createdAt = OffsetDateTime.now().minusMinutes(2)
+                },
+                UrlEntity("url3", "code3").apply {
+                    id = 3L
+                    createdAt = OffsetDateTime.now().minusMinutes(3)
+                },
+            )
+
         `when`(urlRepository.findLatest(any())).thenReturn(urls)
         `when`(urlAnalyticsRepository.countByUrlIds(any())).thenReturn(emptyList())
 

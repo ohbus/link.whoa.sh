@@ -68,7 +68,8 @@ class UrlReadService(
         val ids = linksToReturn.map { it.id }
         val counts =
             if (ids.isNotEmpty()) {
-                urlAnalyticsRepository.countByUrlIds(ids)
+                urlAnalyticsRepository
+                    .countByUrlIds(ids)
                     .associate { it.urlId to it.totalClicks }
             } else {
                 emptyMap()
@@ -84,7 +85,16 @@ class UrlReadService(
                 )
             }
 
-        val nextCursor = if (hasMore) linksToReturn.last().createdAt.toInstant().toEpochMilli() else null
+        val nextCursor =
+            if (hasMore) {
+                linksToReturn
+                    .last()
+                    .createdAt
+                    .toInstant()
+                    .toEpochMilli()
+            } else {
+                null
+            }
 
         return PagedUrlsResponse(
             links = results,
