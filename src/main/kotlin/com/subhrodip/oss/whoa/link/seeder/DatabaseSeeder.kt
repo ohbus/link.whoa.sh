@@ -23,11 +23,11 @@ class DatabaseSeeder(
     @Transactional
     override fun run(vararg args: String) {
         if (urlRepository.count() > 0) {
-            log.info("Database already seeded. Skipping...")
+            log.info { "Database already seeded. Skipping..." }
             return
         }
 
-        log.info("Seeding rich data for local development...")
+        log.info { "Seeding rich data for local development..." }
 
         val baseUrls =
             listOf(
@@ -83,6 +83,6 @@ class DatabaseSeeder(
             urlAnalyticsRepository.saveAll(analyticsToSave)
         }
 
-        log.info("Database seeding completed successfully.")
+        log.info { "Database seeding completed successfully." }
     }
 }

@@ -71,9 +71,9 @@ class DataSourceConfig {
         val driverClassName = if (readerDriver.isBlank()) writerDriver else readerDriver
 
         if (readerUrl.isBlank()) {
-            log.info("Reader database URL is empty or null. Falling back to WRITER instance for read operations.")
+            log.info { "Reader database URL is empty or null. Falling back to WRITER instance for read operations." }
         } else {
-            log.info("Reader database configured with URL: {}", url)
+            log.info { "Reader database configured with URL: $url" }
         }
 
         val config = HikariConfig()
