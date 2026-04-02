@@ -23,7 +23,6 @@ jobs:
   build:
     name: Build and Analyze
     runs-on: ubuntu-latest
-    needs: format-checker
     permissions:
       contents: read
       packages: write
