@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   Highcharts: typeof Highcharts = Highcharts;
 
   // State
+  isSidebarCollapsed = signal<boolean>(false);
   longUrl = signal<string>('');
   customShortCode = signal<string>('');
   
@@ -80,6 +81,10 @@ export class AppComponent implements OnInit {
     urlsObservable.subscribe(data => {
       this.urls.set(data);
     });
+  }
+
+  toggleSidebar() {
+    this.isSidebarCollapsed.set(!this.isSidebarCollapsed());
   }
 
   async shortenUrl() {

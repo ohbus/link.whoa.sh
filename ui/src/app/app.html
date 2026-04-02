@@ -1,7 +1,10 @@
 <!-- TopNavBar Implementation -->
 <header class="fixed top-0 w-full border-b bg-slate-950/80 backdrop-blur-md border-indigo-500/20 shadow-[0_0_15px_rgba(63,81,181,0.1)] h-16 px-6 z-50 flex justify-between items-center">
-  <div class="flex items-center gap-8">
-    <div class="text-xl font-bold tracking-tighter text-white uppercase font-['Space_Grotesk']">
+  <div class="flex items-center gap-4">
+    <button (click)="toggleSidebar()" class="p-2 text-slate-400 hover:text-white hover:bg-slate-900 transition-colors rounded-lg">
+      <span class="material-symbols-outlined">{{ isSidebarCollapsed() ? 'menu' : 'menu_open' }}</span>
+    </button>
+    <div class="text-xl font-bold tracking-tighter text-white uppercase font-['Space_Grotesk'] ml-2">
       link.whoa.sh
     </div>
     <!-- Signals Placeholder for Clicks -->
@@ -22,22 +25,28 @@
 </header>
 
 <!-- SideNavBar Implementation -->
-<aside class="fixed left-0 top-16 hidden md:flex flex-col h-[calc(100vh-64px)] w-64 bg-slate-950 border-r border-indigo-500/10 py-4 font-['Space_Grotesk'] text-sm font-medium">
-  <div class="px-6 mb-8">
+<aside [class.w-64]="!isSidebarCollapsed()" [class.w-20]="isSidebarCollapsed()" class="fixed left-0 top-16 hidden md:flex flex-col h-[calc(100vh-64px)] bg-slate-950 border-r border-indigo-500/10 py-4 font-['Space_Grotesk'] text-sm font-medium transition-all duration-300 ease-in-out z-40">
+  <div class="px-6 mb-8 overflow-hidden whitespace-nowrap" [class.opacity-0]="isSidebarCollapsed()" [class.pointer-events-none]="isSidebarCollapsed()">
     <h2 class="text-lg font-black text-white">Link.Whoa</h2>
     <p class="text-[10px] uppercase tracking-[0.2em] text-slate-500">Precision Shortening</p>
   </div>
   <nav class="flex-1 space-y-1">
     <!-- Dashboard - Active -->
-    <a class="flex items-center gap-3 px-6 py-3 text-white bg-indigo-500/10 border-r-2 border-indigo-500 font-bold translate-x-1 transition-transform" href="#">
+    <a class="flex items-center gap-3 px-6 py-3 text-white bg-indigo-500/10 border-r-2 border-indigo-500 font-bold transition-all" [class.justify-center]="isSidebarCollapsed()" [class.px-0]="isSidebarCollapsed()" href="#">
       <span class="material-symbols-outlined" data-icon="grid_view" style="font-variation-settings: 'FILL' 1;">grid_view</span>
-      Dashboard
+      <span class="whitespace-nowrap transition-opacity duration-300" [class.opacity-0]="isSidebarCollapsed()" [class.hidden]="isSidebarCollapsed()">Dashboard</span>
     </a>
   </nav>
+  <div class="px-4 mt-auto">
+    <button (click)="shortenUrl()" [disabled]="isSubmitting() || !longUrl() || !isBackendHealthy()" class="w-full py-3 bg-primary text-on-primary font-bold rounded-lg flex items-center justify-center gap-2 active:opacity-80 duration-150 shadow-lg shadow-primary/20 overflow-hidden">
+      <span class="material-symbols-outlined text-lg">add</span>
+      <span class="whitespace-nowrap transition-opacity duration-300" [class.opacity-0]="isSidebarCollapsed()" [class.hidden]="isSidebarCollapsed()">Shorten URL</span>
+    </button>
+  </div>
 </aside>
 
 <!-- Main Canvas -->
-<main class="md:ml-64 pt-24 px-6 pb-12 min-h-screen">
+<main [class.md:ml-64]="!isSidebarCollapsed()" [class.md:ml-20]="isSidebarCollapsed()" class="pt-24 px-6 pb-12 min-h-screen transition-all duration-300 ease-in-out">
   <div class="max-w-6xl mx-auto space-y-8">
     <!-- Section Header -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
