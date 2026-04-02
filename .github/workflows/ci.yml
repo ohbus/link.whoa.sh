@@ -3,6 +3,8 @@ name: CI Master
 on:
   push:
     branches: [ "master" ]
+  pull_request:
+    branches: [ "master", "feature/*" ]
 
 jobs:
   format-checker:
@@ -52,7 +54,6 @@ jobs:
       uses: mikepenz/action-junit-report@v6
       if: success() || failure() # always run even if the previous step fails
       with:
-        commit: ${{github.event.workflow_run.head_sha}}
         report_paths: '**/test/TEST-*.xml'
         require_tests: true
         annotate_notice: false
