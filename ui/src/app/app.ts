@@ -39,6 +39,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   // Visibility Tracking
   private visibleCodes = new Set<string>();
   private intersectionObserver?: IntersectionObserver;
+  private scrollRestTimeout: any;
 
   // Drawer state
   isDrawerOpen = signal<boolean>(false);
@@ -129,6 +130,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.intersectionObserver?.disconnect();
+    if (this.scrollRestTimeout) {
+      clearTimeout(this.scrollRestTimeout);
+    }
   }
 
   private setupIntersectionObserver() {
@@ -152,14 +156,19 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
       if (changed) {
-        // Trigger an immediate "delta" sync when visibility changes
-        this.sync.performSync(() => this.visibleCodes);
+        // "Rest" logic: Wait for user to stop monkey scrolling before hitting the backend
+        if (this.scrollRestTimeout) {
+          clearTimeout(this.scrollRestTimeout);
+        }
+
+        this.scrollRestTimeout = setTimeout(() => {
+          this.sync.performSync(() => this.visibleCodes);
+        }, 500); // 500ms backoff after scrolling stops
       }
     }, { threshold: 0.1, rootMargin: '50px' });
   }
 
   private refreshObservers() {
-    // We don't disconnect entirely, we just observe new ones
     this.urlRows.forEach(row => {
       this.intersectionObserver?.observe(row.nativeElement);
     });
