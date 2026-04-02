@@ -154,7 +154,8 @@
           </thead>
           <tbody class="divide-y divide-outline-variant/10">
             @for (url of urls(); track url.shortCode) {
-              <tr class="hover:bg-primary/5 transition-colors group cursor-pointer" 
+              <tr #urlRow [attr.data-code]="url.shortCode"
+                  class="hover:bg-primary/5 transition-colors group cursor-pointer" 
                   (click)="openAnalyticsDrawer(url)"
                   (mouseenter)="onMouseEnter(url)"
                   (mouseleave)="onMouseLeave()">

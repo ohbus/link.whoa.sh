@@ -48,9 +48,13 @@ class AnalyticsService(
     }
 
     @Transactional(readOnly = true)
-    fun getBulkAnalytics(shortCodes: List<String>): BulkAnalyticsResponse {
+    fun getBulkAnalytics(currentCounts: Map<String, Long>): BulkAnalyticsResponse {
+        val shortCodes = currentCounts.keys.toList()
+        if (shortCodes.isEmpty()) return BulkAnalyticsResponse(emptyMap())
+        
         val counts = urlAnalyticsRepository.countByShortCodes(shortCodes)
         val clickMap = counts.associate { it[0] as String to it[1] as Long }
+        
         return BulkAnalyticsResponse(clicks = clickMap)
     }
 }

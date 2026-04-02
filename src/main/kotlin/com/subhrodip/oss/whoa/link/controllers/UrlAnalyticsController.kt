@@ -49,7 +49,7 @@ class UrlAnalyticsController(
     fun getBulkAnalytics(
         @RequestBody request: BulkAnalyticsRequest,
     ): ResponseEntity<BulkAnalyticsResponse> {
-        val response = analyticsService.getBulkAnalytics(request.shortCodes)
+        val response = analyticsService.getBulkAnalytics(request.currentCounts)
         return ResponseEntity.ok(response)
     }
 }

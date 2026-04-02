@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef, AfterViewInit, OnDestroy, ViewChildren, QueryList } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { liveQuery } from 'dexie';
@@ -16,8 +16,9 @@ import { SyncService } from './services/sync.service';
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('urlInput') urlInput!: ElementRef<HTMLInputElement>;
+  @ViewChildren('urlRow') urlRows!: QueryList<ElementRef<HTMLTableRowElement>>;
 
   // Services
   private api = inject(ApiService);
@@ -34,6 +35,10 @@ export class AppComponent implements OnInit {
   isSubmitting = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
+
+  // Visibility Tracking
+  private visibleCodes = new Set<string>();
+  private intersectionObserver?: IntersectionObserver;
 
   // Drawer state
   isDrawerOpen = signal<boolean>(false);
@@ -100,8 +105,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Start background sync every 1 minute
-    this.sync.startSync(60000);
+    // Start background sync: only poll visible codes
+    this.sync.startSync(() => this.visibleCodes, 30000);
     
     // Check initial health
     this.api.checkHealth();
@@ -114,15 +119,63 @@ export class AppComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit() {
+    this.setupIntersectionObserver();
+    this.urlRows.changes.subscribe(() => {
+      this.refreshObservers();
+    });
+    this.refreshObservers();
+  }
+
+  ngOnDestroy() {
+    this.intersectionObserver?.disconnect();
+  }
+
+  private setupIntersectionObserver() {
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      let changed = false;
+      entries.forEach(entry => {
+        const code = entry.target.getAttribute('data-code');
+        if (!code) return;
+
+        if (entry.isIntersecting) {
+          if (!this.visibleCodes.has(code)) {
+            this.visibleCodes.add(code);
+            changed = true;
+          }
+        } else {
+          if (this.visibleCodes.has(code)) {
+            this.visibleCodes.delete(code);
+            changed = true;
+          }
+        }
+      });
+
+      if (changed) {
+        // Trigger an immediate "delta" sync when visibility changes
+        this.sync.performSync(() => this.visibleCodes);
+      }
+    }, { threshold: 0.1, rootMargin: '50px' });
+  }
+
+  private refreshObservers() {
+    // We don't disconnect entirely, we just observe new ones
+    this.urlRows.forEach(row => {
+      this.intersectionObserver?.observe(row.nativeElement);
+    });
+  }
+
   nextPage() {
     if (this.pageIndex() < this.totalPages() - 1) {
       this.pageIndex.set(this.pageIndex() + 1);
+      this.visibleCodes.clear();
     }
   }
 
   previousPage() {
     if (this.pageIndex() > 0) {
       this.pageIndex.set(this.pageIndex() - 1);
+      this.visibleCodes.clear();
     }
   }
 
@@ -179,10 +232,8 @@ export class AppComponent implements OnInit {
   async openAnalyticsDrawer(url: LocalUrl) {
     this.selectedUrl.set(url);
     this.isDrawerOpen.set(true);
-    // Load existing history first for immediate display
     const history = await this.db.getAnalyticsHistory(url.shortCode);
     this.selectedUrlAnalytics.set(history);
-    // Then trigger a fresh fetch
     await this.loadDetailedAnalytics(url.shortCode);
   }
 

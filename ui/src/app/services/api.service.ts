@@ -55,8 +55,8 @@ export class ApiService {
     );
   }
 
-  getBulkAnalytics(shortCodes: string[]) {
-    return this.http.post<BulkAnalyticsResponse>(`${this.baseUrl}/analytics/bulk`, { shortCodes }).pipe(
+  getBulkAnalytics(currentCounts: { [key: string]: number }) {
+    return this.http.post<BulkAnalyticsResponse>(`${this.baseUrl}/analytics/bulk`, { currentCounts }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 0 || error.status >= 500) {
           this.isBackendHealthy.set(false);

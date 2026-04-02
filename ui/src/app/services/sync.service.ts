@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { ApiService } from './api.service';
-import { DbService } from './db.service';
+import { DbService, LocalUrl } from './db.service';
 import { catchError, EMPTY } from 'rxjs';
 
 @Injectable({
@@ -18,13 +18,13 @@ export class SyncService {
     private db: DbService
   ) {}
 
-  startSync(intervalMs: number = 60000) {
+  startSync(visibleCodesGetter: () => Set<string>, intervalMs: number = 60000) {
     this.stopSync();
     // Immediate first sync
-    this.performSync();
+    this.performSync(visibleCodesGetter);
     
     this.syncIntervalId = setInterval(() => {
-      this.performSync();
+      this.performSync(visibleCodesGetter);
     }, intervalMs);
   }
 
@@ -34,31 +34,47 @@ export class SyncService {
     }
   }
 
-  private async performSync() {
+  /**
+   * Performs a delta sync for visible items.
+   */
+  async performSync(visibleCodesGetter: () => Set<string>) {
     if (this.isSyncing()) return;
+    
+    const visibleCodes = visibleCodesGetter();
+    if (visibleCodes.size === 0) return;
+
     this.isSyncing.set(true);
 
     try {
-      const urls = await this.db.getUrls();
-      if (urls.length === 0) return;
+      const allUrls = await this.db.getUrls();
+      const visibleUrls = allUrls.filter(u => visibleCodes.has(urlToCode(u)));
+      
+      if (visibleUrls.length === 0) return;
 
-      const codesToPoll = urls
-        .filter(url => Date.now() - url.lastPolledAt > 15000)
-        .map(url => url.shortCode);
+      // Create the intent-based Map: shortCode -> currentTotal
+      const currentCounts: { [key: string]: number } = {};
+      visibleUrls.forEach(u => {
+        currentCounts[urlToCode(u)] = u.totalClicks;
+      });
 
-      if (codesToPoll.length > 0) {
-        this.api.getBulkAnalytics(codesToPoll).pipe(
-          catchError(() => EMPTY)
-        ).subscribe(async response => {
-          for (const [code, clicks] of Object.entries(response.clicks)) {
+      this.api.getBulkAnalytics(currentCounts).pipe(
+        catchError(() => EMPTY)
+      ).subscribe(async response => {
+        for (const [code, clicks] of Object.entries(response.clicks)) {
+          // Only update if authoritative count differs (Delta)
+          if (currentCounts[code] !== clicks) {
             await this.db.updateAnalytics(code, clicks);
           }
-        });
-      }
+        }
+      });
       
       this.lastSyncTime.set(new Date());
     } finally {
       this.isSyncing.set(false);
     }
   }
+}
+
+function urlToCode(url: LocalUrl): string {
+  return url.shortCode;
 }
