@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 class UrlAnalyticsController(
     private val analyticsService: AnalyticsService,
 ) {
-    @GetMapping("/{shortCode}\${UrlConstants.ANALYTICS_PATH}")
+    @GetMapping("/{shortCode}/analytics")
     @Operation(
         summary = "Get analytics for a short code",
         description = "Returns click counts and original metadata for the provided short link.",
