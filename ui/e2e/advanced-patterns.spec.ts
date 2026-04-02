@@ -11,12 +11,11 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
   test('should debounce network calls during rapid monkey scrolling', async ({ page }) => {
     // 1. Seed links to enable scrolling
     for (let i = 1; i <= 20; i++) {
-      await page.getByTestId('destination-url-input').fill(`https://monkey-${i}.com`);
+      await page.getByTestId('destination-url-input').fill(`https://monkey${i}.com`);
       const btn = page.getByTestId('execute-shorten-btn');
       await expect(btn).toBeEnabled();
       await btn.click();
-      // Wait for registry to update
-      await expect(page.getByTestId(/link-row-monkey-/).first()).toBeVisible();
+      await expect(page.getByTestId(/link-row-monkey/).first()).toBeVisible();
     }
 
     let syncRequestCount = 0;
@@ -37,7 +36,7 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
   });
 
   test('should fire correct delta requests with map and timestamp', async ({ page }) => {
-    const code = 'delta-test';
+    const code = 'delta';
     await page.getByTestId('destination-url-input').fill('https://example.com');
     await page.getByTestId('custom-code-summary').click();
     await page.getByTestId('custom-path-input').fill(code);
@@ -61,7 +60,7 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
   });
 
   test('should show correct counts after backend update during delta sync', async ({ page, context }) => {
-    const code = 'live-update';
+    const code = 'live';
     await page.getByTestId('destination-url-input').fill('https://example.com');
     await page.getByTestId('custom-code-summary').click();
     await page.getByTestId('custom-path-input').fill(code);
@@ -78,7 +77,7 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
   });
 
   test('should handle immediate drawer click with loading indicator', async ({ page }) => {
-    const code = 'drawer-test';
+    const code = 'draw';
     await page.getByTestId('destination-url-input').fill('https://example.com');
     await page.getByTestId('custom-path-input').fill(code);
     
@@ -91,7 +90,10 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
       await route.continue();
     });
 
-    await page.getByTestId(`link-row-${code}`).click();
+    const row = page.getByTestId(`link-row-${code}`);
+    await expect(row).toBeVisible();
+    await row.click();
+    
     await expect(page.getByTestId('drawer-sync-status')).toBeVisible();
     await expect(page.getByTestId('drawer-sync-status')).toBeHidden({ timeout: 10000 });
     await expect(page.getByTestId('drawer-total-clicks')).toContainText('0');

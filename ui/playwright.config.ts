@@ -2,17 +2,13 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Playwright Configuration optimized for high-performance CI/CD.
- * We serve the UI directly from the Spring Boot backend (port 8844) 
- * to avoid the overhead of starting a separate Angular dev server in CI.
  */
 export default defineConfig({
   testDir: './e2e',
-  /* CI Optimization: Sequential execution to protect stateful database reset hooks */
   workers: 1,
   fullyParallel: false,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 0,
-  /* Verbose reporting for CI visibility */
   reporter: process.env['CI'] ? [['list'], ['html']] : [['list']],
   
   timeout: 60 * 1000,
@@ -21,23 +17,19 @@ export default defineConfig({
   },
 
   use: {
-    /* 
-     * Base URL points to the Backend which serves the static frontend assets.
-     * This ensures we are testing the actual production-ready bundle.
-     */
     baseURL: 'http://127.0.0.1:8844',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'on-first-retry',
   },
 
-  /* 
-   * Orchestrate the Backend. 
-   * In CI, we use the pre-built JAR for maximum speed.
-   * Locally, we fallback to bootRun for developer convenience.
-   */
   webServer: {
-    command: 'cd .. && (java -jar build/libs/link.whoa-0.0.1-SNAPSHOT.jar || ./gradlew bootRun --args="--spring.profiles.active=dev")',
+    /* 
+     * Pipe stdout/stderr to the CI logs so we can see why it's failing.
+     */
+    stdout: 'pipe',
+    stderr: 'pipe',
+    command: 'cd .. && java -jar build/libs/link.whoa-0.0.1-SNAPSHOT.jar',
     url: 'http://127.0.0.1:8844/actuator/health',
     reuseExistingServer: !process.env['CI'],
     timeout: 300 * 1000,

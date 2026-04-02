@@ -24,7 +24,7 @@ private val log = KotlinLogging.logger {}
 class RedirectController(
     private val urlReadService: UrlReadService,
 ) {
-    @GetMapping("/{shortCode}")
+    @GetMapping("/{shortCode:[^\\\\.]+}")
     @Timed(value = "whoa.urls.redirect.time", description = "Time taken to resolve and redirect a URL")
     @Counted(value = "whoa.urls.redirect.count", description = "Total number of redirect requests")
     @Operation(

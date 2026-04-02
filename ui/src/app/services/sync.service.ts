@@ -8,6 +8,9 @@ import { catchError, EMPTY } from 'rxjs';
 })
 export class SyncService {
   private scheduledSyncJobId: any;
+  static get skipSync() {
+    return (window as any).SyncService_skipSync === true;
+  }
   
   // State
   isSyncing = signal<boolean>(false);
@@ -27,6 +30,8 @@ export class SyncService {
   startSync(visibleCodesProvider: () => Set<string>, syncIntervalMs: number = 60000) {
     this.stopSync();
     
+    if (SyncService.skipSync) return;
+
     // Initial execution
     this.performSync(visibleCodesProvider);
     

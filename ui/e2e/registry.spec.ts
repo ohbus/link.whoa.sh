@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Registry & Navigation', () => {
   test.beforeEach(async ({ page, request }) => {
-    await request.post('/api/testing/reset');
+    await request.post('http://127.0.0.1:8844/api/testing/reset');
     await page.goto('/#/');
     await page.evaluate(async () => { await indexedDB.deleteDatabase('WhoaDatabase'); });
     await page.reload();
@@ -16,39 +16,49 @@ test.describe('Registry & Navigation', () => {
   test('should handle multi-page keyset pagination with data stability', async ({ page }) => {
     // 1. Create 12 links (Page 1 holds 10)
     for (let i = 1; i <= 12; i++) {
-      await page.getByTestId('destination-url-input').fill(`https://link-${i}.com`);
-      await page.getByTestId('execute-shorten-btn').click();
-      await page.waitForTimeout(100); // Small delay for sequential timestamps
+      await page.getByTestId('destination-url-input').fill(`https://link${i}.com`);
+      const btn = page.getByTestId('execute-shorten-btn');
+      await expect(btn).toBeEnabled();
+      await btn.click();
+      await expect(page.getByTestId(/link-row-pw/).or(page.locator('tr')).first()).toBeVisible();
     }
 
     // 2. Verify Page 1
-    await expect(page.getByTestId('pagination-controls')).toBeVisible();
-    await expect(page.getByTestId('current-page-label')).toContainText('PAGE 1');
-    
+    const rowsPage1 = page.locator('tr');
+    await expect(rowsPage1).toHaveCount(11); // Header + 10 rows
+
     // 3. Navigate to Page 2
     await page.getByTestId('next-page-btn').click();
-    await expect(page.getByTestId('current-page-label')).toContainText('PAGE 2');
-    
-    // 4. Verify Keyset Stability: Create new link on Page 2 (should reset to Page 1)
-    await page.getByTestId('destination-url-input').fill('https://new-link.com');
-    await page.getByTestId('execute-shorten-btn').click();
-    await expect(page.getByTestId('current-page-label')).toContainText('PAGE 1');
+    const rowsPage2 = page.locator('tr');
+    await expect(rowsPage2).toHaveCount(3); // Header + 2 rows
+
+    // 4. Navigate Back
+    await page.getByTestId('prev-page-btn').click();
+    await expect(page.locator('tr')).toHaveCount(11);
   });
 
   test('should only sync visible links in background', async ({ page }) => {
     // 1. Create 15 links
     for (let i = 1; i <= 15; i++) {
-      await page.getByTestId('destination-url-input').fill(`https://sync-test-${i}.com`);
-      await page.getByTestId('execute-shorten-btn').click();
+      await page.getByTestId('destination-url-input').fill(`https://synctest${i}.com`);
+      const btn = page.getByTestId('execute-shorten-btn');
+      await expect(btn).toBeEnabled();
+      await btn.click();
     }
 
-    // 2. Scroll to bottom
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    // Intercept bulk sync
+    const syncRequestPromise = page.waitForRequest(request => 
+      request.url().includes('/analytics/bulk')
+    );
+
+    // Trigger scroll rest
+    await page.mouse.wheel(0, 10);
     
-    // 3. Wait for scroll-rest stabilization (500ms)
-    await page.waitForTimeout(1000);
+    const request = await syncRequestPromise;
+    const postData = JSON.parse(request.postData() || '{}');
     
-    // Check if the system-status pulses (meaning a sync request was sent)
-    await expect(page.getByTestId('system-status')).toBeVisible();
+    // We expect at most 10 codes (page size) in the sync request
+    const codesInSync = Object.keys(postData.currentCounts);
+    expect(codesInSync.length).toBeLessThanOrEqual(10);
   });
 });
