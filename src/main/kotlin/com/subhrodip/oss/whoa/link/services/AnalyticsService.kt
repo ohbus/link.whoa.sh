@@ -13,7 +13,6 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
-import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 private val log = KotlinLogging.logger {}
@@ -61,7 +60,7 @@ class AnalyticsService(
     }
 
     @Transactional(readOnly = true)
-    @Timed(value = "whoa.service.analytics.bulk.time", description = "Execution time for bulk analytics delta sync")
+    @Timed(value = "whoa.service.analytics.bulk.time", description = "Execution time for bulk analytics delta sync (No-Join)")
     fun getBulkAnalytics(
         currentCounts: Map<String, Long>,
         lastSyncedAt: Long?,
@@ -71,20 +70,27 @@ class AnalyticsService(
             return BulkAnalyticsResponse(emptyMap(), System.currentTimeMillis())
         }
 
-        val codesToSync =
+        // 1. Resolve codes to IDs via Cache (No DB hit for lookup)
+        val codeToIdMap = requestedCodes.associateWith { urlCacheService.getCachedUrl(it).id }
+        val requestedIds = codeToIdMap.values.toList()
+        val idToCodeMap = codeToIdMap.entries.associate { it.value to it.key }
+
+        // 2. Identify Deltas by ID (No JOIN)
+        val idsToSync =
             if (lastSyncedAt != null) {
                 val since = Instant.ofEpochMilli(lastSyncedAt).atOffset(ZoneOffset.UTC)
-                val changedCodes = urlAnalyticsRepository.findShortCodesWithActivitySince(requestedCodes, since)
-                log.debug { "Delta sync: ${changedCodes.size} / ${requestedCodes.size} links have new activity since $since" }
-                changedCodes
+                val changedIds = urlAnalyticsRepository.findIdsWithActivitySince(requestedIds, since)
+                log.debug { "Delta sync: ${changedIds.size} / ${requestedIds.size} links have new activity since $since" }
+                changedIds
             } else {
-                requestedCodes
+                requestedIds
             }
 
+        // 3. Bulk Count by ID (No JOIN)
         val clickMap =
-            if (codesToSync.isNotEmpty()) {
-                val projectionResults = urlAnalyticsRepository.countByShortCodes(codesToSync)
-                projectionResults.associate { it.shortCode to it.totalClicks }
+            if (idsToSync.isNotEmpty()) {
+                val projectionResults = urlAnalyticsRepository.countByUrlIds(idsToSync)
+                projectionResults.associate { idToCodeMap[it.urlId]!! to it.totalClicks }
             } else {
                 emptyMap()
             }

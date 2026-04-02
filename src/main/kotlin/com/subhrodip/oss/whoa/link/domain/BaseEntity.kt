@@ -12,7 +12,7 @@ import java.time.OffsetDateTime
 abstract class BaseEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    open val id: Long = 0,
+    open var id: Long = 0,
     @Column(name = "created_at", nullable = false)
     open var createdAt: OffsetDateTime = OffsetDateTime.now(),
     @Transient

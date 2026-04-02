@@ -2,7 +2,6 @@ package com.subhrodip.oss.whoa.link.services
 
 import com.subhrodip.oss.whoa.link.dto.PagedUrlsResponse
 import com.subhrodip.oss.whoa.link.dto.UrlAnalyticsResponse
-import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -27,7 +26,7 @@ class UrlReadService(
     @Value("\${app.baseUrl:http://localhost:8844}")
     private lateinit var baseUrl: String
 
-    @Timed(value = "whoa.service.urls.read.time", description = "Execution time for URL resolution logic")
+    @Timed(value = "whoa.service.urls.read.time", description = "Time taken to resolve a URL")
     fun getOriginalUrl(
         shortCode: String,
         userAgent: String?,
@@ -46,7 +45,7 @@ class UrlReadService(
         return originalUrl
     }
 
-    @Timed(value = "whoa.service.urls.paged.time", description = "Execution time for server-side Keyset pagination")
+    @Timed(value = "whoa.service.urls.paged.time", description = "Time taken for Keyset paged URL retrieval")
     fun getPagedUrls(
         cursor: Long?,
         limit: Int,
@@ -65,11 +64,12 @@ class UrlReadService(
         val hasMore = entities.size > limit
         val linksToReturn = if (hasMore) entities.take(limit) else entities
 
-        val codes = linksToReturn.map { it.shortCode }
+        // Optimized bulk count by ID (No Join)
+        val ids = linksToReturn.map { it.id }
         val counts =
-            if (codes.isNotEmpty()) {
-                urlAnalyticsRepository.countByShortCodes(codes)
-                    .associate { it.shortCode to it.totalClicks }
+            if (ids.isNotEmpty()) {
+                urlAnalyticsRepository.countByUrlIds(ids)
+                    .associate { it.urlId to it.totalClicks }
             } else {
                 emptyMap()
             }
@@ -79,8 +79,8 @@ class UrlReadService(
                 UrlAnalyticsResponse(
                     originalUrl = entity.originalUrl,
                     shortUrl = "$baseUrl/${entity.shortCode}",
-                    clicks = counts[entity.shortCode] ?: 0L,
-                    createdAt = entity.createdAt
+                    clicks = counts[entity.id] ?: 0L,
+                    createdAt = entity.createdAt,
                 )
             }
 

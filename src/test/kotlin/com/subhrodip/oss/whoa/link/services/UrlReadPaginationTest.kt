@@ -1,7 +1,6 @@
 package com.subhrodip.oss.whoa.link.services
 
 import com.subhrodip.oss.whoa.link.domain.UrlEntity
-import com.subhrodip.oss.whoa.link.dto.ClickCountProjection
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.springframework.test.util.ReflectionTestUtils
@@ -45,12 +43,18 @@ class UrlReadPaginationTest {
     @Test
     fun `getPagedUrls returns first page correctly`() {
         val urls = listOf(
-            UrlEntity("url1", "code1").apply { createdAt = OffsetDateTime.now().minusMinutes(1) },
-            UrlEntity("url2", "code2").apply { createdAt = OffsetDateTime.now().minusMinutes(2) }
+            UrlEntity("url1", "code1").apply { 
+                id = 1L
+                createdAt = OffsetDateTime.now().minusMinutes(1) 
+            },
+            UrlEntity("url2", "code2").apply { 
+                id = 2L
+                createdAt = OffsetDateTime.now().minusMinutes(2) 
+            }
         )
         
         `when`(urlRepository.findLatest(any())).thenReturn(urls)
-        `when`(urlAnalyticsRepository.countByShortCodes(any())).thenReturn(emptyList())
+        `when`(urlAnalyticsRepository.countByUrlIds(any())).thenReturn(emptyList())
 
         val response = urlReadService.getPagedUrls(null, 10)
 
@@ -62,13 +66,22 @@ class UrlReadPaginationTest {
     @Test
     fun `getPagedUrls identifies hasMore correctly`() {
         val urls = listOf(
-            UrlEntity("url1", "code1").apply { createdAt = OffsetDateTime.now().minusMinutes(1) },
-            UrlEntity("url2", "code2").apply { createdAt = OffsetDateTime.now().minusMinutes(2) },
-            UrlEntity("url3", "code3").apply { createdAt = OffsetDateTime.now().minusMinutes(3) }
+            UrlEntity("url1", "code1").apply { 
+                id = 1L
+                createdAt = OffsetDateTime.now().minusMinutes(1) 
+            },
+            UrlEntity("url2", "code2").apply { 
+                id = 2L
+                createdAt = OffsetDateTime.now().minusMinutes(2) 
+            },
+            UrlEntity("url3", "code3").apply { 
+                id = 3L
+                createdAt = OffsetDateTime.now().minusMinutes(3) 
+            }
         )
         
         `when`(urlRepository.findLatest(any())).thenReturn(urls)
-        `when`(urlAnalyticsRepository.countByShortCodes(any())).thenReturn(emptyList())
+        `when`(urlAnalyticsRepository.countByUrlIds(any())).thenReturn(emptyList())
 
         val response = urlReadService.getPagedUrls(null, 2)
 

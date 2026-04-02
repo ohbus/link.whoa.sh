@@ -1,6 +1,7 @@
 package com.subhrodip.oss.whoa.link.services
 
-import com.subhrodip.oss.whoa.link.dto.ClickCountProjection
+import com.subhrodip.oss.whoa.link.dto.ClickCountByIdProjection
+import com.subhrodip.oss.whoa.link.dto.UrlDto
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -40,21 +41,28 @@ class AnalyticsBulkSyncTest {
         ReflectionTestUtils.setField(analyticsService, "baseUrl", "http://localhost:8844")
     }
 
-    private fun mockProjection(code: String, clicks: Long): ClickCountProjection {
-        val p = mock(ClickCountProjection::class.java)
-        whenever(p.shortCode).thenReturn(code)
+    private fun mockProjection(id: Long, clicks: Long): ClickCountByIdProjection {
+        val p = mock(ClickCountByIdProjection::class.java)
+        whenever(p.urlId).thenReturn(id)
         whenever(p.totalClicks).thenReturn(clicks)
         return p
+    }
+
+    private fun mockUrlDto(id: Long, code: String): UrlDto {
+        return UrlDto(id, "https://example.com", code)
     }
 
     @Test
     fun `getBulkAnalytics returns all requested counts when lastSyncedAt is null`() {
         val currentCounts = mapOf("code1" to 10L, "code2" to 20L)
-        val p1 = mockProjection("code1", 15L)
-        val p2 = mockProjection("code2", 25L)
-        val projections = listOf(p1, p2)
         
-        whenever(urlAnalyticsRepository.countByShortCodes(listOf("code1", "code2"))).thenReturn(projections)
+        whenever(urlCacheService.getCachedUrl("code1")).thenReturn(mockUrlDto(1L, "code1"))
+        whenever(urlCacheService.getCachedUrl("code2")).thenReturn(mockUrlDto(2L, "code2"))
+        
+        val p1 = mockProjection(1L, 15L)
+        val p2 = mockProjection(2L, 25L)
+        
+        whenever(urlAnalyticsRepository.countByUrlIds(listOf(1L, 2L))).thenReturn(listOf(p1, p2))
 
         val response = analyticsService.getBulkAnalytics(currentCounts, null)
 
@@ -66,13 +74,15 @@ class AnalyticsBulkSyncTest {
     @Test
     fun `getBulkAnalytics returns only changed counts when lastSyncedAt is provided`() {
         val lastSyncedAt = System.currentTimeMillis() - 10000
-        val requestedCodes = listOf("code1", "code2")
         val currentCounts = mapOf("code1" to 10L, "code2" to 20L)
         
-        whenever(urlAnalyticsRepository.findShortCodesWithActivitySince(eq(requestedCodes), any())).thenReturn(listOf("code1"))
+        whenever(urlCacheService.getCachedUrl("code1")).thenReturn(mockUrlDto(1L, "code1"))
+        whenever(urlCacheService.getCachedUrl("code2")).thenReturn(mockUrlDto(2L, "code2"))
         
-        val p1 = mockProjection("code1", 15L)
-        whenever(urlAnalyticsRepository.countByShortCodes(listOf("code1"))).thenReturn(listOf(p1))
+        whenever(urlAnalyticsRepository.findIdsWithActivitySince(eq(listOf(1L, 2L)), any())).thenReturn(listOf(1L))
+        
+        val p1 = mockProjection(1L, 15L)
+        whenever(urlAnalyticsRepository.countByUrlIds(listOf(1L))).thenReturn(listOf(p1))
 
         val response = analyticsService.getBulkAnalytics(currentCounts, lastSyncedAt)
 
@@ -86,7 +96,8 @@ class AnalyticsBulkSyncTest {
         val lastSyncedAt = System.currentTimeMillis()
         val currentCounts = mapOf("code1" to 10L)
         
-        whenever(urlAnalyticsRepository.findShortCodesWithActivitySince(eq(listOf("code1")), any())).thenReturn(emptyList())
+        whenever(urlCacheService.getCachedUrl("code1")).thenReturn(mockUrlDto(1L, "code1"))
+        whenever(urlAnalyticsRepository.findIdsWithActivitySince(eq(listOf(1L)), any())).thenReturn(emptyList())
 
         val response = analyticsService.getBulkAnalytics(currentCounts, lastSyncedAt)
 
