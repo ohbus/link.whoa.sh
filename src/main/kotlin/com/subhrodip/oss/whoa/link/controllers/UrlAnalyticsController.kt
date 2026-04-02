@@ -41,10 +41,10 @@ class UrlAnalyticsController(
     }
 
     @PostMapping("/analytics/bulk")
-    @Timed(value = "whoa.analytics.bulk.time", description = "Time taken to fetch bulk analytics")
+    @Timed(value = "whoa.analytics.bulk.time", description = "Time taken to fetch bulk analytics with delta sync support")
     @Operation(
         summary = "Get bulk analytics",
-        description = "Returns click counts for a list of short codes in a single request.",
+        description = "Returns click counts for a list of short codes. Supports delta sync via lastSyncedAt.",
         responses = [
             ApiResponse(responseCode = "200", description = "Bulk analytics retrieved successfully"),
         ],
@@ -52,7 +52,7 @@ class UrlAnalyticsController(
     fun getBulkAnalytics(
         @RequestBody request: BulkAnalyticsRequest,
     ): ResponseEntity<BulkAnalyticsResponse> {
-        val response = analyticsService.getBulkAnalytics(request.currentCounts)
+        val response = analyticsService.getBulkAnalytics(request.currentCounts, request.lastSyncedAt)
         return ResponseEntity.ok(response)
     }
 }

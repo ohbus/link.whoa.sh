@@ -12,6 +12,12 @@ export class SyncService {
   // State
   isSyncing = signal<boolean>(false);
   lastSuccessfulSyncTimestamp = signal<Date | null>(null);
+  
+  /**
+   * The authoritative server timestamp from the last delta sync.
+   * Used to minimize payload size in subsequent requests.
+   */
+  private lastServerTimestamp: number | null = null;
 
   constructor(
     private shortLinkApi: ApiService,
@@ -37,6 +43,7 @@ export class SyncService {
 
   /**
    * Synchronizes click counts for items currently in the user's viewport.
+   * Uses a delta-protocol to only fetch changed data.
    */
   async performSync(visibleCodesProvider: () => Set<string>) {
     if (this.isSyncing()) return;
@@ -58,9 +65,12 @@ export class SyncService {
         localStateMap[link.shortCode] = link.totalClicks;
       });
 
-      this.shortLinkApi.getBulkAnalytics(localStateMap).pipe(
+      this.shortLinkApi.getBulkAnalytics(localStateMap, this.lastServerTimestamp).pipe(
         catchError(() => EMPTY)
       ).subscribe(async serverResponse => {
+        // Update the marker for the next delta sync
+        this.lastServerTimestamp = serverResponse.serverTimestamp;
+
         for (const [shortCode, serverClickCount] of Object.entries(serverResponse.clicks)) {
           // Perform delta update only if server data has diverged
           if (localStateMap[shortCode] !== serverClickCount) {

@@ -4,6 +4,7 @@ import com.subhrodip.oss.whoa.link.domain.UrlAnalyticsEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import java.time.OffsetDateTime
 
 @Repository
 interface UrlAnalyticsRepository : JpaRepository<UrlAnalyticsEntity, Long> {
@@ -11,10 +12,20 @@ interface UrlAnalyticsRepository : JpaRepository<UrlAnalyticsEntity, Long> {
     fun countByUrlEntityId(id: Long): Long
 
     @Query(
-        "select u.shortCode, count(a) from UrlEntity u left join UrlAnalyticsEntity a on a.urlEntity = u where u.shortCode in ?1 group by u.shortCode",
+        """
+        select u.shortCode, count(a) 
+        from UrlEntity u left join UrlAnalyticsEntity a on a.urlEntity = u 
+        where u.shortCode in ?1 group by u.shortCode
+        """,
     )
     fun countByShortCodes(shortCodes: List<String>): List<Array<Any>>
 
     @Query("select count(a) from UrlAnalyticsEntity a")
     fun countAllClicks(): Long
+
+    @Query("select distinct u.shortCode from UrlAnalyticsEntity a join a.urlEntity u where u.shortCode in ?1 and a.createdAt > ?2")
+    fun findShortCodesWithActivitySince(
+        shortCodes: List<String>,
+        since: OffsetDateTime,
+    ): List<String>
 }

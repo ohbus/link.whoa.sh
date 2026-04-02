@@ -20,6 +20,7 @@ export interface UrlAnalyticsResponse {
 
 export interface BulkAnalyticsResponse {
   clicks: { [key: string]: number };
+  serverTimestamp: number;
 }
 
 export interface GlobalClicksResponse {
@@ -60,8 +61,8 @@ export class ApiService {
     );
   }
 
-  getBulkAnalytics(currentCounts: { [key: string]: number }) {
-    return this.http.post<BulkAnalyticsResponse>(`${this.baseUrl}/analytics/bulk`, { currentCounts }).pipe(
+  getBulkAnalytics(currentCounts: { [key: string]: number }, lastSyncedAt: number | null) {
+    return this.http.post<BulkAnalyticsResponse>(`${this.baseUrl}/analytics/bulk`, { currentCounts, lastSyncedAt }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 0 || error.status >= 500) {
           this.isBackendHealthy.set(false);

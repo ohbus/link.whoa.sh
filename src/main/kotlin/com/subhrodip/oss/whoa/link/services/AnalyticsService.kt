@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 private val log = KotlinLogging.logger {}
 
@@ -58,15 +61,37 @@ class AnalyticsService(
     }
 
     @Transactional(readOnly = true)
-    @Timed(value = "whoa.service.analytics.bulk.time", description = "Execution time for bulk analytics database aggregation")
-    fun getBulkAnalytics(currentCounts: Map<String, Long>): BulkAnalyticsResponse {
-        val shortCodes = currentCounts.keys.toList()
-        if (shortCodes.isEmpty()) return BulkAnalyticsResponse(emptyMap())
+    @Timed(value = "whoa.service.analytics.bulk.time", description = "Execution time for bulk analytics delta sync")
+    fun getBulkAnalytics(
+        currentCounts: Map<String, Long>,
+        lastSyncedAt: Long?,
+    ): BulkAnalyticsResponse {
+        val requestedCodes = currentCounts.keys.toList()
+        if (requestedCodes.isEmpty()) {
+            return BulkAnalyticsResponse(emptyMap(), System.currentTimeMillis())
+        }
 
-        val counts = urlAnalyticsRepository.countByShortCodes(shortCodes)
-        val clickMap = counts.associate { it[0] as String to it[1] as Long }
+        val codesToSync =
+            if (lastSyncedAt != null) {
+                val since = Instant.ofEpochMilli(lastSyncedAt).atOffset(ZoneOffset.UTC)
+                val changedCodes = urlAnalyticsRepository.findShortCodesWithActivitySince(requestedCodes, since)
+                log.debug { "Delta sync: ${changedCodes.size} / ${requestedCodes.size} links have new activity since $since" }
+                changedCodes
+            } else {
+                requestedCodes
+            }
 
-        log.debug { "Retrieved bulk analytics for ${shortCodes.size} codes" }
-        return BulkAnalyticsResponse(clicks = clickMap)
+        val clickMap =
+            if (codesToSync.isNotEmpty()) {
+                val counts = urlAnalyticsRepository.countByShortCodes(codesToSync)
+                counts.associate { it[0] as String to it[1] as Long }
+            } else {
+                emptyMap()
+            }
+
+        return BulkAnalyticsResponse(
+            clicks = clickMap,
+            serverTimestamp = System.currentTimeMillis(),
+        )
     }
 }
