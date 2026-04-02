@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Advanced Data Patterns & Monkey Testing', () => {
   test.beforeEach(async ({ page, request }) => {
-    await request.post('http://localhost:8844/api/testing/reset');
+    await request.post('http://127.0.0.1:8844/api/testing/reset');
     await page.goto('/#/');
     await page.evaluate(async () => { await indexedDB.deleteDatabase('WhoaDatabase'); });
     await page.reload();
@@ -79,7 +79,7 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
     await expect(page.getByTestId(`link-clicks-${code}`)).toContainText('0');
 
     // Simulate a hit on the backend
-    await context.request.get(`http://localhost:8844/${code}`);
+    await context.request.get(`http://127.0.0.1:8844/${code}`);
 
     // Wait for the background SyncService to pulse and update the UI
     // The animated counter will transition from 0 to 1

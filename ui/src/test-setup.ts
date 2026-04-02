@@ -6,8 +6,9 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from '@angular/platform-browser-dynamic/testing';
+import { vi } from 'vitest';
 
-// Mock IntersectionObserver
+// Mock IntersectionObserver BEFORE any other imports that might use it
 class MockIntersectionObserver {
   observe = vi.fn();
   disconnect = vi.fn();

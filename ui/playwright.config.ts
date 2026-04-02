@@ -6,16 +6,16 @@ export default defineConfig({
   fullyParallel: false,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 0,
-  reporter: 'html',
+  reporter: process.env['CI'] ? [['list'], ['html']] : [['list']],
   use: {
-    baseURL: 'http://localhost:4200',
+    baseURL: 'http://127.0.0.1:4200',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
   /* Automatically start the frontend server before tests */
   webServer: {
     command: 'npm start',
-    url: 'http://localhost:4200',
+    url: 'http://127.0.0.1:4200',
     reuseExistingServer: !process.env['CI'],
     timeout: 180 * 1000,
   },

@@ -30,7 +30,7 @@ Call log:
       - element is not enabled
     - retrying fill action
       - waiting 100ms
-    56 × waiting for element to be visible, enabled and editable
+    57 × waiting for element to be visible, enabled and editable
        - element is not enabled
      - retrying fill action
        - waiting 500ms
@@ -49,7 +49,7 @@ Call log:
       - generic [ref=e8]:
         - generic [ref=e9]: analytics
         - generic [ref=e10]: "Global Clicks:"
-        - generic [ref=e12]: 1,104
+        - generic [ref=e12]: 1,322
     - generic [ref=e13]:
       - button "bar_chart" [ref=e14] [cursor=pointer]:
         - generic [ref=e15]: bar_chart
@@ -115,123 +115,123 @@ Call log:
               - columnheader "Created" [ref=e78]
               - columnheader "Action" [ref=e79]
           - rowgroup [ref=e80]:
-            - row "dev004 https://angular.dev/overview localhost:8844/dev004 content_copy 106 MAR 16, 2026 more_vert" [ref=e81] [cursor=pointer]:
-              - cell "dev004 https://angular.dev/overview" [ref=e82]:
+            - row "dev001 https://github.com/ohbus/link.whoa.sh localhost:8844/dev001 content_copy 233 FEB 18, 2026 more_vert" [ref=e81] [cursor=pointer]:
+              - cell "dev001 https://github.com/ohbus/link.whoa.sh" [ref=e82]:
                 - generic [ref=e83]:
-                  - generic [ref=e84]: dev004
-                  - generic "https://angular.dev/overview" [ref=e85]
-              - cell "localhost:8844/dev004 content_copy" [ref=e86]:
+                  - generic [ref=e84]: dev001
+                  - generic "https://github.com/ohbus/link.whoa.sh" [ref=e85]
+              - cell "localhost:8844/dev001 content_copy" [ref=e86]:
                 - generic [ref=e87]:
-                  - code [ref=e88]: localhost:8844/dev004
+                  - code [ref=e88]: localhost:8844/dev001
                   - generic [ref=e89]: content_copy
-              - cell "106" [ref=e90]:
-                - generic [ref=e92]: "106"
-              - cell "MAR 16, 2026" [ref=e93]
+              - cell "233" [ref=e90]:
+                - generic [ref=e92]: "233"
+              - cell "FEB 18, 2026" [ref=e93]
               - cell "more_vert" [ref=e94]:
                 - button "more_vert" [ref=e95]:
                   - generic [ref=e96]: more_vert
-            - row "dev008 https://reddit.com localhost:8844/dev008 content_copy 152 FEB 19, 2026 more_vert" [ref=e97] [cursor=pointer]:
-              - cell "dev008 https://reddit.com" [ref=e98]:
+            - row "dev005 https://www.postgresql.org/docs/ localhost:8844/dev005 content_copy 180 JAN 27, 2026 more_vert" [ref=e97] [cursor=pointer]:
+              - cell "dev005 https://www.postgresql.org/docs/" [ref=e98]:
                 - generic [ref=e99]:
-                  - generic [ref=e100]: dev008
-                  - generic "https://reddit.com" [ref=e101]
-              - cell "localhost:8844/dev008 content_copy" [ref=e102]:
+                  - generic [ref=e100]: dev005
+                  - generic "https://www.postgresql.org/docs/" [ref=e101]
+              - cell "localhost:8844/dev005 content_copy" [ref=e102]:
                 - generic [ref=e103]:
-                  - code [ref=e104]: localhost:8844/dev008
+                  - code [ref=e104]: localhost:8844/dev005
                   - generic [ref=e105]: content_copy
-              - cell "152" [ref=e106]:
-                - generic [ref=e108]: "152"
-              - cell "FEB 19, 2026" [ref=e109]
+              - cell "180" [ref=e106]:
+                - generic [ref=e108]: "180"
+              - cell "JAN 27, 2026" [ref=e109]
               - cell "more_vert" [ref=e110]:
                 - button "more_vert" [ref=e111]:
                   - generic [ref=e112]: more_vert
-            - row "dev003 https://kotlinlang.org/docs/home.html localhost:8844/dev003 content_copy 167 FEB 10, 2026 more_vert" [ref=e113] [cursor=pointer]:
-              - cell "dev003 https://kotlinlang.org/docs/home.html" [ref=e114]:
+            - row "dev006 https://docker.com localhost:8844/dev006 content_copy 170 JAN 21, 2026 more_vert" [ref=e113] [cursor=pointer]:
+              - cell "dev006 https://docker.com" [ref=e114]:
                 - generic [ref=e115]:
-                  - generic [ref=e116]: dev003
-                  - generic "https://kotlinlang.org/docs/home.html" [ref=e117]
-              - cell "localhost:8844/dev003 content_copy" [ref=e118]:
+                  - generic [ref=e116]: dev006
+                  - generic "https://docker.com" [ref=e117]
+              - cell "localhost:8844/dev006 content_copy" [ref=e118]:
                 - generic [ref=e119]:
-                  - code [ref=e120]: localhost:8844/dev003
+                  - code [ref=e120]: localhost:8844/dev006
                   - generic [ref=e121]: content_copy
-              - cell "167" [ref=e122]:
-                - generic [ref=e124]: "167"
-              - cell "FEB 10, 2026" [ref=e125]
+              - cell "170" [ref=e122]:
+                - generic [ref=e124]: "170"
+              - cell "JAN 21, 2026" [ref=e125]
               - cell "more_vert" [ref=e126]:
                 - button "more_vert" [ref=e127]:
                   - generic [ref=e128]: more_vert
-            - row "dev006 https://docker.com localhost:8844/dev006 content_copy 173 FEB 10, 2026 more_vert" [ref=e129] [cursor=pointer]:
-              - cell "dev006 https://docker.com" [ref=e130]:
+            - row "dev002 https://spring.io/projects/spring-boot localhost:8844/dev002 content_copy 175 JAN 17, 2026 more_vert" [ref=e129] [cursor=pointer]:
+              - cell "dev002 https://spring.io/projects/spring-boot" [ref=e130]:
                 - generic [ref=e131]:
-                  - generic [ref=e132]: dev006
-                  - generic "https://docker.com" [ref=e133]
-              - cell "localhost:8844/dev006 content_copy" [ref=e134]:
+                  - generic [ref=e132]: dev002
+                  - generic "https://spring.io/projects/spring-boot" [ref=e133]
+              - cell "localhost:8844/dev002 content_copy" [ref=e134]:
                 - generic [ref=e135]:
-                  - code [ref=e136]: localhost:8844/dev006
+                  - code [ref=e136]: localhost:8844/dev002
                   - generic [ref=e137]: content_copy
-              - cell "173" [ref=e138]:
-                - generic [ref=e140]: "173"
-              - cell "FEB 10, 2026" [ref=e141]
+              - cell "175" [ref=e138]:
+                - generic [ref=e140]: "175"
+              - cell "JAN 17, 2026" [ref=e141]
               - cell "more_vert" [ref=e142]:
                 - button "more_vert" [ref=e143]:
                   - generic [ref=e144]: more_vert
-            - row "dev002 https://spring.io/projects/spring-boot localhost:8844/dev002 content_copy 54 FEB 08, 2026 more_vert" [ref=e145] [cursor=pointer]:
-              - cell "dev002 https://spring.io/projects/spring-boot" [ref=e146]:
+            - row "dev003 https://kotlinlang.org/docs/home.html localhost:8844/dev003 content_copy 84 JAN 16, 2026 more_vert" [ref=e145] [cursor=pointer]:
+              - cell "dev003 https://kotlinlang.org/docs/home.html" [ref=e146]:
                 - generic [ref=e147]:
-                  - generic [ref=e148]: dev002
-                  - generic "https://spring.io/projects/spring-boot" [ref=e149]
-              - cell "localhost:8844/dev002 content_copy" [ref=e150]:
+                  - generic [ref=e148]: dev003
+                  - generic "https://kotlinlang.org/docs/home.html" [ref=e149]
+              - cell "localhost:8844/dev003 content_copy" [ref=e150]:
                 - generic [ref=e151]:
-                  - code [ref=e152]: localhost:8844/dev002
+                  - code [ref=e152]: localhost:8844/dev003
                   - generic [ref=e153]: content_copy
-              - cell "54" [ref=e154]:
-                - generic [ref=e156]: "54"
-              - cell "FEB 08, 2026" [ref=e157]
+              - cell "84" [ref=e154]:
+                - generic [ref=e156]: "84"
+              - cell "JAN 16, 2026" [ref=e157]
               - cell "more_vert" [ref=e158]:
                 - button "more_vert" [ref=e159]:
                   - generic [ref=e160]: more_vert
-            - row "dev007 https://news.ycombinator.com localhost:8844/dev007 content_copy 70 FEB 05, 2026 more_vert" [ref=e161] [cursor=pointer]:
-              - cell "dev007 https://news.ycombinator.com" [ref=e162]:
+            - row "dev008 https://reddit.com localhost:8844/dev008 content_copy 223 JAN 12, 2026 more_vert" [ref=e161] [cursor=pointer]:
+              - cell "dev008 https://reddit.com" [ref=e162]:
                 - generic [ref=e163]:
-                  - generic [ref=e164]: dev007
-                  - generic "https://news.ycombinator.com" [ref=e165]
-              - cell "localhost:8844/dev007 content_copy" [ref=e166]:
+                  - generic [ref=e164]: dev008
+                  - generic "https://reddit.com" [ref=e165]
+              - cell "localhost:8844/dev008 content_copy" [ref=e166]:
                 - generic [ref=e167]:
-                  - code [ref=e168]: localhost:8844/dev007
+                  - code [ref=e168]: localhost:8844/dev008
                   - generic [ref=e169]: content_copy
-              - cell "70" [ref=e170]:
-                - generic [ref=e172]: "70"
-              - cell "FEB 05, 2026" [ref=e173]
+              - cell "223" [ref=e170]:
+                - generic [ref=e172]: "223"
+              - cell "JAN 12, 2026" [ref=e173]
               - cell "more_vert" [ref=e174]:
                 - button "more_vert" [ref=e175]:
                   - generic [ref=e176]: more_vert
-            - row "dev001 https://github.com/ohbus/link.whoa.sh localhost:8844/dev001 content_copy 180 JAN 08, 2026 more_vert" [ref=e177] [cursor=pointer]:
-              - cell "dev001 https://github.com/ohbus/link.whoa.sh" [ref=e178]:
+            - row "dev007 https://news.ycombinator.com localhost:8844/dev007 content_copy 59 DEC 22, 2025 more_vert" [ref=e177] [cursor=pointer]:
+              - cell "dev007 https://news.ycombinator.com" [ref=e178]:
                 - generic [ref=e179]:
-                  - generic [ref=e180]: dev001
-                  - generic "https://github.com/ohbus/link.whoa.sh" [ref=e181]
-              - cell "localhost:8844/dev001 content_copy" [ref=e182]:
+                  - generic [ref=e180]: dev007
+                  - generic "https://news.ycombinator.com" [ref=e181]
+              - cell "localhost:8844/dev007 content_copy" [ref=e182]:
                 - generic [ref=e183]:
-                  - code [ref=e184]: localhost:8844/dev001
+                  - code [ref=e184]: localhost:8844/dev007
                   - generic [ref=e185]: content_copy
-              - cell "180" [ref=e186]:
-                - generic [ref=e188]: "180"
-              - cell "JAN 08, 2026" [ref=e189]
+              - cell "59" [ref=e186]:
+                - generic [ref=e188]: "59"
+              - cell "DEC 22, 2025" [ref=e189]
               - cell "more_vert" [ref=e190]:
                 - button "more_vert" [ref=e191]:
                   - generic [ref=e192]: more_vert
-            - row "dev005 https://www.postgresql.org/docs/ localhost:8844/dev005 content_copy 202 DEC 09, 2025 more_vert" [ref=e193] [cursor=pointer]:
-              - cell "dev005 https://www.postgresql.org/docs/" [ref=e194]:
+            - row "dev004 https://angular.dev/overview localhost:8844/dev004 content_copy 198 DEC 18, 2025 more_vert" [ref=e193] [cursor=pointer]:
+              - cell "dev004 https://angular.dev/overview" [ref=e194]:
                 - generic [ref=e195]:
-                  - generic [ref=e196]: dev005
-                  - generic "https://www.postgresql.org/docs/" [ref=e197]
-              - cell "localhost:8844/dev005 content_copy" [ref=e198]:
+                  - generic [ref=e196]: dev004
+                  - generic "https://angular.dev/overview" [ref=e197]
+              - cell "localhost:8844/dev004 content_copy" [ref=e198]:
                 - generic [ref=e199]:
-                  - code [ref=e200]: localhost:8844/dev005
+                  - code [ref=e200]: localhost:8844/dev004
                   - generic [ref=e201]: content_copy
-              - cell "202" [ref=e202]:
-                - generic [ref=e204]: "202"
-              - cell "DEC 09, 2025" [ref=e205]
+              - cell "198" [ref=e202]:
+                - generic [ref=e204]: "198"
+              - cell "DEC 18, 2025" [ref=e205]
               - cell "more_vert" [ref=e206]:
                 - button "more_vert" [ref=e207]:
                   - generic [ref=e208]: more_vert

@@ -84,7 +84,7 @@ Received: false
   61  |     ]);
   62  |     
   63  |     // Actually, let's navigate to the redirect URL manually to be sure
-  64  |     const redirectUrl = `http://localhost:8844/${customCode}`;
+  64  |     const redirectUrl = `http://127.0.0.1:8844/${customCode}`;
   65  |     const visitPage = await context.newPage();
   66  |     await visitPage.goto(redirectUrl);
   67  |     await visitPage.close();

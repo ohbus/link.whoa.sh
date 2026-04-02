@@ -61,7 +61,7 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
     ]);
     
     // Actually, let's navigate to the redirect URL manually to be sure
-    const redirectUrl = `http://localhost:8844/${customCode}`;
+    const redirectUrl = `http://127.0.0.1:8844/${customCode}`;
     const visitPage = await context.newPage();
     await visitPage.goto(redirectUrl);
     await visitPage.close();

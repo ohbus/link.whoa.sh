@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Shortening & Integrity', () => {
   test.beforeEach(async ({ page, request }) => {
     // Reset Backend State
-    await request.post('http://localhost:8844/api/testing/reset');
+    await request.post('http://127.0.0.1:8844/api/testing/reset');
     
     await page.goto('/#/');
     await page.evaluate(async () => { 

@@ -11,8 +11,8 @@ plugins {
 }
 
 node {
-    version.set("22.14.0") // LTS version or your preferred node version
-    npmVersion.set("10.2.4")
+    version.set("22.14.0") // Latest LTS version
+    npmVersion.set("10.9.2")
     download.set(true)
     workDir.set(file("${project.projectDir}/.gradle/nodejs"))
     nodeProjectDir.set(file("${project.projectDir}/ui"))

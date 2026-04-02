@@ -12,11 +12,13 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['src/test-setup.ts'],
     include: ['src/**/*.{spec,test}.ts'],
+    reporters: ['default', 'junit'],
+    outputFile: './test-results/junit.xml',
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       include: ['src/app/**/*.ts'],
-      exclude: ['src/app/**/*.spec.ts', 'src/app/app.config.ts', 'src/app/app.routes.ts']
+      exclude: ['src/app/**/*.spec.ts', 'src/app/app.config.ts', 'src/app/app.routes.ts', 'src/test-setup.ts']
     },
   },
 });
