@@ -120,12 +120,17 @@ jobs:
         working-directory: ./ui
         run: npm ci --ignore-scripts
 
+      - name: Get Playwright version
+        id: playwright-version
+        working-directory: ./ui
+        run: echo "version=$(npm list @playwright/test | grep @playwright/test | sed 's/.*@//')" >> $GITHUB_OUTPUT
+
       - name: Cache Playwright browsers
         id: cache-playwright
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('ui/package-lock.json') }}
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
           restore-keys: |
             playwright-${{ runner.os }}-
 
@@ -142,30 +147,9 @@ jobs:
       - name: Pre-build Backend
         run: ./gradlew build -x test
       
-      - name: Start Backend
-        run: |
-          nohup ./gradlew bootRun --args='--spring.profiles.active=dev' > backend.log 2>&1 &
-        env:
-          SPRING_PROFILES_ACTIVE: dev
-          DB_HOST: 127.0.0.1
-      
-      - name: Wait for Backend
-        run: |
-          for i in {1..24}; do
-            if curl -s http://127.0.0.1:8844/actuator/health | grep UP; then
-              echo "Backend is UP"
-              exit 0
-            fi
-            echo "Waiting for backend..."
-            sleep 5
-          done
-          echo "Backend failed to start"
-          cat backend.log
-          exit 1
-      
       - name: Run Playwright
         working-directory: ./ui
-        run: npx playwright test --reporter=list
+        run: npx playwright test
         env:
           SPRING_PROFILES_ACTIVE: dev
           DB_HOST: 127.0.0.1
@@ -177,7 +161,3 @@ jobs:
           name: playwright-report
           path: ui/playwright-report/
           retention-days: 30
-      
-      - name: Show Backend Log on Failure
-        if: failure()
-        run: cat backend.log

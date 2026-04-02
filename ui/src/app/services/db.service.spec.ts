@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto';
 import { TestBed } from '@angular/core/testing';
 import { DbService } from './db.service';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('DbService', () => {
   let service: DbService;
@@ -13,11 +13,10 @@ describe('DbService', () => {
     });
     service = TestBed.inject(DbService);
     
-    // Explicitly wait for seeder to finish if it started, then clear
-    // Since seeder is async and constructor doesn't await it, we just clear here.
+    // Fast clear
     await service.db.urls.clear();
     await service.db.analytics.clear();
-  });
+  }, 20000); // 20s timeout for DB init in CI
 
   it('should be created', () => {
     expect(service).toBeTruthy();
