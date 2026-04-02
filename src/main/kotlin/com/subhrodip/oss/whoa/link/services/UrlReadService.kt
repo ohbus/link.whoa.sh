@@ -23,7 +23,10 @@ class UrlReadService(
         val urlDto = urlCacheService.getCachedUrl(shortCode)
 
         // We still need the entity for analytics because of the JPA relation
-        val urlEntity = urlRepository.findByShortCode(shortCode)!!
+        val urlEntity =
+            urlRepository.findByShortCode(shortCode)
+                ?: throw UrlNotFoundException("URL not found for short code: $shortCode")
+
         analyticsService.trackAnalytics(urlEntity, userAgent, ipAddress)
 
         val originalUrl = urlDto.originalUrl

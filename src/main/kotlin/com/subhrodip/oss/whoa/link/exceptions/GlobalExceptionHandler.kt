@@ -55,6 +55,17 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
     }
 
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException::class)
+    fun handleDataIntegrityViolationException(ex: org.springframework.dao.DataIntegrityViolationException): ResponseEntity<ErrorResponse> {
+        val errorResponse =
+            ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ShortCodeAlreadyExistsException.ERROR_CODE.toString(),
+                "Short code already exists or data integrity violation",
+            )
+        return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
+    }
+
     @ExceptionHandler(InternalServerErrorException::class)
     fun handleInternalServerErrorException(ex: InternalServerErrorException): ResponseEntity<ErrorResponse> {
         val errorResponse =
