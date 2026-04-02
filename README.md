@@ -64,17 +64,37 @@ To make development easier, we provide shared IDE run configurations. They are s
 *   **`WhoaApplication`**: Starts the Spring Boot backend server (with the `dev` profile).
 *   **`UI Serve`**: Runs `npm start` in the `ui` folder to start the Angular development server.
 
-**How to use them:**
+**How to use them in order:**
 1. Open the project in IntelliJ IDEA.
-2. In the top toolbar, you will see a dropdown next to the Run/Debug (Play) button.
-3. Select `Docker Compose` and run it.
-4. Select `WhoaApplication` and run it.
-5. (Optional) For frontend work, select `UI Serve` and run it.
+2. Select **`Docker Compose`** from the run configurations dropdown and run it to start the database.
+3. Select **`WhoaApplication`** and run it to start the backend API.
+4. Select **`UI Serve`** and run it to start the frontend hot-reloading server.
 
 *If the configurations do not appear automatically:*
 1. Go to **Run > Edit Configurations...**
 2. Check if they are listed under the respective categories (Spring Boot, npm, Docker).
-3. If missing, ensure your IDE is configured to load `.run` folder configurations (it usually does by default if the folder is tracked in VCS). You can also manually create them mirroring the XML files in `.run/`.
+3. If missing, ensure your IDE is configured to load `.run` folder configurations (it usually does by default if the folder is tracked in VCS).
+
+### 4. Local Testing Pitfalls & CORS Configuration
+
+When developing a separated frontend and backend locally, there are common pitfalls:
+
+*   **CORS (Cross-Origin Resource Sharing)**: When running the Angular development server on `localhost:4200` and the Spring Boot backend on `localhost:8844`, browsers will typically block API requests due to security restrictions.
+    *   *How we solved it:* We have added a dedicated `CorsConfigurationSource` in `SecurityConfig.kt` that specifically allows `http://localhost:4200` to make `GET`, `POST`, `PUT`, `DELETE`, and `OPTIONS` requests during local development.
+    *   *Alternative (The Proxy):* When you use `npm start` (or the `UI Serve` run configuration), Angular uses `ui/proxy.conf.json` to proxy `/api` and `/actuator` requests directly to `localhost:8844`. This tricks the browser into thinking it's a same-origin request, bypassing CORS issues entirely.
+*   **Database Not Ready**: If you start `WhoaApplication` before the PostgreSQL container is fully initialized, the backend will fail to start. Always ensure the `Docker Compose` run configuration finishes initializing the database first.
+*   **Caching Collisions**: If you manually delete rows from the database during local testing, the Caffeine cache (`UrlCacheService`) might still return stale records for up to 10 minutes. If you encounter weird state, restart the backend server to clear the in-memory cache.
+
+### FAQ
+
+**Q: Do I need to run `UI Serve` if I just want to test the API?**
+A: No. If you only want to test the Spring Boot API, you just need `Docker Compose` and `WhoaApplication`.
+
+**Q: Why do I get a `404 Not Found` when I refresh a UI page like `/settings`?**
+A: To prevent collisions between your generated short links (e.g., `link.whoa.sh/abc123`) and the UI router paths, the Angular application is configured to use **Hash Routing**. Your UI URLs will look like `http://localhost:4200/#/settings`. 
+
+**Q: How do I change the rate limiting thresholds for local testing?**
+A: Rate limiting is configured via Bucket4j in `application.properties`. You can adjust `bucket4j.filters[0].rate-limits[0].bandwidths[0].capacity` to a higher number if you are running stress tests locally.
 
 ## Building the Application
 
