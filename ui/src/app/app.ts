@@ -14,7 +14,7 @@ import { SyncService } from './services/sync.service';
   standalone: true,
   imports: [CommonModule, FormsModule, HighchartsChartDirective],
   templateUrl: './app.html',
-  styleUrls: ['./app.scss']
+  styleUrl: './app.scss'
 })
 export class AppComponent implements OnInit {
   // Services
