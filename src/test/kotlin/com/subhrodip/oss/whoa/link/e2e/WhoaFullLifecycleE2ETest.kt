@@ -30,7 +30,6 @@ import java.util.concurrent.Executors
 @ActiveProfiles("e2e")
 @Testcontainers
 class WhoaFullLifecycleE2ETest {
-
     @LocalServerPort
     private var port: Int = 0
 
@@ -41,10 +40,11 @@ class WhoaFullLifecycleE2ETest {
 
     companion object {
         @Container
-        private val postgres = PostgreSQLContainer("postgres:16-alpine")
-            .withDatabaseName("whoa_e2e")
-            .withUsername("testuser")
-            .withPassword("testpass")
+        private val postgres =
+            PostgreSQLContainer("postgres:16-alpine")
+                .withDatabaseName("whoa_e2e")
+                .withUsername("testuser")
+                .withPassword("testpass")
 
         @JvmStatic
         @DynamicPropertySource
@@ -62,11 +62,11 @@ class WhoaFullLifecycleE2ETest {
     fun `test full lifecycle create redirect and analytics`() {
         val originalUrl = "https://www.google.com"
         val customShortCode = "goog" + System.currentTimeMillis().toString().takeLast(6)
-        
+
         // 1. Create Short URL
         val createRequest = CreateShortUrlRequest(url = originalUrl, shortCode = customShortCode)
         val createResponse = restTemplate.postForEntity("${baseUrl()}/api/v1/urls", createRequest, CreateShortUrlResponse::class.java)
-        
+
         assertEquals(HttpStatus.CREATED, createResponse.statusCode)
 
         // 2. Redirect multiple times
@@ -81,8 +81,12 @@ class WhoaFullLifecycleE2ETest {
         }
 
         // 3. Verify Analytics
-        Thread.sleep(1000) 
-        val analyticsResponse = restTemplate.getForEntity("${baseUrl()}/api/v1/urls/$customShortCode/analytics", UrlAnalyticsResponse::class.java)
+        Thread.sleep(1000)
+        val analyticsResponse =
+            restTemplate.getForEntity(
+                "${baseUrl()}/api/v1/urls/$customShortCode/analytics",
+                UrlAnalyticsResponse::class.java,
+            )
         assertEquals(HttpStatus.OK, analyticsResponse.statusCode)
         assertEquals(3, analyticsResponse.body?.clicks)
     }
@@ -91,14 +95,14 @@ class WhoaFullLifecycleE2ETest {
     fun `test cache resilience after database deletion`() {
         val originalUrl = "https://example.com"
         val shortCode = "resil" + System.currentTimeMillis().toString().takeLast(5)
-        
+
         val createRequest = CreateShortUrlRequest(url = originalUrl, shortCode = shortCode)
         restTemplate.postForEntity("${baseUrl()}/api/v1/urls", createRequest, CreateShortUrlResponse::class.java)
 
         val dbEntity = urlRepository.findByShortCode(shortCode)
         assertNotNull(dbEntity)
         urlRepository.delete(dbEntity!!)
-        
+
         try {
             restTemplate.getForEntity("${baseUrl()}/$shortCode", Void::class.java)
         } catch (e: HttpClientErrorException) {
@@ -111,21 +115,22 @@ class WhoaFullLifecycleE2ETest {
         val shortCode = "race" + System.currentTimeMillis().toString().takeLast(6)
         val url = "https://race.com"
         val request = CreateShortUrlRequest(url = url, shortCode = shortCode)
-        
+
         val executor = Executors.newFixedThreadPool(10)
-        val tasks = (1..10).map {
-            Callable<HttpStatus> {
-                try {
-                    restTemplate.postForEntity("${baseUrl()}/api/v1/urls", request, Void::class.java).statusCode as HttpStatus
-                } catch (e: HttpClientErrorException) {
-                    HttpStatus.valueOf(e.statusCode.value())
+        val tasks =
+            (1..10).map {
+                Callable<HttpStatus> {
+                    try {
+                        restTemplate.postForEntity("${baseUrl()}/api/v1/urls", request, Void::class.java).statusCode as HttpStatus
+                    } catch (e: HttpClientErrorException) {
+                        HttpStatus.valueOf(e.statusCode.value())
+                    }
                 }
             }
-        }
 
         val results = executor.invokeAll(tasks).map { it.get() }
         executor.shutdown()
-        
+
         assertEquals(1, results.count { it == HttpStatus.CREATED }, "Exactly one should succeed")
         assertTrue(results.count { it == HttpStatus.CONFLICT } >= 9, "Others should conflict")
     }
