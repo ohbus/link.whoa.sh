@@ -38,7 +38,7 @@
     </a>
   </nav>
   <div class="px-4 mt-auto">
-    <button (click)="shortenUrl()" [disabled]="isSubmitting() || !longUrl() || !isBackendHealthy()" class="w-full py-3 bg-primary text-on-primary font-bold rounded-lg flex items-center justify-center gap-2 active:opacity-80 duration-150 shadow-lg shadow-primary/20 overflow-hidden">
+    <button (click)="scrollToCreate()" class="w-full py-3 bg-primary text-on-primary font-bold rounded-lg flex items-center justify-center gap-2 active:opacity-80 duration-150 shadow-lg shadow-primary/20 overflow-hidden">
       <span class="material-symbols-outlined text-lg">add</span>
       <span class="whitespace-nowrap transition-opacity duration-300" [class.opacity-0]="isSidebarCollapsed()" [class.hidden]="isSidebarCollapsed()">Shorten URL</span>
     </button>
@@ -70,7 +70,7 @@
           <div class="space-y-2">
             <label class="text-[10px] font-label text-primary uppercase tracking-[0.25em]">Destination URL</label>
             <div class="relative">
-              <input [(ngModel)]="longUrl" class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant focus:ring-2 focus:ring-primary rounded-lg py-4 px-5 text-white placeholder-slate-600 transition-all font-body" placeholder="https://very-long-and-boring-url.com/analytics/dashboard" type="text" [disabled]="isSubmitting() || !isBackendHealthy()"/>
+              <input #urlInput [ngModel]="longUrl()" (ngModelChange)="longUrl.set($event)" class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant focus:ring-2 focus:ring-primary rounded-lg py-4 px-5 text-white placeholder-slate-600 transition-all font-body" placeholder="https://very-long-and-boring-url.com/analytics/dashboard" type="text" [disabled]="isSubmitting() || !isBackendHealthy()"/>
               <span class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant material-symbols-outlined">link</span>
             </div>
           </div>
@@ -86,7 +86,7 @@
             <div class="p-6 pt-2 space-y-4">
               <div class="flex items-center gap-2">
                 <span class="text-slate-500 font-mono py-3 px-3 bg-surface-container-lowest rounded-lg border border-outline-variant">whoa.sh /</span>
-                <input [(ngModel)]="customShortCode" class="flex-1 bg-surface-container-lowest border-none ring-1 ring-outline-variant focus:ring-2 focus:ring-primary rounded-lg py-3 px-4 text-white font-mono" placeholder="my-custom-path" type="text" [disabled]="isSubmitting() || !isBackendHealthy()"/>
+                <input [ngModel]="customShortCode()" (ngModelChange)="customShortCode.set($event)" class="flex-1 bg-surface-container-lowest border-none ring-1 ring-outline-variant focus:ring-2 focus:ring-primary rounded-lg py-3 px-4 text-white font-mono" placeholder="my-custom-path" type="text" [disabled]="isSubmitting() || !isBackendHealthy()"/>
               </div>
               
               <!-- Inline Error Case -->

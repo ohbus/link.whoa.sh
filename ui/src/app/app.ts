@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, effect } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { liveQuery } from 'dexie';
@@ -17,6 +17,8 @@ import { SyncService } from './services/sync.service';
   styleUrl: './app.scss'
 })
 export class AppComponent implements OnInit {
+  @ViewChild('urlInput') urlInput!: ElementRef<HTMLInputElement>;
+
   // Services
   private api = inject(ApiService);
   private db = inject(DbService);
@@ -123,6 +125,11 @@ export class AppComponent implements OnInit {
 
   toggleSidebar() {
     this.isSidebarCollapsed.set(!this.isSidebarCollapsed());
+  }
+
+  scrollToCreate() {
+    this.urlInput.nativeElement.scrollIntoView({ behavior: 'smooth' });
+    this.urlInput.nativeElement.focus();
   }
 
   async shortenUrl() {
