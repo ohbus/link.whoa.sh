@@ -10,20 +10,15 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy
 @Configuration
 @EnableAspectJAutoProxy
 class MonitoringConfig {
-
     /**
      * Enables the @Timed annotation support for methods.
      */
     @Bean
-    fun timedAspect(registry: MeterRegistry): TimedAspect {
-        return TimedAspect(registry)
-    }
+    fun timedAspect(registry: MeterRegistry): TimedAspect = TimedAspect(registry)
 
     /**
      * Enables the @Counted annotation support for methods.
      */
     @Bean
-    fun countedAspect(registry: MeterRegistry): CountedAspect {
-        return CountedAspect(registry)
-    }
+    fun countedAspect(registry: MeterRegistry): CountedAspect = CountedAspect(registry)
 }

@@ -13,7 +13,7 @@ private val log = KotlinLogging.logger {}
 
 @Service
 class GlobalCounterService(
-    private val urlAnalyticsRepository: UrlAnalyticsRepository
+    private val urlAnalyticsRepository: UrlAnalyticsRepository,
 ) {
     private val globalClicks = AtomicLong(0)
 
@@ -38,12 +38,12 @@ class GlobalCounterService(
     fun refreshFromDatabase() {
         val latestAuthoritativeCount = urlAnalyticsRepository.countAllClicks()
         val previousCount = globalClicks.getAndSet(latestAuthoritativeCount)
-        
+
         if (latestAuthoritativeCount != previousCount) {
             log.debug { "Global counter synced with DB: $previousCount -> $latestAuthoritativeCount" }
         }
     }
-    
+
     /**
      * Increment the local memory state immediately for instant feedback.
      * The next scheduled refresh will confirm this against the DB.

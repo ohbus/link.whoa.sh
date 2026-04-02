@@ -62,10 +62,10 @@ class AnalyticsService(
     fun getBulkAnalytics(currentCounts: Map<String, Long>): BulkAnalyticsResponse {
         val shortCodes = currentCounts.keys.toList()
         if (shortCodes.isEmpty()) return BulkAnalyticsResponse(emptyMap())
-        
+
         val counts = urlAnalyticsRepository.countByShortCodes(shortCodes)
         val clickMap = counts.associate { it[0] as String to it[1] as Long }
-        
+
         log.debug { "Retrieved bulk analytics for ${shortCodes.size} codes" }
         return BulkAnalyticsResponse(clicks = clickMap)
     }

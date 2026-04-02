@@ -20,7 +20,6 @@ class DatabaseSeeder(
     private val urlRepository: UrlRepository,
     private val urlAnalyticsRepository: UrlAnalyticsRepository,
 ) : CommandLineRunner {
-
     @Transactional
     override fun run(vararg args: String) {
         if (urlRepository.count() > 0) {

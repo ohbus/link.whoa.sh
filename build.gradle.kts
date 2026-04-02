@@ -64,7 +64,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
-    implementation("io.github.oshai:kotlin-logging-jvm:7.0.5")
+    implementation("io.github.oshai:kotlin-logging:7.0.5")
 
     implementation("tools.jackson.module:jackson-module-kotlin")
 

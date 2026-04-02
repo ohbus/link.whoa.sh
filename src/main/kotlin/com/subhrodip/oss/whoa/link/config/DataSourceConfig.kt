@@ -28,7 +28,6 @@ class RoutingDataSource : AbstractRoutingDataSource() {
 
 @Configuration
 class DataSourceConfig {
-
     @Value("\${spring.datasource.url}")
     private lateinit var writerUrl: String
 
