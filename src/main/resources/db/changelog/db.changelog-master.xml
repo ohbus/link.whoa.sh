@@ -8,5 +8,6 @@
     <include file="001-create-urls-table.xml" relativeToChangelogFile="true"/>
     <include file="002-create-url-analytics-table.xml" relativeToChangelogFile="true"/>
     <include file="003-add-index-to-urls-short-code.xml" relativeToChangelogFile="true"/>
+    <include file="004-add-index-to-url-analytics-url-id.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

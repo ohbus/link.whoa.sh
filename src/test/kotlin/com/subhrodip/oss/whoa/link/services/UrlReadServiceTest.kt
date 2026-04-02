@@ -33,10 +33,10 @@ class UrlReadServiceTest {
         val shortCode = "abcdef"
         val originalUrl = "https://example.com"
         val urlEntity = UrlEntity(originalUrl = originalUrl, shortCode = shortCode)
-        val urlDto = UrlDto(originalUrl = originalUrl, shortCode = shortCode)
+        val urlDto = UrlDto(id = 1L, originalUrl = originalUrl, shortCode = shortCode)
 
         `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
-        `when`(urlRepository.findByShortCode(shortCode)).thenReturn(urlEntity)
+        `when`(urlRepository.getReferenceById(urlDto.id)).thenReturn(urlEntity)
 
         val result = urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")
 
@@ -49,10 +49,10 @@ class UrlReadServiceTest {
         val shortCode = "abcdef"
         val originalUrl = "example.com"
         val urlEntity = UrlEntity(originalUrl = originalUrl, shortCode = shortCode)
-        val urlDto = UrlDto(originalUrl = originalUrl, shortCode = shortCode)
+        val urlDto = UrlDto(id = 1L, originalUrl = originalUrl, shortCode = shortCode)
 
         `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
-        `when`(urlRepository.findByShortCode(shortCode)).thenReturn(urlEntity)
+        `when`(urlRepository.getReferenceById(urlDto.id)).thenReturn(urlEntity)
 
         val result = urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")
 
@@ -65,10 +65,10 @@ class UrlReadServiceTest {
         val shortCode = "abcdef"
         val originalUrl = "https://example.com"
         val urlEntity = UrlEntity(originalUrl = originalUrl, shortCode = shortCode)
-        val urlDto = UrlDto(originalUrl = originalUrl, shortCode = shortCode)
+        val urlDto = UrlDto(id = 1L, originalUrl = originalUrl, shortCode = shortCode)
 
         `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
-        `when`(urlRepository.findByShortCode(shortCode)).thenReturn(urlEntity)
+        `when`(urlRepository.getReferenceById(urlDto.id)).thenReturn(urlEntity)
         `when`(urlCacheService.getCachedUrl("Abcdef")).thenThrow(UrlNotFoundException("Not found"))
 
         val result = urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")

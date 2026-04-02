@@ -94,15 +94,15 @@ class UrlCacheIntegrationTest {
     }
 
     @Test
-    fun `test analytics tracked on every hit and findUrlByShortCode uses cache`() {
+    fun `test analytics tracked on every hit and getCachedUrl uses cache`() {
         val shortCode = "analyticTest"
         val urlEntity = UrlEntity(originalUrl = "https://example.com", shortCode = shortCode)
 
         `when`(urlRepository.findByShortCode(shortCode)).thenReturn(urlEntity)
+        `when`(urlRepository.getReferenceById(any())).thenReturn(urlEntity)
 
         // First hit
         urlReadService.getOriginalUrl(shortCode, "agent1", "1.1.1.1")
-
         // Second hit
         urlReadService.getOriginalUrl(shortCode, "agent2", "2.2.2.2")
 
@@ -110,9 +110,11 @@ class UrlCacheIntegrationTest {
         verify(analyticsService, times(2)).trackAnalytics(any(), any(), any())
 
         // Verify repository findByShortCode called:
-        // 1 time by findUrlByShortCode (first hit only, cached thereafter)
-        // 2 times by getOriginalUrl directly (once per hit to get entity for analytics)
-        // Total = 3 times
-        verify(urlRepository, times(3)).findByShortCode(shortCode)
+        // 1 time by getCachedUrl (first hit only, cached thereafter)
+        verify(urlRepository, times(1)).findByShortCode(shortCode)
+
+        // Verify getReferenceById called:
+        // 2 times by getOriginalUrl directly (once per hit)
+        verify(urlRepository, times(2)).getReferenceById(any())
     }
 }

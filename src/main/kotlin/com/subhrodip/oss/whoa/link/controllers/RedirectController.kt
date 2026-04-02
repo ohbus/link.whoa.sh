@@ -31,7 +31,7 @@ class RedirectController(
     fun redirectToOriginalUrl(
         @PathVariable shortCode: String,
         request: HttpServletRequest,
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         val userAgent = request.getHeader("User-Agent")
         val ipAddress = request.remoteAddr
         val originalUrl = urlReadService.getOriginalUrl(shortCode, userAgent, ipAddress)

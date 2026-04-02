@@ -19,6 +19,7 @@ class UrlCacheService(
                 ?: throw UrlNotFoundException("URL not found for short code: $shortCode")
 
         return UrlDto(
+            id = entity.id,
             originalUrl = entity.originalUrl,
             shortCode = entity.shortCode,
         )
@@ -27,6 +28,7 @@ class UrlCacheService(
     @CachePut(value = ["urls"], key = "'url:' + #urlEntity.shortCode")
     fun putInCache(urlEntity: UrlEntity): UrlDto =
         UrlDto(
+            id = urlEntity.id,
             originalUrl = urlEntity.originalUrl,
             shortCode = urlEntity.shortCode,
         )

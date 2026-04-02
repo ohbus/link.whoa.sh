@@ -29,6 +29,7 @@ class UrlCacheServiceTest {
 
         val result = urlCacheService.getCachedUrl(shortCode)
 
+        assertEquals(0L, result.id) // Default id from BaseEntity/mock
         assertEquals("https://example.com", result.originalUrl)
         assertEquals(shortCode, result.shortCode)
     }
@@ -49,6 +50,7 @@ class UrlCacheServiceTest {
 
         val result = urlCacheService.putInCache(entity)
 
+        assertEquals(entity.id, result.id)
         assertEquals(entity.originalUrl, result.originalUrl)
         assertEquals(entity.shortCode, result.shortCode)
     }

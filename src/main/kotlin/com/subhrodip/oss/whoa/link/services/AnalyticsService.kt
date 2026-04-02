@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 class AnalyticsService(
     private val urlAnalyticsRepository: UrlAnalyticsRepository,
     private val urlRepository: UrlRepository,
+    private val urlCacheService: UrlCacheService,
 ) {
     @Value("\${app.baseUrl:http://localhost:8844}")
     private lateinit var baseUrl: String
@@ -37,11 +38,11 @@ class AnalyticsService(
 
     @Transactional(readOnly = true)
     fun getUrlAnalytics(shortCode: String): UrlAnalyticsResponse {
-        val url = urlRepository.findByShortCode(shortCode) ?: throw UrlNotFoundException("URL not found for short code: $shortCode")
-        val clicks = urlAnalyticsRepository.countByUrlEntityId(url.id)
+        val urlDto = urlCacheService.getCachedUrl(shortCode)
+        val clicks = urlAnalyticsRepository.countByUrlEntityId(urlDto.id)
         return UrlAnalyticsResponse(
-            originalUrl = url.originalUrl,
-            shortUrl = "$baseUrl/${url.shortCode}",
+            originalUrl = urlDto.originalUrl,
+            shortUrl = "$baseUrl/${urlDto.shortCode}",
             clicks = clicks,
         )
     }

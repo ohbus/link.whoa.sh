@@ -2,6 +2,7 @@ package com.subhrodip.oss.whoa.link.services
 
 import com.subhrodip.oss.whoa.link.domain.UrlAnalyticsEntity
 import com.subhrodip.oss.whoa.link.domain.UrlEntity
+import com.subhrodip.oss.whoa.link.dto.UrlDto
 import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
@@ -25,6 +26,9 @@ class AnalyticsServiceTest {
     @Mock
     private lateinit var urlAnalyticsRepository: UrlAnalyticsRepository
 
+    @Mock
+    private lateinit var urlCacheService: UrlCacheService
+
     @InjectMocks
     private lateinit var analyticsService: AnalyticsService
 
@@ -42,10 +46,10 @@ class AnalyticsServiceTest {
         ReflectionTestUtils.setField(analyticsService, "baseUrl", "http://localhost:8844")
         val shortCode = "abcdef"
         val originalUrl = "https://example.com"
-        val urlEntity = UrlEntity(originalUrl = originalUrl, shortCode = shortCode)
-        ReflectionTestUtils.setField(urlEntity, "id", 1L)
-        `when`(urlRepository.findByShortCode(shortCode)).thenReturn(urlEntity)
-        `when`(urlAnalyticsRepository.countByUrlEntityId(1)).thenReturn(5)
+        val urlDto = UrlDto(id = 1L, originalUrl = originalUrl, shortCode = shortCode)
+
+        `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
+        `when`(urlAnalyticsRepository.countByUrlEntityId(1L)).thenReturn(5)
 
         val result = analyticsService.getUrlAnalytics(shortCode)
 
@@ -57,7 +61,7 @@ class AnalyticsServiceTest {
     @Test
     fun `test getUrlAnalytics not found`() {
         val shortCode = "abcdef"
-        `when`(urlRepository.findByShortCode(shortCode)).thenReturn(null)
+        `when`(urlCacheService.getCachedUrl(shortCode)).thenThrow(UrlNotFoundException("Not found"))
 
         assertThrows<UrlNotFoundException> {
             analyticsService.getUrlAnalytics(shortCode)
