@@ -34,7 +34,7 @@ jobs:
           cache-dependency-path: ui/package-lock.json
       - name: Install dependencies
         working-directory: ./ui
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: Lint Frontend
         working-directory: ./ui
         run: npm run lint --if-present
