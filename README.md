@@ -28,21 +28,53 @@ git clone https://github.com/your-username/whoa.git
 cd whoa
 ```
 
-## Running the Application
+## Running the Application Locally
 
-First, you need to set up the necessary environment. You can use Docker Compose to start a PostgreSQL database for local development.
+The project consists of a Spring Boot backend and an Angular 21 frontend. They can be run together or separately during development.
+
+### 1. Start the Database
+First, set up the necessary PostgreSQL database using Docker Compose.
 
 ```sh
 docker-compose up -d
 ```
 
-You can run the application directly using the Gradle wrapper. This will start the Spring Boot application on port 8844.
+### 2. Running via Command Line (Terminal)
 
+**To run the full-stack application (Backend + compiled UI):**
 ```sh
 ./gradlew bootRun
 ```
+This builds the Angular UI, packages it into the Spring Boot static resources, and starts the server on `http://localhost:8844`.
 
-Once the application starts, you can access it at `http://localhost:8844`.
+**To run the UI separately for Frontend Development (Hot Reloading):**
+In a new terminal window, navigate to the `ui` folder:
+```sh
+cd ui
+npm install
+npm start
+```
+This will start the Angular development server on `http://localhost:4200`. It will proxy API requests to your backend running on `8844`.
+
+### 3. Using IDE Run Configurations (IntelliJ IDEA / WebStorm)
+
+To make development easier, we provide shared IDE run configurations. They are stored in the `.run/` directory and should be automatically picked up by IntelliJ-based IDEs.
+
+*   **`Docker Compose`**: Starts the PostgreSQL database container.
+*   **`WhoaApplication`**: Starts the Spring Boot backend server (with the `dev` profile).
+*   **`UI Serve`**: Runs `npm start` in the `ui` folder to start the Angular development server.
+
+**How to use them:**
+1. Open the project in IntelliJ IDEA.
+2. In the top toolbar, you will see a dropdown next to the Run/Debug (Play) button.
+3. Select `Docker Compose` and run it.
+4. Select `WhoaApplication` and run it.
+5. (Optional) For frontend work, select `UI Serve` and run it.
+
+*If the configurations do not appear automatically:*
+1. Go to **Run > Edit Configurations...**
+2. Check if they are listed under the respective categories (Spring Boot, npm, Docker).
+3. If missing, ensure your IDE is configured to load `.run` folder configurations (it usually does by default if the folder is tracked in VCS). You can also manually create them mirroring the XML files in `.run/`.
 
 ## Building the Application
 
