@@ -2,12 +2,36 @@ plugins {
     kotlin("jvm") version "2.2.21"
     kotlin("plugin.spring") version "2.2.21"
     id("org.springframework.boot") version "4.0.0"
-
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "2.2.21"
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
     id("jacoco")
     id("org.sonarqube") version "7.2.1.6560"
+    id("com.github.node-gradle.node") version "7.0.1"
+}
+
+node {
+    version.set("22.14.0") // LTS version or your preferred node version
+    npmVersion.set("10.2.4")
+    download.set(true)
+    workDir.set(file("${project.projectDir}/.gradle/nodejs"))
+    nodeProjectDir.set(file("${project.projectDir}/ui"))
+}
+
+val buildFrontend by tasks.registering(com.github.gradle.node.npm.task.NpmTask::class) {
+    dependsOn(tasks.npmInstall)
+    args.set(listOf("run", "build"))
+    inputs.dir(file("${project.projectDir}/ui/src"))
+    inputs.file(file("${project.projectDir}/ui/package.json"))
+    inputs.file(file("${project.projectDir}/ui/package-lock.json"))
+    outputs.dir(file("${project.projectDir}/ui/dist/ui/browser"))
+}
+
+tasks.processResources {
+    dependsOn(buildFrontend)
+    from("${project.projectDir}/ui/dist/ui/browser") {
+        into("static")
+    }
 }
 
 group = "com.subhrodip.oss"
