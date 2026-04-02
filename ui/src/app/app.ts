@@ -59,12 +59,15 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     series: [{ name: 'Clicks', type: 'area', data: [], color: '#bac3ff', fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(186, 195, 255, 0.5)'], [1, 'rgba(186, 195, 255, 0)']] } }]
   };
 
-  // Core Data: Paginated Registry
-  currentPageIndex = signal<number>(0);
-  rowsPerPage = signal<number>(10);
-  totalRegistryCount = signal<number>(0);
+  // Core Data: Registry with Token-based Pagination
   shortLinkRegistry = signal<LocalUrl[]>([]);
+  totalRegistryCount = signal<number>(0);
+  rowsPerPage = signal<number>(10);
   
+  // Keyset Pagination State
+  currentPageNumber = signal<number>(1);
+  private pageTokenStack: (number | null)[] = [null]; // null represents the first page (latest items)
+
   aggregatedGlobalClicks = computed(() => {
     return this.shortLinkRegistry().reduce((total, link) => total + link.totalClicks, 0);
   });
@@ -84,19 +87,27 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       };
     });
 
-    // Reactive Pagination Subscriptions
+    // Reactive Token-Based Subscription
     effect(() => {
-      const index = this.currentPageIndex();
+      const pageIndex = this.currentPageNumber() - 1;
+      const currentToken = this.pageTokenStack[pageIndex];
       const limit = this.rowsPerPage();
       
-      const pagedUrlsObservable = liveQuery(() => 
-        this.localDatabase.db.urls
-          .orderBy('createdAt')
-          .reverse()
-          .offset(index * limit)
-          .limit(limit)
-          .toArray()
-      );
+      const pagedUrlsObservable = liveQuery(() => {
+        let query = this.localDatabase.db.urls.orderBy('createdAt').reverse();
+        
+        // If we have a token (the createdAt of the last item from the previous page)
+        if (currentToken !== null) {
+          // Use keyset filtering for O(1) performance and stability
+          return this.localDatabase.db.urls
+            .where('createdAt').below(currentToken)
+            .reverse() // Keep descending order
+            .limit(limit)
+            .toArray();
+        }
+        
+        return query.limit(limit).toArray();
+      });
       
       pagedUrlsObservable.subscribe(results => {
         this.shortLinkRegistry.set(results);
@@ -155,7 +166,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
       if (visibilitySetChanged) {
-        // Debounce sync until scroll resting to protect backend throughput
         if (this.scrollRestStabilizationTimer) {
           clearTimeout(this.scrollRestStabilizationTimer);
         }
@@ -174,15 +184,22 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   navigateToNextPage() {
-    if (this.currentPageIndex() < this.totalRegistryPages() - 1) {
-      this.currentPageIndex.set(this.currentPageIndex() + 1);
+    const currentItems = this.shortLinkRegistry();
+    if (currentItems.length === 0) return;
+
+    // The token for the next page is the createdAt of the last item on this page
+    const nextToken = currentItems[currentItems.length - 1].createdAt;
+    
+    if (this.currentPageNumber() < this.totalRegistryPages()) {
+      this.pageTokenStack[this.currentPageNumber()] = nextToken;
+      this.currentPageNumber.set(this.currentPageNumber() + 1);
       this.currentlyVisibleShortCodes.clear();
     }
   }
 
   navigateToPreviousPage() {
-    if (this.currentPageIndex() > 0) {
-      this.currentPageIndex.set(this.currentPageIndex() - 1);
+    if (this.currentPageNumber() > 1) {
+      this.currentPageNumber.set(this.currentPageNumber() - 1);
       this.currentlyVisibleShortCodes.clear();
     }
   }
@@ -220,6 +237,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         this.customShortPath.set('');
         this.showTransientNotification('Short URL generated successfully!');
         this.isShorteningInProgress.set(false);
+        
+        // If we were not on page 1, optionally return to page 1 to see the new item
+        if (this.currentPageNumber() !== 1) {
+          this.currentPageNumber.set(1);
+        }
       },
       error: (error) => {
         if (error.status === 409) {
@@ -242,11 +264,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedShortLinkMetadata.set(shortLink);
     this.isAnalyticsDrawerOpen.set(true);
     
-    // Load local history immediately for snappy response
     const cachedHistory = await this.localDatabase.getAnalyticsHistory(shortLink.shortCode);
     this.historicalAnalyticsSnapshots.set(cachedHistory);
     
-    // Refresh with live server data
     await this.fetchLatestDetailedAnalytics(shortLink.shortCode);
   }
 
@@ -269,7 +289,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       next: async (serverAnalytics) => {
         await this.localDatabase.updateAnalytics(shortCode, serverAnalytics.clicks);
         
-        // Refresh chart if this specific link is still selected in the drawer
         if (this.selectedShortLinkMetadata()?.shortCode === shortCode) {
           const updatedHistory = await this.localDatabase.getAnalyticsHistory(shortCode);
           this.historicalAnalyticsSnapshots.set(updatedHistory);

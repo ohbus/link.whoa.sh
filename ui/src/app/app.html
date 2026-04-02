@@ -199,14 +199,14 @@
       @if (totalRegistryCount() > rowsPerPage()) {
         <div class="flex items-center justify-between px-2 pt-4">
           <div class="text-[10px] font-label text-outline uppercase tracking-widest">
-            Displaying {{ currentPageIndex() * rowsPerPage() + 1 }} to {{ (currentPageIndex() + 1) * rowsPerPage() > totalRegistryCount() ? totalRegistryCount() : (currentPageIndex() + 1) * rowsPerPage() }} of {{ totalRegistryCount() }} links
+            Displaying {{ (currentPageNumber() - 1) * rowsPerPage() + 1 }} to {{ currentPageNumber() * rowsPerPage() > totalRegistryCount() ? totalRegistryCount() : currentPageNumber() * rowsPerPage() }} of {{ totalRegistryCount() }} links
           </div>
           <div class="flex items-center gap-2">
-            <button (click)="navigateToPreviousPage()" [disabled]="currentPageIndex() === 0" class="p-2 bg-surface-container border border-outline-variant rounded-lg text-outline hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+            <button (click)="navigateToPreviousPage()" [disabled]="currentPageNumber() === 1" class="p-2 bg-surface-container border border-outline-variant rounded-lg text-outline hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
               <span class="material-symbols-outlined text-sm">chevron_left</span>
             </button>
-            <span class="text-xs font-bold text-primary font-mono px-2">PAGE {{ currentPageIndex() + 1 }} / {{ totalRegistryPages() }}</span>
-            <button (click)="navigateToNextPage()" [disabled]="currentPageIndex() >= totalRegistryPages() - 1" class="p-2 bg-surface-container border border-outline-variant rounded-lg text-outline hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+            <span class="text-xs font-bold text-primary font-mono px-2">PAGE {{ currentPageNumber() }} / {{ totalRegistryPages() }}</span>
+            <button (click)="navigateToNextPage()" [disabled]="currentPageNumber() >= totalRegistryPages()" class="p-2 bg-surface-container border border-outline-variant rounded-lg text-outline hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
               <span class="material-symbols-outlined text-sm">chevron_right</span>
             </button>
           </div>
