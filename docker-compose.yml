@@ -5,9 +5,9 @@ services:
     container_name: db-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-      POSTGRES_DB: ${POSTGRES_DB:-mydatabase}
+      POSTGRES_USER: ${POSTGRES_USER:-whoa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-whoa}
+      POSTGRES_DB: ${POSTGRES_DB:-link_whoa}
     ports:
       - "5444:5432"
     volumes:
@@ -21,32 +21,12 @@ services:
           cpus: 1
           memory: 512M
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-whoa}"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 2s
       start_interval: 2s
-
-  whoa:
-    build: .
-    container_name: whoa
-    depends_on:
-      db-postgres:
-        condition: service_healthy
-    ports:
-      - "8844:8844"
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - DB_HOST=db-postgres
-      - DB_PORT=5432
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8844/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 2s
-      start_interval: 1s
 
 volumes:
   db-postgres-data:

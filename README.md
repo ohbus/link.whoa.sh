@@ -32,12 +32,21 @@ cd whoa
 
 The project consists of a Spring Boot backend and an Angular 21 frontend. They can be run together or separately during development.
 
-### 1. Start the Database
-First, set up the necessary PostgreSQL database using Docker Compose.
+### 1. Start the Database (Dependencies Only)
+First, set up the necessary PostgreSQL database using Docker Compose. We provide multiple Compose files depending on your needs.
 
+**For Local Development (Recommended):**
+This starts *only* the database dependencies. You will run the backend and frontend manually via Gradle/NPM to allow for hot-reloading.
 ```sh
 docker-compose up -d
 ```
+
+**For a Full-Stack Containerized Test (Pro Developers):**
+If you want to run the *entire* application (Database + Spring Boot + Compiled Angular UI) inside Docker without manually running Gradle, you can use the full compose file:
+```sh
+docker-compose -f docker-compose.full.yml up -d --build
+```
+*(Note: This is mostly for verifying the Docker build before deployment. It does not support hot-reloading).*
 
 ### 2. Running via Command Line (Terminal)
 
