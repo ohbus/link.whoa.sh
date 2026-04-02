@@ -1,6 +1,7 @@
 package com.subhrodip.oss.whoa.link.repositories
 
 import com.subhrodip.oss.whoa.link.domain.UrlAnalyticsEntity
+import com.subhrodip.oss.whoa.link.dto.ClickCountProjection
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
@@ -13,12 +14,12 @@ interface UrlAnalyticsRepository : JpaRepository<UrlAnalyticsEntity, Long> {
 
     @Query(
         """
-        select u.shortCode, count(a) 
+        select u.shortCode as shortCode, count(a) as totalClicks 
         from UrlEntity u left join UrlAnalyticsEntity a on a.urlEntity = u 
         where u.shortCode in ?1 group by u.shortCode
         """,
     )
-    fun countByShortCodes(shortCodes: List<String>): List<Array<Any>>
+    fun countByShortCodes(shortCodes: List<String>): List<ClickCountProjection>
 
     @Query("select count(a) from UrlAnalyticsEntity a")
     fun countAllClicks(): Long

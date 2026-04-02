@@ -83,8 +83,8 @@ class AnalyticsService(
 
         val clickMap =
             if (codesToSync.isNotEmpty()) {
-                val counts = urlAnalyticsRepository.countByShortCodes(codesToSync)
-                counts.associate { it[0] as String to it[1] as Long }
+                val projectionResults = urlAnalyticsRepository.countByShortCodes(codesToSync)
+                projectionResults.associate { it.shortCode to it.totalClicks }
             } else {
                 emptyMap()
             }

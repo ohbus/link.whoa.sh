@@ -1,6 +1,7 @@
 package com.subhrodip.oss.whoa.link.services
 
 import com.subhrodip.oss.whoa.link.domain.UrlEntity
+import com.subhrodip.oss.whoa.link.dto.ClickCountProjection
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.springframework.test.util.ReflectionTestUtils
@@ -59,7 +61,6 @@ class UrlReadPaginationTest {
 
     @Test
     fun `getPagedUrls identifies hasMore correctly`() {
-        // We requested 2, but repo returns 3
         val urls = listOf(
             UrlEntity("url1", "code1").apply { createdAt = OffsetDateTime.now().minusMinutes(1) },
             UrlEntity("url2", "code2").apply { createdAt = OffsetDateTime.now().minusMinutes(2) },
