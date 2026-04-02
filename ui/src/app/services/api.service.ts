@@ -107,8 +107,9 @@ export class ApiService {
   }
 
   checkHealth() {
-    this.checkHealthRaw().subscribe(res => {
-      this.isBackendHealthy.set(res.status === 'UP');
+    this.checkHealthRaw().subscribe({
+      next: (res) => this.isBackendHealthy.set(res.status === 'UP'),
+      error: () => this.isBackendHealthy.set(false)
     });
   }
 

@@ -36,9 +36,10 @@ export class AppDB extends Dexie {
 })
 export class DbService {
   db = new AppDB();
+  static skipSeeding = false;
 
   constructor() {
-    if (isDevMode()) {
+    if (isDevMode() && !DbService.skipSeeding) {
       this.seedDataIfEmpty();
     }
   }
