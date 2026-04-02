@@ -6,10 +6,13 @@ import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsResponse
 import com.subhrodip.oss.whoa.link.dto.UrlAnalyticsResponse
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
+private val log = KotlinLogging.logger {}
 
 @Service
 class AnalyticsService(
@@ -36,12 +39,14 @@ class AnalyticsService(
             )
         urlAnalyticsRepository.save(analytics)
         globalCounterService.incrementRealTime()
+        log.debug { "Tracked click for short code: ${urlEntity.shortCode}" }
     }
 
     @Transactional(readOnly = true)
     fun getUrlAnalytics(shortCode: String): UrlAnalyticsResponse {
         val urlDto = urlCacheService.getCachedUrl(shortCode)
         val clicks = urlAnalyticsRepository.countByUrlEntityId(urlDto.id)
+        log.debug { "Retrieved analytics for code: $shortCode (Clicks: $clicks)" }
         return UrlAnalyticsResponse(
             originalUrl = urlDto.originalUrl,
             shortUrl = "$baseUrl/${urlDto.shortCode}",
@@ -57,6 +62,7 @@ class AnalyticsService(
         val counts = urlAnalyticsRepository.countByShortCodes(shortCodes)
         val clickMap = counts.associate { it[0] as String to it[1] as Long }
         
+        log.debug { "Retrieved bulk analytics for ${shortCodes.size} codes" }
         return BulkAnalyticsResponse(clicks = clickMap)
     }
 }

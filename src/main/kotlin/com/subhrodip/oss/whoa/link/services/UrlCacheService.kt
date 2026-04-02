@@ -4,9 +4,12 @@ import com.subhrodip.oss.whoa.link.domain.UrlEntity
 import com.subhrodip.oss.whoa.link.dto.UrlDto
 import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
+
+private val log = KotlinLogging.logger {}
 
 @Service
 class UrlCacheService(
@@ -14,6 +17,7 @@ class UrlCacheService(
 ) {
     @Cacheable(value = ["urls"], key = "'url:' + #shortCode", unless = "#result == null")
     fun getCachedUrl(shortCode: String): UrlDto {
+        log.trace { "Fetching short code $shortCode from database (cache miss)" }
         val entity =
             urlRepository.findByShortCode(shortCode)
                 ?: throw UrlNotFoundException("URL not found for short code: $shortCode")

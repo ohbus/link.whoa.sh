@@ -6,11 +6,14 @@ import com.subhrodip.oss.whoa.link.dto.CreateShortUrlResponse
 import com.subhrodip.oss.whoa.link.dto.UrlDto
 import com.subhrodip.oss.whoa.link.exceptions.ShortCodeAlreadyExistsException
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.CachePut
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.security.SecureRandom
+
+private val log = KotlinLogging.logger {}
 
 @Service
 @Transactional
@@ -41,6 +44,7 @@ class UrlWriteService(
                 shortCode = shortCode,
             )
         urlRepository.save(urlEntity)
+        log.info { "Created short URL: $shortCode -> ${request.url}" }
 
         // Populate the cache using the separate service to ensure proxy is used
         urlCacheService.putInCache(urlEntity)

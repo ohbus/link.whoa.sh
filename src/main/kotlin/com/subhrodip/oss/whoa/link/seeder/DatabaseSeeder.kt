@@ -4,7 +4,7 @@ import com.subhrodip.oss.whoa.link.domain.UrlAnalyticsEntity
 import com.subhrodip.oss.whoa.link.domain.UrlEntity
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
-import org.slf4j.LoggerFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
@@ -12,13 +12,14 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.OffsetDateTime
 import kotlin.random.Random
 
+private val log = KotlinLogging.logger {}
+
 @Component
 @Profile("dev")
 class DatabaseSeeder(
     private val urlRepository: UrlRepository,
     private val urlAnalyticsRepository: UrlAnalyticsRepository,
 ) : CommandLineRunner {
-    private val log = LoggerFactory.getLogger(DatabaseSeeder::class.java)
 
     @Transactional
     override fun run(vararg args: String) {

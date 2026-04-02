@@ -1,19 +1,20 @@
 package com.subhrodip.oss.whoa.link.services
 
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.random.Random
 
+private val log = KotlinLogging.logger {}
+
 @Service
 class GlobalCounterService(
     private val urlAnalyticsRepository: UrlAnalyticsRepository
 ) {
-    private val log = LoggerFactory.getLogger(GlobalCounterService::class.java)
     private val globalClicks = AtomicLong(0)
 
     @Value("\${app.analytics.simulation.min-increment:1}")
@@ -26,7 +27,7 @@ class GlobalCounterService(
     fun init() {
         val initialCount = urlAnalyticsRepository.countAllClicks()
         globalClicks.set(initialCount)
-        log.info("Initialized Global Counter with authoritative database count: $initialCount")
+        log.info { "Initialized Global Counter with authoritative database count: $initialCount" }
     }
 
     /**
@@ -42,7 +43,7 @@ class GlobalCounterService(
     fun simulateTraffic() {
         val increment = Random.nextLong(minIncrement.toLong(), maxIncrement.toLong() + 1)
         val newValue = globalClicks.addAndGet(increment)
-        log.debug("Simulated traffic increment: +$increment. New global total: $newValue")
+        log.debug { "Simulated traffic increment: +$increment. New global total: $newValue" }
     }
     
     /**

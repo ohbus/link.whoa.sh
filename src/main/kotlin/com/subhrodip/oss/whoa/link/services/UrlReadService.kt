@@ -3,9 +3,12 @@ package com.subhrodip.oss.whoa.link.services
 import com.subhrodip.oss.whoa.link.dto.UrlDto
 import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
+private val log = KotlinLogging.logger {}
 
 @Service
 @Transactional(readOnly = true)
@@ -21,6 +24,7 @@ class UrlReadService(
     ): String {
         // Try to get from cache/lookup first
         val urlDto = urlCacheService.getCachedUrl(shortCode)
+        log.debug { "Resolved short code $shortCode to ${urlDto.originalUrl}" }
 
         // Use a proxy reference to avoid a redundant DB hit for the entity
         // We only need the ID to establish the relationship in trackAnalytics

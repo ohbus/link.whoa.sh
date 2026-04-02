@@ -2,7 +2,7 @@ package com.subhrodip.oss.whoa.link.config
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import org.slf4j.LoggerFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -13,22 +13,21 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource
 import org.springframework.transaction.support.TransactionSynchronizationManager
 import javax.sql.DataSource
 
+private val log = KotlinLogging.logger {}
+
 enum class DataSourceType { WRITER, READER }
 
 class RoutingDataSource : AbstractRoutingDataSource() {
-    private val log = LoggerFactory.getLogger(RoutingDataSource::class.java)
-
     override fun determineCurrentLookupKey(): Any {
         val isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly()
         val type = if (isReadOnly) DataSourceType.READER else DataSourceType.WRITER
-        log.trace("Routing database call to: {}", type)
+        log.trace { "Routing database call to: $type" }
         return type
     }
 }
 
 @Configuration
 class DataSourceConfig {
-    private val log = LoggerFactory.getLogger(DataSourceConfig::class.java)
 
     @Value("\${spring.datasource.url}")
     private lateinit var writerUrl: String

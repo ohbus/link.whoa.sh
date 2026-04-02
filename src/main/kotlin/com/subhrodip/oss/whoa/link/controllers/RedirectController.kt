@@ -1,6 +1,7 @@
 package com.subhrodip.oss.whoa.link.controllers
 
 import com.subhrodip.oss.whoa.link.services.UrlReadService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
+
+private val log = KotlinLogging.logger {}
 
 @RestController
 @RequestMapping
@@ -32,6 +35,7 @@ class RedirectController(
         @PathVariable shortCode: String,
         request: HttpServletRequest,
     ): ResponseEntity<Unit> {
+        log.trace { "Redirect request for code: $shortCode" }
         val userAgent = request.getHeader("User-Agent")
         val ipAddress = request.remoteAddr
         val originalUrl = urlReadService.getOriginalUrl(shortCode, userAgent, ipAddress)
