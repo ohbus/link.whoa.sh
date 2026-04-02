@@ -75,13 +75,12 @@ To make development easier, we provide shared IDE run configurations. They are s
 2. Check if they are listed under the respective categories (Spring Boot, npm, Docker).
 3. If missing, ensure your IDE is configured to load `.run` folder configurations (it usually does by default if the folder is tracked in VCS).
 
-### 4. Local Testing Pitfalls & CORS Configuration
+### 4. Local Testing Pitfalls & Configurations
 
 When developing a separated frontend and backend locally, there are common pitfalls:
 
-*   **CORS (Cross-Origin Resource Sharing)**: When running the Angular development server on `localhost:4200` and the Spring Boot backend on `localhost:8844`, browsers will typically block API requests due to security restrictions.
-    *   *How we solved it:* We have added a dedicated `CorsConfigurationSource` in `SecurityConfig.kt` that specifically allows `http://localhost:4200` to make `GET`, `POST`, `PUT`, `DELETE`, and `OPTIONS` requests during local development.
-    *   *Alternative (The Proxy):* When you use `npm start` (or the `UI Serve` run configuration), Angular uses `ui/proxy.conf.json` to proxy `/api` and `/actuator` requests directly to `localhost:8844`. This tricks the browser into thinking it's a same-origin request, bypassing CORS issues entirely.
+*   **CORS (Cross-Origin Resource Sharing)**: We have completely locked down CORS on the backend. You do not need to configure allowed origins for local development. 
+    *   *Why it works:* When you use `npm start` (or the `UI Serve` run configuration), Angular uses `ui/proxy.conf.json` to proxy `/api` and `/actuator` requests directly to `localhost:8844`. This tricks the browser into thinking it's a same-origin request, bypassing CORS issues entirely and mirroring the monolithic production deployment.
 *   **Database Not Ready**: If you start `WhoaApplication` before the PostgreSQL container is fully initialized, the backend will fail to start. Always ensure the `Docker Compose` run configuration finishes initializing the database first.
 *   **Caching Collisions**: If you manually delete rows from the database during local testing, the Caffeine cache (`UrlCacheService`) might still return stale records for up to 10 minutes. If you encounter weird state, restart the backend server to clear the in-memory cache.
 
