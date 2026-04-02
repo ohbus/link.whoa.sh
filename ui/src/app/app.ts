@@ -2,7 +2,7 @@ import { Component, OnInit, signal, computed, inject, effect, ViewChild, Element
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { liveQuery } from 'dexie';
-import { HighchartsChartDirective } from 'highcharts-angular';
+import { HighchartsChartComponent } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 
 import { ApiService, CreateShortUrlRequest } from './services/api.service';
@@ -12,45 +12,45 @@ import { SyncService } from './services/sync.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, HighchartsChartDirective],
+  imports: [CommonModule, FormsModule, HighchartsChartComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('urlInput') urlInput!: ElementRef<HTMLInputElement>;
-  @ViewChildren('urlRow') urlRows!: QueryList<ElementRef<HTMLTableRowElement>>;
+  @ViewChild('urlInput') destinationUrlInput!: ElementRef<HTMLInputElement>;
+  @ViewChildren('urlRow') shortLinkTableRows!: QueryList<ElementRef<HTMLTableRowElement>>;
 
-  // Services
-  private api = inject(ApiService);
-  private db = inject(DbService);
-  private sync = inject(SyncService);
+  // Domain Services
+  private shortLinkApi = inject(ApiService);
+  private localDatabase = inject(DbService);
+  private backgroundSync = inject(SyncService);
 
   Highcharts: typeof Highcharts = Highcharts;
 
-  // State
+  // UI State: Sidebar & Form
   isSidebarCollapsed = signal<boolean>(false);
-  longUrl = signal<string>('');
-  customShortCode = signal<string>('');
+  destinationUrl = signal<string>('');
+  customShortPath = signal<string>('');
   
-  isSubmitting = signal<boolean>(false);
-  errorMessage = signal<string | null>(null);
-  successMessage = signal<string | null>(null);
+  isShorteningInProgress = signal<boolean>(false);
+  shorteningErrorMessage = signal<string | null>(null);
+  userNotificationMessage = signal<string | null>(null);
 
-  // Visibility Tracking
-  private visibleCodes = new Set<string>();
-  private intersectionObserver?: IntersectionObserver;
-  private scrollRestTimeout: any;
+  // UI State: Viewport Tracking
+  private currentlyVisibleShortCodes = new Set<string>();
+  private viewportIntersectionObserver?: IntersectionObserver;
+  private scrollRestStabilizationTimer: any;
 
-  // Drawer state
-  isDrawerOpen = signal<boolean>(false);
-  selectedUrl = signal<LocalUrl | null>(null);
-  selectedUrlAnalytics = signal<AnalyticsSnapshot[]>([]);
-  isLoadingDetails = signal<boolean>(false);
+  // UI State: Analytics Drawer
+  isAnalyticsDrawerOpen = signal<boolean>(false);
+  selectedShortLinkMetadata = signal<LocalUrl | null>(null);
+  historicalAnalyticsSnapshots = signal<AnalyticsSnapshot[]>([]);
+  isFetchingDetailedAnalytics = signal<boolean>(false);
 
-  private hoverTimeout: any;
+  private prefetchHoverTimer: any;
 
-  // Chart configuration
-  chartOptions: Highcharts.Options = {
+  // Data Visualization Configuration
+  clickVelocityChartOptions: Highcharts.Options = {
     title: { text: 'Clicks Over Time', style: { color: '#e5e2e1' } },
     chart: { backgroundColor: 'transparent', type: 'area' },
     xAxis: { type: 'datetime', labels: { style: { color: '#8f909e' } } },
@@ -59,226 +59,237 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     series: [{ name: 'Clicks', type: 'area', data: [], color: '#bac3ff', fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(186, 195, 255, 0.5)'], [1, 'rgba(186, 195, 255, 0)']] } }]
   };
 
-  // Pagination State
-  pageIndex = signal<number>(0);
-  pageSize = signal<number>(10);
-  totalUrlCount = signal<number>(0);
-
-  // Dexie live query bound to a signal
-  urls = signal<LocalUrl[]>([]);
+  // Core Data: Paginated Registry
+  currentPageIndex = signal<number>(0);
+  rowsPerPage = signal<number>(10);
+  totalRegistryCount = signal<number>(0);
+  shortLinkRegistry = signal<LocalUrl[]>([]);
   
-  globalClicks = computed(() => {
-    return this.urls().reduce((sum, url) => sum + url.totalClicks, 0);
+  aggregatedGlobalClicks = computed(() => {
+    return this.shortLinkRegistry().reduce((total, link) => total + link.totalClicks, 0);
   });
 
-  totalPages = computed(() => Math.ceil(this.totalUrlCount() / this.pageSize()));
+  totalRegistryPages = computed(() => Math.ceil(this.totalRegistryCount() / this.rowsPerPage()));
 
-  isBackendHealthy = this.api.isBackendHealthy;
-  isSyncing = this.sync.isSyncing;
+  isBackendReachable = this.shortLinkApi.isBackendHealthy;
+  isSyncTaskRunning = this.backgroundSync.isSyncing;
 
   constructor() {
+    // Reactive Chart Updates
     effect(() => {
-      const data = this.selectedUrlAnalytics().map(snap => [snap.timestamp, snap.clicks] as [number, number]);
-      this.chartOptions = {
-        ...this.chartOptions,
-        series: [{ name: 'Clicks', type: 'area', data: data, color: '#bac3ff', fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(186, 195, 255, 0.5)'], [1, 'rgba(186, 195, 255, 0)']] } }]
+      const timeSeriesData = this.historicalAnalyticsSnapshots().map(snapshot => [snapshot.timestamp, snapshot.clicks] as [number, number]);
+      this.clickVelocityChartOptions = {
+        ...this.clickVelocityChartOptions,
+        series: [{ name: 'Clicks', type: 'area', data: timeSeriesData, color: '#bac3ff', fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(186, 195, 255, 0.5)'], [1, 'rgba(186, 195, 255, 0)']] } }]
       };
     });
 
-    // Re-subscribe to URLs when pageIndex or pageSize changes
+    // Reactive Pagination Subscriptions
     effect(() => {
-      const index = this.pageIndex();
-      const size = this.pageSize();
+      const index = this.currentPageIndex();
+      const limit = this.rowsPerPage();
       
-      const urlsObservable = liveQuery(() => 
-        this.db.db.urls
+      const pagedUrlsObservable = liveQuery(() => 
+        this.localDatabase.db.urls
           .orderBy('createdAt')
           .reverse()
-          .offset(index * size)
-          .limit(size)
+          .offset(index * limit)
+          .limit(limit)
           .toArray()
       );
       
-      urlsObservable.subscribe(data => {
-        this.urls.set(data);
+      pagedUrlsObservable.subscribe(results => {
+        this.shortLinkRegistry.set(results);
       });
     });
   }
 
   ngOnInit() {
-    // Start background sync: only poll visible codes
-    this.sync.startSync(() => this.visibleCodes, 30000);
+    // Initialize background sync restricted to visible viewport
+    this.backgroundSync.startSync(() => this.currentlyVisibleShortCodes, 30000);
     
-    // Check initial health
-    this.api.checkHealth();
-    setInterval(() => this.api.checkHealth(), 60000);
+    // Heartbeat for backend connectivity
+    this.shortLinkApi.checkHealth();
+    setInterval(() => this.shortLinkApi.checkHealth(), 60000);
 
-    // Subscribe to total count for pagination
-    const countObservable = liveQuery(() => this.db.db.urls.count());
-    countObservable.subscribe(count => {
-      this.totalUrlCount.set(count);
+    // Track total links for pagination meta-data
+    const totalCountObservable = liveQuery(() => this.localDatabase.db.urls.count());
+    totalCountObservable.subscribe(count => {
+      this.totalRegistryCount.set(count);
     });
   }
 
   ngAfterViewInit() {
-    this.setupIntersectionObserver();
-    this.urlRows.changes.subscribe(() => {
-      this.refreshObservers();
+    this.initializeViewportTracking();
+    this.shortLinkTableRows.changes.subscribe(() => {
+      this.rebindViewportObservers();
     });
-    this.refreshObservers();
+    this.rebindViewportObservers();
   }
 
   ngOnDestroy() {
-    this.intersectionObserver?.disconnect();
-    if (this.scrollRestTimeout) {
-      clearTimeout(this.scrollRestTimeout);
+    this.viewportIntersectionObserver?.disconnect();
+    if (this.scrollRestStabilizationTimer) {
+      clearTimeout(this.scrollRestStabilizationTimer);
     }
   }
 
-  private setupIntersectionObserver() {
-    this.intersectionObserver = new IntersectionObserver((entries) => {
-      let changed = false;
+  private initializeViewportTracking() {
+    this.viewportIntersectionObserver = new IntersectionObserver((entries) => {
+      let visibilitySetChanged = false;
       entries.forEach(entry => {
-        const code = entry.target.getAttribute('data-code');
-        if (!code) return;
+        const shortCode = entry.target.getAttribute('data-short-code');
+        if (!shortCode) return;
 
         if (entry.isIntersecting) {
-          if (!this.visibleCodes.has(code)) {
-            this.visibleCodes.add(code);
-            changed = true;
+          if (!this.currentlyVisibleShortCodes.has(shortCode)) {
+            this.currentlyVisibleShortCodes.add(shortCode);
+            visibilitySetChanged = true;
           }
         } else {
-          if (this.visibleCodes.has(code)) {
-            this.visibleCodes.delete(code);
-            changed = true;
+          if (this.currentlyVisibleShortCodes.has(shortCode)) {
+            this.currentlyVisibleShortCodes.delete(shortCode);
+            visibilitySetChanged = true;
           }
         }
       });
 
-      if (changed) {
-        // "Rest" logic: Wait for user to stop monkey scrolling before hitting the backend
-        if (this.scrollRestTimeout) {
-          clearTimeout(this.scrollRestTimeout);
+      if (visibilitySetChanged) {
+        // Debounce sync until scroll resting to protect backend throughput
+        if (this.scrollRestStabilizationTimer) {
+          clearTimeout(this.scrollRestStabilizationTimer);
         }
 
-        this.scrollRestTimeout = setTimeout(() => {
-          this.sync.performSync(() => this.visibleCodes);
-        }, 500); // 500ms backoff after scrolling stops
+        this.scrollRestStabilizationTimer = setTimeout(() => {
+          this.backgroundSync.performSync(() => this.currentlyVisibleShortCodes);
+        }, 500);
       }
     }, { threshold: 0.1, rootMargin: '50px' });
   }
 
-  private refreshObservers() {
-    this.urlRows.forEach(row => {
-      this.intersectionObserver?.observe(row.nativeElement);
+  private rebindViewportObservers() {
+    this.shortLinkTableRows.forEach(row => {
+      this.viewportIntersectionObserver?.observe(row.nativeElement);
     });
   }
 
-  nextPage() {
-    if (this.pageIndex() < this.totalPages() - 1) {
-      this.pageIndex.set(this.pageIndex() + 1);
-      this.visibleCodes.clear();
+  navigateToNextPage() {
+    if (this.currentPageIndex() < this.totalRegistryPages() - 1) {
+      this.currentPageIndex.set(this.currentPageIndex() + 1);
+      this.currentlyVisibleShortCodes.clear();
     }
   }
 
-  previousPage() {
-    if (this.pageIndex() > 0) {
-      this.pageIndex.set(this.pageIndex() - 1);
-      this.visibleCodes.clear();
+  navigateToPreviousPage() {
+    if (this.currentPageIndex() > 0) {
+      this.currentPageIndex.set(this.currentPageIndex() - 1);
+      this.currentlyVisibleShortCodes.clear();
     }
   }
 
-  toggleSidebar() {
+  toggleSidebarExpansion() {
     this.isSidebarCollapsed.set(!this.isSidebarCollapsed());
   }
 
-  scrollToCreate() {
-    this.urlInput.nativeElement.scrollIntoView({ behavior: 'smooth' });
-    this.urlInput.nativeElement.focus();
+  focusDestinationInput() {
+    this.destinationUrlInput.nativeElement.scrollIntoView({ behavior: 'smooth' });
+    this.destinationUrlInput.nativeElement.focus();
   }
 
-  async shortenUrl() {
-    if (!this.longUrl()) return;
+  async executeShorteningTask() {
+    const urlToShorten = this.destinationUrl();
+    if (!urlToShorten) return;
 
-    this.isSubmitting.set(true);
-    this.errorMessage.set(null);
-    this.successMessage.set(null);
+    this.isShorteningInProgress.set(true);
+    this.shorteningErrorMessage.set(null);
+    this.userNotificationMessage.set(null);
 
-    const request: CreateShortUrlRequest = {
-      url: this.longUrl(),
-      shortCode: this.customShortCode() ? this.customShortCode() : undefined
+    const shorteningRequest: CreateShortUrlRequest = {
+      url: urlToShorten,
+      shortCode: this.customShortPath() || undefined
     };
 
-    this.api.createShortUrl(request).subscribe({
-      next: async (res) => {
-        const parts = res.shortUrl.split('/');
-        const code = parts[parts.length - 1];
-        await this.db.addUrl(code, res.originalUrl, res.shortUrl);
-        this.longUrl.set('');
-        this.customShortCode.set('');
-        this.successMessage.set('Short URL created successfully!');
-        setTimeout(() => this.successMessage.set(null), 3000);
-        this.isSubmitting.set(false);
+    this.shortLinkApi.createShortUrl(shorteningRequest).subscribe({
+      next: async (response) => {
+        const urlSegments = response.shortUrl.split('/');
+        const extractedCode = urlSegments[urlSegments.length - 1];
+        
+        await this.localDatabase.addUrl(extractedCode, response.originalUrl, response.shortUrl);
+        
+        this.destinationUrl.set('');
+        this.customShortPath.set('');
+        this.showTransientNotification('Short URL generated successfully!');
+        this.isShorteningInProgress.set(false);
       },
-      error: (err) => {
-        if (err.status === 409) {
-          this.errorMessage.set(`Short code '${request.shortCode}' is already taken.`);
+      error: (error) => {
+        if (error.status === 409) {
+          this.shorteningErrorMessage.set(`The path '${shorteningRequest.shortCode}' is already registered.`);
         } else {
-          this.errorMessage.set('An unexpected error occurred.');
+          this.shorteningErrorMessage.set('An unexpected system error occurred.');
         }
-        this.isSubmitting.set(false);
+        this.isShorteningInProgress.set(false);
       }
     });
   }
 
-  copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text).then(() => {
-      this.successMessage.set('Link copied to clipboard!');
-      setTimeout(() => this.successMessage.set(null), 3000);
+  copyToClipboard(content: string) {
+    navigator.clipboard.writeText(content).then(() => {
+      this.showTransientNotification('Link copied to system clipboard.');
     });
   }
 
-  async openAnalyticsDrawer(url: LocalUrl) {
-    this.selectedUrl.set(url);
-    this.isDrawerOpen.set(true);
-    const history = await this.db.getAnalyticsHistory(url.shortCode);
-    this.selectedUrlAnalytics.set(history);
-    await this.loadDetailedAnalytics(url.shortCode);
+  async openAnalyticsInsightDrawer(shortLink: LocalUrl) {
+    this.selectedShortLinkMetadata.set(shortLink);
+    this.isAnalyticsDrawerOpen.set(true);
+    
+    // Load local history immediately for snappy response
+    const cachedHistory = await this.localDatabase.getAnalyticsHistory(shortLink.shortCode);
+    this.historicalAnalyticsSnapshots.set(cachedHistory);
+    
+    // Refresh with live server data
+    await this.fetchLatestDetailedAnalytics(shortLink.shortCode);
   }
 
-  onMouseEnter(url: LocalUrl) {
-    this.hoverTimeout = setTimeout(() => {
-      this.loadDetailedAnalytics(url.shortCode, true);
+  onShortLinkHover(shortLink: LocalUrl) {
+    this.prefetchHoverTimer = setTimeout(() => {
+      this.fetchLatestDetailedAnalytics(shortLink.shortCode, true);
     }, 300);
   }
 
-  onMouseLeave() {
-    if (this.hoverTimeout) {
-      clearTimeout(this.hoverTimeout);
+  onShortLinkHoverEnd() {
+    if (this.prefetchHoverTimer) {
+      clearTimeout(this.prefetchHoverTimer);
     }
   }
 
-  private async loadDetailedAnalytics(shortCode: string, isBackground = false) {
-    if (!isBackground) this.isLoadingDetails.set(true);
+  private async fetchLatestDetailedAnalytics(shortCode: string, isSilentBackgroundFetch = false) {
+    if (!isSilentBackgroundFetch) this.isFetchingDetailedAnalytics.set(true);
     
-    this.api.getAnalytics(shortCode).subscribe({
-      next: async (res) => {
-        await this.db.updateAnalytics(shortCode, res.clicks);
-        if (this.selectedUrl()?.shortCode === shortCode) {
-          const history = await this.db.getAnalyticsHistory(shortCode);
-          this.selectedUrlAnalytics.set(history);
+    this.shortLinkApi.getAnalytics(shortCode).subscribe({
+      next: async (serverAnalytics) => {
+        await this.localDatabase.updateAnalytics(shortCode, serverAnalytics.clicks);
+        
+        // Refresh chart if this specific link is still selected in the drawer
+        if (this.selectedShortLinkMetadata()?.shortCode === shortCode) {
+          const updatedHistory = await this.localDatabase.getAnalyticsHistory(shortCode);
+          this.historicalAnalyticsSnapshots.set(updatedHistory);
         }
-        this.isLoadingDetails.set(false);
+        this.isFetchingDetailedAnalytics.set(false);
       },
       error: () => {
-        this.isLoadingDetails.set(false);
+        this.isFetchingDetailedAnalytics.set(false);
       }
     });
   }
 
-  closeDrawer() {
-    this.isDrawerOpen.set(false);
-    this.selectedUrl.set(null);
-    this.selectedUrlAnalytics.set([]);
+  closeAnalyticsDrawer() {
+    this.isAnalyticsDrawerOpen.set(false);
+    this.selectedShortLinkMetadata.set(null);
+    this.historicalAnalyticsSnapshots.set([]);
+  }
+
+  private showTransientNotification(message: string) {
+    this.userNotificationMessage.set(message);
+    setTimeout(() => this.userNotificationMessage.set(null), 3000);
   }
 }

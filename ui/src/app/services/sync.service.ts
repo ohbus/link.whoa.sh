@@ -1,80 +1,77 @@
 import { Injectable, signal } from '@angular/core';
 import { ApiService } from './api.service';
-import { DbService, LocalUrl } from './db.service';
+import { DbService } from './db.service';
 import { catchError, EMPTY } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SyncService {
-  private syncIntervalId: any;
+  private scheduledSyncJobId: any;
   
   // State
   isSyncing = signal<boolean>(false);
-  lastSyncTime = signal<Date | null>(null);
+  lastSuccessfulSyncTimestamp = signal<Date | null>(null);
 
   constructor(
-    private api: ApiService,
-    private db: DbService
+    private shortLinkApi: ApiService,
+    private localDatabase: DbService
   ) {}
 
-  startSync(visibleCodesGetter: () => Set<string>, intervalMs: number = 60000) {
+  startSync(visibleCodesProvider: () => Set<string>, syncIntervalMs: number = 60000) {
     this.stopSync();
-    // Immediate first sync
-    this.performSync(visibleCodesGetter);
     
-    this.syncIntervalId = setInterval(() => {
-      this.performSync(visibleCodesGetter);
-    }, intervalMs);
+    // Initial execution
+    this.performSync(visibleCodesProvider);
+    
+    this.scheduledSyncJobId = setInterval(() => {
+      this.performSync(visibleCodesProvider);
+    }, syncIntervalMs);
   }
 
   stopSync() {
-    if (this.syncIntervalId) {
-      clearInterval(this.syncIntervalId);
+    if (this.scheduledSyncJobId) {
+      clearInterval(this.scheduledSyncJobId);
     }
   }
 
   /**
-   * Performs a delta sync for visible items.
+   * Synchronizes click counts for items currently in the user's viewport.
    */
-  async performSync(visibleCodesGetter: () => Set<string>) {
+  async performSync(visibleCodesProvider: () => Set<string>) {
     if (this.isSyncing()) return;
     
-    const visibleCodes = visibleCodesGetter();
-    if (visibleCodes.size === 0) return;
+    const codesInViewport = visibleCodesProvider();
+    if (codesInViewport.size === 0) return;
 
     this.isSyncing.set(true);
 
     try {
-      const allUrls = await this.db.getUrls();
-      const visibleUrls = allUrls.filter(u => visibleCodes.has(urlToCode(u)));
+      const allRegisteredLinks = await this.localDatabase.getUrls();
+      const visibleLinks = allRegisteredLinks.filter(link => codesInViewport.has(link.shortCode));
       
-      if (visibleUrls.length === 0) return;
+      if (visibleLinks.length === 0) return;
 
-      // Create the intent-based Map: shortCode -> currentTotal
-      const currentCounts: { [key: string]: number } = {};
-      visibleUrls.forEach(u => {
-        currentCounts[urlToCode(u)] = u.totalClicks;
+      // Construct request map: [shortCode] -> [localClickCount]
+      const localStateMap: { [shortCode: string]: number } = {};
+      visibleLinks.forEach(link => {
+        localStateMap[link.shortCode] = link.totalClicks;
       });
 
-      this.api.getBulkAnalytics(currentCounts).pipe(
+      this.shortLinkApi.getBulkAnalytics(localStateMap).pipe(
         catchError(() => EMPTY)
-      ).subscribe(async response => {
-        for (const [code, clicks] of Object.entries(response.clicks)) {
-          // Only update if authoritative count differs (Delta)
-          if (currentCounts[code] !== clicks) {
-            await this.db.updateAnalytics(code, clicks);
+      ).subscribe(async serverResponse => {
+        for (const [shortCode, serverClickCount] of Object.entries(serverResponse.clicks)) {
+          // Perform delta update only if server data has diverged
+          if (localStateMap[shortCode] !== serverClickCount) {
+            await this.localDatabase.updateAnalytics(shortCode, serverClickCount);
           }
         }
       });
       
-      this.lastSyncTime.set(new Date());
+      this.lastSuccessfulSyncTimestamp.set(new Date());
     } finally {
       this.isSyncing.set(false);
     }
   }
-}
-
-function urlToCode(url: LocalUrl): string {
-  return url.shortCode;
 }
