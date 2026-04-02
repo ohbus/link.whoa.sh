@@ -76,10 +76,7 @@ class DatabaseSeeder(
                         userAgent = userAgents.random(),
                         ipAddress = ipAddresses.random(),
                     ).apply {
-                        // Use reflection to set the createdAt field on the superclass for seeding
-                        val field = this::class.java.superclass.getDeclaredField("createdAt")
-                        field.isAccessible = true
-                        field.set(this, createdAt)
+                        this.createdAt = createdAt
                     },
                 )
             }

@@ -14,7 +14,7 @@ abstract class BaseEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     open val id: Long = 0,
     @Column(name = "created_at", nullable = false)
-    open val createdAt: OffsetDateTime = OffsetDateTime.now(),
+    open var createdAt: OffsetDateTime = OffsetDateTime.now(),
     @Transient
     open val isNew: Boolean = true,
 )
