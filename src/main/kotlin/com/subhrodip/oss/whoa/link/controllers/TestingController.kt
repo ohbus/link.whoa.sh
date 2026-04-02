@@ -25,7 +25,6 @@ class TestingController(
     private val globalCounterService: GlobalCounterService,
     private val cacheManager: CacheManager,
 ) {
-
     @PostMapping("/reset")
     @Operation(summary = "Reset the application state", description = "Wipes all URLs, Analytics, Caches and resets the Global Counter.")
     fun resetState(): ResponseEntity<Map<String, String>> {
