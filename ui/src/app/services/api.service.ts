@@ -18,6 +18,10 @@ export interface UrlAnalyticsResponse {
   clicks: number;
 }
 
+export interface BulkAnalyticsResponse {
+  clicks: { [key: string]: number };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -42,6 +46,17 @@ export class ApiService {
 
   getAnalytics(shortCode: string) {
     return this.http.get<UrlAnalyticsResponse>(`${this.baseUrl}/${shortCode}/analytics`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 0 || error.status >= 500) {
+          this.isBackendHealthy.set(false);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  getBulkAnalytics(shortCodes: string[]) {
+    return this.http.post<BulkAnalyticsResponse>(`${this.baseUrl}/analytics/bulk`, { shortCodes }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 0 || error.status >= 500) {
           this.isBackendHealthy.set(false);

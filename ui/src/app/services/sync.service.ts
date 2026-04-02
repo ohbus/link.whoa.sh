@@ -1,4 +1,4 @@
-import { Injectable, signal, effect } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { ApiService } from './api.service';
 import { DbService } from './db.service';
 import { catchError, EMPTY } from 'rxjs';
@@ -40,18 +40,22 @@ export class SyncService {
 
     try {
       const urls = await this.db.getUrls();
-      
-      // We will batch process or do them sequentially to not hammer the API
-      for (const url of urls) {
-        // Simple decay logic: only update if it hasn't been updated in the last 15 seconds
-        if (Date.now() - url.lastPolledAt > 15000) {
-          this.api.getAnalytics(url.shortCode).pipe(
-            catchError(() => EMPTY) // Ignore 404s or network errors during background sync
-          ).subscribe(async response => {
-            await this.db.updateAnalytics(url.shortCode, response.clicks);
-          });
-        }
+      if (urls.length === 0) return;
+
+      const codesToPoll = urls
+        .filter(url => Date.now() - url.lastPolledAt > 15000)
+        .map(url => url.shortCode);
+
+      if (codesToPoll.length > 0) {
+        this.api.getBulkAnalytics(codesToPoll).pipe(
+          catchError(() => EMPTY)
+        ).subscribe(async response => {
+          for (const [code, clicks] of Object.entries(response.clicks)) {
+            await this.db.updateAnalytics(code, clicks);
+          }
+        });
       }
+      
       this.lastSyncTime.set(new Date());
     } finally {
       this.isSyncing.set(false);

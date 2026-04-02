@@ -2,8 +2,8 @@ package com.subhrodip.oss.whoa.link.services
 
 import com.subhrodip.oss.whoa.link.domain.UrlAnalyticsEntity
 import com.subhrodip.oss.whoa.link.domain.UrlEntity
+import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsResponse
 import com.subhrodip.oss.whoa.link.dto.UrlAnalyticsResponse
-import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import org.springframework.beans.factory.annotation.Value
@@ -45,5 +45,12 @@ class AnalyticsService(
             shortUrl = "$baseUrl/${urlDto.shortCode}",
             clicks = clicks,
         )
+    }
+
+    @Transactional(readOnly = true)
+    fun getBulkAnalytics(shortCodes: List<String>): BulkAnalyticsResponse {
+        val counts = urlAnalyticsRepository.countByShortCodes(shortCodes)
+        val clickMap = counts.associate { it[0] as String to it[1] as Long }
+        return BulkAnalyticsResponse(clicks = clickMap)
     }
 }

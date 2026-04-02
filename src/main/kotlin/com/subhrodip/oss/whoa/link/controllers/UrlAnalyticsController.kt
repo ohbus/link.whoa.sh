@@ -1,6 +1,8 @@
 package com.subhrodip.oss.whoa.link.controllers
 
 import com.subhrodip.oss.whoa.link.constants.UrlConstants
+import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsRequest
+import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsResponse
 import com.subhrodip.oss.whoa.link.dto.UrlAnalyticsResponse
 import com.subhrodip.oss.whoa.link.services.AnalyticsService
 import io.swagger.v3.oas.annotations.Operation
@@ -9,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -31,6 +35,21 @@ class UrlAnalyticsController(
         @PathVariable shortCode: String,
     ): ResponseEntity<UrlAnalyticsResponse> {
         val response = analyticsService.getUrlAnalytics(shortCode)
+        return ResponseEntity.ok(response)
+    }
+
+    @PostMapping("/analytics/bulk")
+    @Operation(
+        summary = "Get bulk analytics",
+        description = "Returns click counts for a list of short codes in a single request.",
+        responses = [
+            ApiResponse(responseCode = "200", description = "Bulk analytics retrieved successfully"),
+        ],
+    )
+    fun getBulkAnalytics(
+        @RequestBody request: BulkAnalyticsRequest,
+    ): ResponseEntity<BulkAnalyticsResponse> {
+        val response = analyticsService.getBulkAnalytics(request.shortCodes)
         return ResponseEntity.ok(response)
     }
 }

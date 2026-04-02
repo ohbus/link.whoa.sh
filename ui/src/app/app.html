@@ -154,7 +154,10 @@
           </thead>
           <tbody class="divide-y divide-outline-variant/10">
             @for (url of urls(); track url.shortCode) {
-              <tr class="hover:bg-primary/5 transition-colors group cursor-pointer" (click)="openAnalyticsDrawer(url)">
+              <tr class="hover:bg-primary/5 transition-colors group cursor-pointer" 
+                  (click)="openAnalyticsDrawer(url)"
+                  (mouseenter)="onMouseEnter(url)"
+                  (mouseleave)="onMouseLeave()">
                 <td class="px-6 py-5">
                   <div class="flex flex-col">
                     <span class="text-sm font-medium text-white truncate max-w-[240px]">{{ url.shortCode }}</span>
@@ -230,6 +233,10 @@
           <button (click)="closeDrawer()" class="p-2 -ml-2 hover:bg-surface-container-highest rounded-full text-on-surface-variant transition-colors active:scale-90">
             <span class="material-symbols-outlined">close</span>
           </button>
+          <div *ngIf="isLoadingDetails()" class="flex items-center gap-2 text-[10px] font-label text-secondary uppercase tracking-widest animate-pulse">
+            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Syncing Live
+          </div>
         </div>
         <div class="space-y-4">
           <div class="flex items-center justify-between">

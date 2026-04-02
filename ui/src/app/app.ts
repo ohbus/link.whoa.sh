@@ -2,7 +2,7 @@ import { Component, OnInit, signal, computed, inject, effect, ViewChild, Element
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { liveQuery } from 'dexie';
-import { HighchartsChartDirective, provideHighcharts } from 'highcharts-angular';
+import { HighchartsChartDirective } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 
 import { ApiService, CreateShortUrlRequest } from './services/api.service';
@@ -39,6 +39,9 @@ export class AppComponent implements OnInit {
   isDrawerOpen = signal<boolean>(false);
   selectedUrl = signal<LocalUrl | null>(null);
   selectedUrlAnalytics = signal<AnalyticsSnapshot[]>([]);
+  isLoadingDetails = signal<boolean>(false);
+
+  private hoverTimeout: any;
 
   // Chart configuration
   chartOptions: Highcharts.Options = {
@@ -146,24 +149,18 @@ export class AppComponent implements OnInit {
 
     this.api.createShortUrl(request).subscribe({
       next: async (res) => {
-        // Parse the returned shortUrl (e.g. "http://link.whoa.sh/custom") to extract the code
         const parts = res.shortUrl.split('/');
         const code = parts[parts.length - 1];
-        
         await this.db.addUrl(code, res.originalUrl, res.shortUrl);
-        
         this.longUrl.set('');
         this.customShortCode.set('');
         this.successMessage.set('Short URL created successfully!');
-        
         setTimeout(() => this.successMessage.set(null), 3000);
         this.isSubmitting.set(false);
       },
       error: (err) => {
         if (err.status === 409) {
-          this.errorMessage.set(`Short code '${request.shortCode}' is already taken. Try another?`);
-        } else if (err.status === 400) {
-          this.errorMessage.set('Invalid URL format.');
+          this.errorMessage.set(`Short code '${request.shortCode}' is already taken.`);
         } else {
           this.errorMessage.set('An unexpected error occurred.');
         }
@@ -181,12 +178,47 @@ export class AppComponent implements OnInit {
 
   async openAnalyticsDrawer(url: LocalUrl) {
     this.selectedUrl.set(url);
+    this.isDrawerOpen.set(true);
+    // Load existing history first for immediate display
     const history = await this.db.getAnalyticsHistory(url.shortCode);
     this.selectedUrlAnalytics.set(history);
-    this.isDrawerOpen.set(true);
+    // Then trigger a fresh fetch
+    await this.loadDetailedAnalytics(url.shortCode);
+  }
+
+  onMouseEnter(url: LocalUrl) {
+    this.hoverTimeout = setTimeout(() => {
+      this.loadDetailedAnalytics(url.shortCode, true);
+    }, 300);
+  }
+
+  onMouseLeave() {
+    if (this.hoverTimeout) {
+      clearTimeout(this.hoverTimeout);
+    }
+  }
+
+  private async loadDetailedAnalytics(shortCode: string, isBackground = false) {
+    if (!isBackground) this.isLoadingDetails.set(true);
+    
+    this.api.getAnalytics(shortCode).subscribe({
+      next: async (res) => {
+        await this.db.updateAnalytics(shortCode, res.clicks);
+        if (this.selectedUrl()?.shortCode === shortCode) {
+          const history = await this.db.getAnalyticsHistory(shortCode);
+          this.selectedUrlAnalytics.set(history);
+        }
+        this.isLoadingDetails.set(false);
+      },
+      error: () => {
+        this.isLoadingDetails.set(false);
+      }
+    });
   }
 
   closeDrawer() {
     this.isDrawerOpen.set(false);
+    this.selectedUrl.set(null);
+    this.selectedUrlAnalytics.set([]);
   }
 }
