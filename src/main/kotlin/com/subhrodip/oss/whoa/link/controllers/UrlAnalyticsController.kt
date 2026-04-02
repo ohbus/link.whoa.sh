@@ -5,6 +5,7 @@ import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsRequest
 import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsResponse
 import com.subhrodip.oss.whoa.link.dto.UrlAnalyticsResponse
 import com.subhrodip.oss.whoa.link.services.AnalyticsService
+import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -23,6 +24,7 @@ class UrlAnalyticsController(
     private val analyticsService: AnalyticsService,
 ) {
     @GetMapping("/{shortCode}/analytics")
+    @Timed(value = "whoa.analytics.single.time", description = "Time taken to fetch analytics for a single URL")
     @Operation(
         summary = "Get analytics for a short code",
         description = "Returns click counts and original metadata for the provided short link.",
@@ -39,6 +41,7 @@ class UrlAnalyticsController(
     }
 
     @PostMapping("/analytics/bulk")
+    @Timed(value = "whoa.analytics.bulk.time", description = "Time taken to fetch bulk analytics")
     @Operation(
         summary = "Get bulk analytics",
         description = "Returns click counts for a list of short codes in a single request.",

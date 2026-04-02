@@ -3,6 +3,7 @@ package com.subhrodip.oss.whoa.link.controllers
 import com.subhrodip.oss.whoa.link.constants.UrlConstants
 import com.subhrodip.oss.whoa.link.dto.GlobalClicksResponse
 import com.subhrodip.oss.whoa.link.services.GlobalCounterService
+import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
@@ -17,6 +18,7 @@ class GlobalCounterController(
     private val globalCounterService: GlobalCounterService
 ) {
     @GetMapping("/global")
+    @Timed(value = "whoa.analytics.global.time", description = "Time taken to fetch in-memory global clicks")
     @Operation(summary = "Get authoritative global click count")
     fun getGlobalClicks(): ResponseEntity<GlobalClicksResponse> {
         return ResponseEntity.ok(

@@ -2,6 +2,8 @@ package com.subhrodip.oss.whoa.link.controllers
 
 import com.subhrodip.oss.whoa.link.services.UrlReadService
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.micrometer.core.annotation.Counted
+import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -23,6 +25,8 @@ class RedirectController(
     private val urlReadService: UrlReadService,
 ) {
     @GetMapping("/{shortCode}")
+    @Timed(value = "whoa.urls.redirect.time", description = "Time taken to resolve and redirect a URL")
+    @Counted(value = "whoa.urls.redirect.count", description = "Total number of redirect requests")
     @Operation(
         summary = "Redirect to original URL",
         description = "Looks up the original long URL for the given short code and performs a 302 redirect.",

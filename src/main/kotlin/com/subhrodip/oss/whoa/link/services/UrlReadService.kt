@@ -4,6 +4,7 @@ import com.subhrodip.oss.whoa.link.dto.UrlDto
 import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.micrometer.core.annotation.Timed
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,6 +18,7 @@ class UrlReadService(
     private val analyticsService: AnalyticsService,
     private val urlCacheService: UrlCacheService,
 ) {
+    @Timed(value = "whoa.service.urls.read.time", description = "Execution time for URL resolution logic")
     fun getOriginalUrl(
         shortCode: String,
         userAgent: String?,

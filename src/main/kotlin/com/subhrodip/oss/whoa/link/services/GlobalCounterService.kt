@@ -2,6 +2,8 @@ package com.subhrodip.oss.whoa.link.services
 
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.micrometer.core.annotation.Counted
+import io.micrometer.core.annotation.Timed
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
@@ -39,6 +41,8 @@ class GlobalCounterService(
      * Periodically increments the counter to simulate real-time activity (Dopamine effect).
      * Defaults to every 10 seconds.
      */
+    @Timed(value = "whoa.simulation.traffic.time", description = "Execution time for traffic simulation task")
+    @Counted(value = "whoa.simulation.traffic.count", description = "Number of traffic simulation cycles")
     @Scheduled(fixedDelayString = "\${app.analytics.simulation.interval-ms:10000}")
     fun simulateTraffic() {
         val increment = Random.nextLong(minIncrement.toLong(), maxIncrement.toLong() + 1)

@@ -7,6 +7,7 @@ import com.subhrodip.oss.whoa.link.dto.UrlAnalyticsResponse
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.micrometer.core.annotation.Timed
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
@@ -26,6 +27,7 @@ class AnalyticsService(
 
     @Async
     @Transactional
+    @Timed(value = "whoa.service.analytics.track.time", description = "Time taken to asynchronously save a click")
     fun trackAnalytics(
         urlEntity: UrlEntity,
         userAgent: String?,
@@ -43,6 +45,7 @@ class AnalyticsService(
     }
 
     @Transactional(readOnly = true)
+    @Timed(value = "whoa.service.analytics.single.time", description = "Execution time for single URL analytics lookup")
     fun getUrlAnalytics(shortCode: String): UrlAnalyticsResponse {
         val urlDto = urlCacheService.getCachedUrl(shortCode)
         val clicks = urlAnalyticsRepository.countByUrlEntityId(urlDto.id)
@@ -55,6 +58,7 @@ class AnalyticsService(
     }
 
     @Transactional(readOnly = true)
+    @Timed(value = "whoa.service.analytics.bulk.time", description = "Execution time for bulk analytics database aggregation")
     fun getBulkAnalytics(currentCounts: Map<String, Long>): BulkAnalyticsResponse {
         val shortCodes = currentCounts.keys.toList()
         if (shortCodes.isEmpty()) return BulkAnalyticsResponse(emptyMap())

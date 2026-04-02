@@ -1,6 +1,7 @@
 package com.subhrodip.oss.whoa.link.exceptions
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -62,8 +63,8 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
     }
 
-    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException::class)
-    fun handleDataIntegrityViolationException(ex: org.springframework.dao.DataIntegrityViolationException): ResponseEntity<ErrorResponse> {
+    @ExceptionHandler(DataIntegrityViolationException::class)
+    fun handleDataIntegrityViolationException(ex: DataIntegrityViolationException): ResponseEntity<ErrorResponse> {
         log.error(ex) { "Data integrity violation: ${ex.message}" }
         val errorResponse =
             ErrorResponse(

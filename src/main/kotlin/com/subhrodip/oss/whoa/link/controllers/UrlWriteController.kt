@@ -4,6 +4,8 @@ import com.subhrodip.oss.whoa.link.constants.UrlConstants
 import com.subhrodip.oss.whoa.link.dto.CreateShortUrlRequest
 import com.subhrodip.oss.whoa.link.dto.CreateShortUrlResponse
 import com.subhrodip.oss.whoa.link.services.UrlWriteService
+import io.micrometer.core.annotation.Counted
+import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -22,6 +24,8 @@ class UrlWriteController(
     private val urlWriteService: UrlWriteService,
 ) {
     @PostMapping
+    @Timed(value = "whoa.urls.create.time", description = "Time taken to create a short URL")
+    @Counted(value = "whoa.urls.create.count", description = "Number of short URL creation attempts")
     @Operation(
         summary = "Create a short URL",
         description = "Accepts a long URL and an optional custom short code to generate a shortened link.",
