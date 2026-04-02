@@ -3,8 +3,6 @@ name: CI Master
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master", "feature/*" ]
 
 jobs:
   format-checker:
