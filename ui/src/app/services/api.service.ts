@@ -67,13 +67,17 @@ export class ApiService {
   }
 
   checkHealth() {
+    this.checkHealthRaw().subscribe(res => {
+      this.isBackendHealthy.set(res.status === 'UP');
+    });
+  }
+
+  checkHealthRaw() {
     return this.http.get<{status: string}>('/actuator/health').pipe(
       catchError((error) => {
         this.isBackendHealthy.set(false);
         return throwError(() => error);
       })
-    ).subscribe(res => {
-      this.isBackendHealthy.set(res.status === 'UP');
-    });
+    );
   }
 }
