@@ -8,11 +8,12 @@ import * as Highcharts from 'highcharts';
 import { ApiService, CreateShortUrlRequest } from './services/api.service';
 import { DbService, LocalUrl, AnalyticsSnapshot } from './services/db.service';
 import { SyncService } from './services/sync.service';
+import { AnimatedCounterComponent } from './components/animated-counter';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, HighchartsChartComponent],
+  imports: [CommonModule, FormsModule, HighchartsChartComponent, AnimatedCounterComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -125,20 +126,22 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.performHealthCheck();
     setInterval(() => this.performHealthCheck(), 60000);
 
+    // Initial fetch and poll for AUTHORITATIVE global clicks from backend
+    this.fetchAuthoritativeGlobalClicks();
+    setInterval(() => this.fetchAuthoritativeGlobalClicks(), 10000);
+
     // Track total links for pagination meta-data
     const totalCountObservable = liveQuery(() => this.localDatabase.db.urls.count());
     totalCountObservable.subscribe(count => {
       this.totalRegistryCount.set(count);
     });
+  }
 
-    // Track total clicks across the whole registry (True Global)
-    const globalClicksObservable = liveQuery(() => 
-      this.localDatabase.db.urls.toArray().then(links => 
-        links.reduce((sum, link) => sum + link.totalClicks, 0)
-      )
-    );
-    globalClicksObservable.subscribe(total => {
-      this.realGlobalClicksTotal.set(total);
+  private fetchAuthoritativeGlobalClicks() {
+    this.shortLinkApi.getGlobalClicks().subscribe({
+      next: (res) => {
+        this.realGlobalClicksTotal.set(res.totalClicks);
+      }
     });
   }
 

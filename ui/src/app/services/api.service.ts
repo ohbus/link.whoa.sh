@@ -22,6 +22,11 @@ export interface BulkAnalyticsResponse {
   clicks: { [key: string]: number };
 }
 
+export interface GlobalClicksResponse {
+  totalClicks: number;
+  serverTimestamp: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -57,6 +62,17 @@ export class ApiService {
 
   getBulkAnalytics(currentCounts: { [key: string]: number }) {
     return this.http.post<BulkAnalyticsResponse>(`${this.baseUrl}/analytics/bulk`, { currentCounts }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 0 || error.status >= 500) {
+          this.isBackendHealthy.set(false);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  getGlobalClicks() {
+    return this.http.get<GlobalClicksResponse>(`${this.baseUrl}/analytics/global`).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 0 || error.status >= 500) {
           this.isBackendHealthy.set(false);

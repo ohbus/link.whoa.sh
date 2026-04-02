@@ -16,6 +16,7 @@ class AnalyticsService(
     private val urlAnalyticsRepository: UrlAnalyticsRepository,
     private val urlRepository: UrlRepository,
     private val urlCacheService: UrlCacheService,
+    private val globalCounterService: GlobalCounterService,
 ) {
     @Value("\${app.baseUrl:http://localhost:8844}")
     private lateinit var baseUrl: String
@@ -34,6 +35,7 @@ class AnalyticsService(
                 ipAddress = ipAddress,
             )
         urlAnalyticsRepository.save(analytics)
+        globalCounterService.incrementRealTime()
     }
 
     @Transactional(readOnly = true)
