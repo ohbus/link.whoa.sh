@@ -6,8 +6,8 @@
 
 # Test info
 
-- Name: shortening.spec.ts >> Shortening & Integrity >> should handle custom code collisions with conflict styling
-- Location: e2e/shortening.spec.ts:15:7
+- Name: advanced-patterns.spec.ts >> Advanced Data Patterns & Monkey Testing >> should handle immediate drawer click with loading indicator
+- Location: e2e/advanced-patterns.spec.ts:89:7
 
 # Error details
 

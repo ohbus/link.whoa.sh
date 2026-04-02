@@ -6,8 +6,8 @@
 
 # Test info
 
-- Name: shortening.spec.ts >> Shortening & Integrity >> should handle custom code collisions with conflict styling
-- Location: e2e/shortening.spec.ts:15:7
+- Name: advanced-patterns.spec.ts >> Advanced Data Patterns & Monkey Testing >> should show correct counts after backend update during delta sync
+- Location: e2e/advanced-patterns.spec.ts:71:7
 
 # Error details
 

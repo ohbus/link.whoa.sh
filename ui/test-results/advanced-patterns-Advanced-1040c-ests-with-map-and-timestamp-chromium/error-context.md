@@ -6,8 +6,8 @@
 
 # Test info
 
-- Name: shortening.spec.ts >> Shortening & Integrity >> should handle custom code collisions with conflict styling
-- Location: e2e/shortening.spec.ts:15:7
+- Name: advanced-patterns.spec.ts >> Advanced Data Patterns & Monkey Testing >> should fire correct delta requests with map and timestamp
+- Location: e2e/advanced-patterns.spec.ts:44:7
 
 # Error details
 

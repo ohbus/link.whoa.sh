@@ -6,8 +6,8 @@
 
 # Test info
 
-- Name: shortening.spec.ts >> Shortening & Integrity >> should handle custom code collisions with conflict styling
-- Location: e2e/shortening.spec.ts:15:7
+- Name: shortening.spec.ts >> Shortening & Integrity >> should auto-focus destination input on sidebar button click
+- Location: e2e/shortening.spec.ts:35:7
 
 # Error details
 
