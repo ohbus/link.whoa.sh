@@ -1,3 +1,4 @@
+import 'fake-indexeddb/auto';
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app';
 

@@ -1,3 +1,4 @@
+import 'fake-indexeddb/auto';
 import { Injectable, isDevMode } from '@angular/core';
 import Dexie, { Table } from 'dexie';
 

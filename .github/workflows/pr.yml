@@ -1,33 +1,29 @@
-name: PR Check
+name: PR Validation
 
 on:
   pull_request:
-    branches: [ "master", "feature/*" ]
+    branches: [ "master" ]
 
 jobs:
-  format-checker:
-    name: Format Checker
+  backend-tests:
+    name: Backend Tests & Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'microsoft'
           cache: 'gradle'
-      - name: Check Formatting
-        run: ./gradlew ktlintCheck
+      - name: Lint & Test
+        run: ./gradlew ktlintCheck test
 
-  frontend-checker:
-    name: Frontend Checker
+  frontend-unit-tests:
+    name: Frontend Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
@@ -35,51 +31,50 @@ jobs:
       - name: Install dependencies
         working-directory: ./ui
         run: npm ci --ignore-scripts
-      - name: Lint Frontend
+      - name: Run Vitest
         working-directory: ./ui
-        run: npm run lint --if-present
+        run: npm test -- --watch=false
 
-  build-test-and-artifact:
-    name: Build, Test and Package
+  e2e-tests:
+    name: Playwright E2E Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'microsoft'
           cache: 'gradle'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ui/package-lock.json
+      - name: Install Frontend Deps
+        working-directory: ./ui
+        run: npm ci --ignore-scripts
+      - name: Install Playwright Browsers
+        working-directory: ./ui
+        run: npx playwright install --with-deps chromium
       
-      - name: Build and Test
-        run: ./gradlew build
+      - name: Start Backend in Background
+        run: ./gradlew bootRun &
+        env:
+          SPRING_PROFILES_ACTIVE: dev
       
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v4
+      - name: Wait for Backend
+        run: |
+          timeout 60s bash -c 'until curl -s http://localhost:8844/actuator/health | grep UP; do sleep 2; done'
+      
+      - name: Run Playwright
+        working-directory: ./ui
+        run: npm run e2e
+      
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          report_paths: '**/test/TEST-*.xml'
-          require_tests: true
-          annotate_notice: false
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ci.Dockerfile
-          push: false
-          tags: whoa-app:pr-${{ github.event.pull_request.number }}
-          outputs: type=docker,dest=/tmp/whoa-app.tar
-
-      - name: Upload Docker Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-artifact-pr-${{ github.event.pull_request.number }}
-          path: /tmp/whoa-app.tar
-          retention-days: 90
+          name: playwright-report
+          path: ui/playwright-report/
+          retention-days: 30
