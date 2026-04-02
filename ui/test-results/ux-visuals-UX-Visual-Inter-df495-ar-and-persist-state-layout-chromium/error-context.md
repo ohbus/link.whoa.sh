@@ -6,26 +6,29 @@
 
 # Test info
 
-- Name: ux-visuals.spec.ts >> UX & Visual Interactions >> should open analytics and verify chart structure
-- Location: e2e/ux-visuals.spec.ts:52:7
+- Name: ux-visuals.spec.ts >> UX & Visual Interactions >> should toggle sidebar and persist state layout
+- Location: e2e/ux-visuals.spec.ts:11:7
 
 # Error details
 
 ```
-Test timeout of 60000ms exceeded.
-```
+Error: expect(locator).toHaveClass(expected) failed
 
-```
-Error: locator.fill: Test timeout of 60000ms exceeded.
+Locator: getByTestId('sidebar')
+Expected pattern: /w-64/
+Timeout: 15000ms
+Error: element(s) not found
+
 Call log:
-  - waiting for getByTestId('destination-url-input')
+  - Expect "toHaveClass" with timeout 15000ms
+  - waiting for getByTestId('sidebar')
 
 ```
 
 # Page snapshot
 
 ```yaml
-- generic [ref=e2]: "{\"statusCode\":404,\"errorCode\":\"200001\",\"message\":\"URL not found for short code: index.html\",\"timestamp\":\"2026-04-02T23:25:05.803398+02:00\"}"
+- generic [ref=e2]: "{\"statusCode\":404,\"errorCode\":\"200001\",\"message\":\"URL not found for short code: index.html\",\"timestamp\":\"2026-04-02T23:23:49.823088+02:00\"}"
 ```
 
 # Test source
@@ -46,7 +49,8 @@ Call log:
   13 |     const mainCanvas = page.locator('main');
   14 | 
   15 |     // Initial state: Expanded
-  16 |     await expect(sidebar).toHaveClass(/w-64/);
+> 16 |     await expect(sidebar).toHaveClass(/w-64/);
+     |                           ^ Error: expect(locator).toHaveClass(expected) failed
   17 |     await expect(mainCanvas).toHaveClass(/md:ml-64/);
   18 | 
   19 |     // Toggle: Collapse
@@ -84,8 +88,7 @@ Call log:
   51 | 
   52 |   test('should open analytics and verify chart structure', async ({ page }) => {
   53 |     // Create link
-> 54 |     await page.getByTestId('destination-url-input').fill('https://example.com');
-     |                                                     ^ Error: locator.fill: Test timeout of 60000ms exceeded.
+  54 |     await page.getByTestId('destination-url-input').fill('https://example.com');
   55 |     await page.getByTestId('execute-shorten-btn').click();
   56 |     
   57 |     const firstRow = page.locator('tr').nth(1);

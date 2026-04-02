@@ -6,8 +6,8 @@
 
 # Test info
 
-- Name: ux-visuals.spec.ts >> UX & Visual Interactions >> should open analytics and verify chart structure
-- Location: e2e/ux-visuals.spec.ts:52:7
+- Name: ux-visuals.spec.ts >> UX & Visual Interactions >> should copy short link to clipboard
+- Location: e2e/ux-visuals.spec.ts:29:7
 
 # Error details
 
@@ -25,7 +25,7 @@ Call log:
 # Page snapshot
 
 ```yaml
-- generic [ref=e2]: "{\"statusCode\":404,\"errorCode\":\"200001\",\"message\":\"URL not found for short code: index.html\",\"timestamp\":\"2026-04-02T23:25:05.803398+02:00\"}"
+- generic [ref=e2]: "{\"statusCode\":404,\"errorCode\":\"200001\",\"message\":\"URL not found for short code: index.html\",\"timestamp\":\"2026-04-02T23:24:05.346875+02:00\"}"
 ```
 
 # Test source
@@ -64,7 +64,8 @@ Call log:
   31 |     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   32 | 
   33 |     // 2. Create a link
-  34 |     await page.getByTestId('destination-url-input').fill('https://example.com');
+> 34 |     await page.getByTestId('destination-url-input').fill('https://example.com');
+     |                                                     ^ Error: locator.fill: Test timeout of 60000ms exceeded.
   35 |     await page.getByTestId('execute-shorten-btn').click();
   36 |     
   37 |     const code = await page.getByTestId('destination-url-input').getAttribute('data-last-code'); // Assuming I add this or find it
@@ -84,8 +85,7 @@ Call log:
   51 | 
   52 |   test('should open analytics and verify chart structure', async ({ page }) => {
   53 |     // Create link
-> 54 |     await page.getByTestId('destination-url-input').fill('https://example.com');
-     |                                                     ^ Error: locator.fill: Test timeout of 60000ms exceeded.
+  54 |     await page.getByTestId('destination-url-input').fill('https://example.com');
   55 |     await page.getByTestId('execute-shorten-btn').click();
   56 |     
   57 |     const firstRow = page.locator('tr').nth(1);

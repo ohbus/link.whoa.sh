@@ -130,7 +130,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('ui/package-lock.json') }}
           restore-keys: |
             playwright-${{ runner.os }}-
 
@@ -144,19 +144,14 @@ jobs:
         working-directory: ./ui
         run: npx playwright install-deps chromium
       
-      - name: Pre-build Backend
+      - name: Pre-build Unified Package
         run: ./gradlew build -x test
       
-      - name: Configure environment
-        run: |
-          if [ -f .env ]; then
-            sed -i 's/DB_HOST=db-postgres/DB_HOST=127.0.0.1/g' .env
-          fi
-
-      - name: Run Playwright
+      - name: Run E2E Tests
         working-directory: ./ui
         run: npx playwright test
         env:
+          CI: true
           SPRING_PROFILES_ACTIVE: dev
           DB_HOST: 127.0.0.1
       

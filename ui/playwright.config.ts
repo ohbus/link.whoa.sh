@@ -2,7 +2,8 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Playwright Configuration optimized for high-performance CI/CD.
- * See https://playwright.dev/docs/test-configuration
+ * We serve the UI directly from the Spring Boot backend (port 8844) 
+ * to avoid the overhead of starting a separate Angular dev server in CI.
  */
 export default defineConfig({
   testDir: './e2e',
@@ -14,39 +15,37 @@ export default defineConfig({
   /* Verbose reporting for CI visibility */
   reporter: process.env['CI'] ? [['list'], ['html']] : [['list']],
   
-  /* Increased global timeout for heavy E2E flows in CI */
   timeout: 60 * 1000,
   expect: {
-    timeout: 10 * 1000,
+    timeout: 15 * 1000,
   },
 
   use: {
-    /* Use 127.0.0.1 to bypass IPv6 resolution overhead in CI containers */
-    baseURL: 'http://127.0.0.1:4200',
+    /* 
+     * Base URL points to the Backend which serves the static frontend assets.
+     * This ensures we are testing the actual production-ready bundle.
+     */
+    baseURL: 'http://127.0.0.1:8844',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'on-first-retry',
   },
 
-  /* Standard Playwright WebServer orchestration */
-  webServer: [
-    {
-      command: 'npm start',
-      url: 'http://127.0.0.1:4200',
-      reuseExistingServer: !process.env['CI'],
-      timeout: 180 * 1000,
-    },
-    {
-      /* 
-       * Start backend with dev profile. 
-       * Explicitly overriding DB_HOST to ensure it talks to the CI postgres service on localhost.
-       */
-      command: 'cd .. && DB_HOST=127.0.0.1 SPRING_PROFILES_ACTIVE=dev ./gradlew bootRun',
-      url: 'http://127.0.0.1:8844/actuator/health',
-      reuseExistingServer: !process.env['CI'],
-      timeout: 300 * 1000,
+  /* 
+   * Orchestrate the Backend. 
+   * In CI, we use the pre-built JAR for maximum speed.
+   * Locally, we fallback to bootRun for developer convenience.
+   */
+  webServer: {
+    command: 'cd .. && (java -jar build/libs/link.whoa-0.0.1-SNAPSHOT.jar || ./gradlew bootRun --args="--spring.profiles.active=dev")',
+    url: 'http://127.0.0.1:8844/actuator/health',
+    reuseExistingServer: !process.env['CI'],
+    timeout: 300 * 1000,
+    env: {
+      'SPRING_PROFILES_ACTIVE': 'dev',
+      'DB_HOST': '127.0.0.1'
     }
-  ],
+  },
 
   projects: [
     {

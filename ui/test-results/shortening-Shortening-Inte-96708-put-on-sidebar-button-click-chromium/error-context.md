@@ -6,8 +6,8 @@
 
 # Test info
 
-- Name: shortening.spec.ts >> Shortening & Integrity >> should handle custom code collisions with conflict styling
-- Location: e2e/shortening.spec.ts:15:7
+- Name: shortening.spec.ts >> Shortening & Integrity >> should auto-focus destination input on sidebar button click
+- Location: e2e/shortening.spec.ts:35:7
 
 # Error details
 
@@ -16,16 +16,16 @@ Test timeout of 60000ms exceeded.
 ```
 
 ```
-Error: locator.fill: Test timeout of 60000ms exceeded.
+Error: locator.click: Test timeout of 60000ms exceeded.
 Call log:
-  - waiting for getByTestId('destination-url-input')
+  - waiting for getByTestId('sidebar-shorten-btn')
 
 ```
 
 # Page snapshot
 
 ```yaml
-- generic [ref=e2]: "{\"statusCode\":404,\"errorCode\":\"200001\",\"message\":\"URL not found for short code: index.html\",\"timestamp\":\"2026-04-02T23:21:49.045823+02:00\"}"
+- generic [ref=e2]: "{\"statusCode\":404,\"errorCode\":\"200001\",\"message\":\"URL not found for short code: index.html\",\"timestamp\":\"2026-04-02T23:22:49.434255+02:00\"}"
 ```
 
 # Test source
@@ -47,8 +47,7 @@ Call log:
   14 | 
   15 |   test('should handle custom code collisions with conflict styling', async ({ page }) => {
   16 |     const code = 'fixed-path';
-> 17 |     await page.getByTestId('destination-url-input').fill('https://google.com');
-     |                                                     ^ Error: locator.fill: Test timeout of 60000ms exceeded.
+  17 |     await page.getByTestId('destination-url-input').fill('https://google.com');
   18 |     await page.getByTestId('custom-code-summary').click();
   19 |     await page.getByTestId('custom-path-input').fill(code);
   20 |     await page.getByTestId('execute-shorten-btn').click();
@@ -71,7 +70,8 @@ Call log:
   37 |     await page.evaluate(() => window.scrollTo(0, 1000));
   38 |     
   39 |     // Click sidebar button
-  40 |     await page.getByTestId('sidebar-shorten-btn').click();
+> 40 |     await page.getByTestId('sidebar-shorten-btn').click();
+     |                                                   ^ Error: locator.click: Test timeout of 60000ms exceeded.
   41 |     
   42 |     // Verify focus and visibility
   43 |     const input = page.getByTestId('destination-url-input');

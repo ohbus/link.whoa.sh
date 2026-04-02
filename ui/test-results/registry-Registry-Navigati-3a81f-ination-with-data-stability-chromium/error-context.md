@@ -6,29 +6,26 @@
 
 # Test info
 
-- Name: registry.spec.ts >> Registry & Navigation >> should show empty state when no links exist
-- Location: e2e/registry.spec.ts:11:7
+- Name: registry.spec.ts >> Registry & Navigation >> should handle multi-page keyset pagination with data stability
+- Location: e2e/registry.spec.ts:16:7
 
 # Error details
 
 ```
-Error: expect(locator).toBeVisible() failed
+Test timeout of 60000ms exceeded.
+```
 
-Locator: getByTestId('registry-empty-state')
-Expected: visible
-Timeout: 15000ms
-Error: element(s) not found
-
+```
+Error: locator.fill: Test timeout of 60000ms exceeded.
 Call log:
-  - Expect "toBeVisible" with timeout 15000ms
-  - waiting for getByTestId('registry-empty-state')
+  - waiting for getByTestId('destination-url-input')
 
 ```
 
 # Page snapshot
 
 ```yaml
-- generic [ref=e2]: "{\"statusCode\":404,\"errorCode\":\"200001\",\"message\":\"URL not found for short code: index.html\",\"timestamp\":\"2026-04-02T23:19:32.800885+02:00\"}"
+- generic [ref=e2]: "{\"statusCode\":404,\"errorCode\":\"200001\",\"message\":\"URL not found for short code: index.html\",\"timestamp\":\"2026-04-02T23:19:48.272046+02:00\"}"
 ```
 
 # Test source
@@ -45,15 +42,15 @@ Call log:
   9  |   });
   10 | 
   11 |   test('should show empty state when no links exist', async ({ page }) => {
-> 12 |     await expect(page.getByTestId('registry-empty-state')).toBeVisible();
-     |                                                            ^ Error: expect(locator).toBeVisible() failed
+  12 |     await expect(page.getByTestId('registry-empty-state')).toBeVisible();
   13 |     await expect(page.getByTestId('registry-empty-state')).toContainText('Registry Empty');
   14 |   });
   15 | 
   16 |   test('should handle multi-page keyset pagination with data stability', async ({ page }) => {
   17 |     // 1. Create 12 links (Page 1 holds 10)
   18 |     for (let i = 1; i <= 12; i++) {
-  19 |       await page.getByTestId('destination-url-input').fill(`https://link-${i}.com`);
+> 19 |       await page.getByTestId('destination-url-input').fill(`https://link-${i}.com`);
+     |                                                       ^ Error: locator.fill: Test timeout of 60000ms exceeded.
   20 |       await page.getByTestId('execute-shorten-btn').click();
   21 |       await page.waitForTimeout(100); // Small delay for sequential timestamps
   22 |     }

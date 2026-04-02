@@ -6,29 +6,26 @@
 
 # Test info
 
-- Name: analytics.spec.ts >> Analytics & Real-Time Pulse >> should display live API latency from health-check
-- Location: e2e/analytics.spec.ts:25:7
+- Name: analytics.spec.ts >> Analytics & Real-Time Pulse >> should observe authoritative global clicks incrementing
+- Location: e2e/analytics.spec.ts:11:7
 
 # Error details
 
 ```
-Error: expect(locator).not.toContainText(expected) failed
+Test timeout of 60000ms exceeded.
+```
 
-Locator: getByTestId('latency-value')
-Expected substring: not "0ms"
-Timeout: 15000ms
-Error: element(s) not found
-
+```
+Error: locator.innerText: Test timeout of 60000ms exceeded.
 Call log:
-  - Expect "not toContainText" with timeout 15000ms
-  - waiting for getByTestId('latency-value')
+  - waiting for getByTestId('global-clicks-value')
 
 ```
 
 # Page snapshot
 
 ```yaml
-- generic [ref=e2]: "{\"statusCode\":404,\"errorCode\":\"200001\",\"message\":\"URL not found for short code: index.html\",\"timestamp\":\"2026-04-02T23:18:59.894947+02:00\"}"
+- generic [ref=e2]: "{\"statusCode\":404,\"errorCode\":\"200001\",\"message\":\"URL not found for short code: index.html\",\"timestamp\":\"2026-04-02T23:17:59.438605+02:00\"}"
 ```
 
 # Test source
@@ -46,7 +43,8 @@ Call log:
   10 | 
   11 |   test('should observe authoritative global clicks incrementing', async ({ page }) => {
   12 |     // 1. Get initial value
-  13 |     const initialText = await page.getByTestId('global-clicks-value').innerText();
+> 13 |     const initialText = await page.getByTestId('global-clicks-value').innerText();
+     |                                                                       ^ Error: locator.innerText: Test timeout of 60000ms exceeded.
   14 |     const initialValue = parseInt(initialText.replace(/,/g, '')) || 0;
   15 | 
   16 |     // 2. Wait for background simulation/heartbeat (10s interval)
@@ -60,8 +58,7 @@ Call log:
   24 | 
   25 |   test('should display live API latency from health-check', async ({ page }) => {
   26 |     // Latency should be a real number > 0ms
-> 27 |     await expect(page.getByTestId('latency-value')).not.toContainText('0ms');
-     |                                                         ^ Error: expect(locator).not.toContainText(expected) failed
+  27 |     await expect(page.getByTestId('latency-value')).not.toContainText('0ms');
   28 |     await expect(page.getByTestId('latency-value')).toContainText('ms');
   29 |   });
   30 | 

@@ -1,25 +1,26 @@
-import { FDBFactory } from 'fake-indexeddb';
+import { indexedDB as freshIndexedDB } from 'fake-indexeddb';
 import { TestBed } from '@angular/core/testing';
 import { DbService } from './db.service';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 describe('DbService', () => {
   let service: DbService;
 
   beforeEach(async () => {
     // 1. Completely isolate the IndexedDB environment for this test
-    const freshIndexedDB = new FDBFactory();
     // @ts-ignore
     global.indexedDB = freshIndexedDB;
-    // @ts-ignore
-    global.IDBKeyRange = freshIndexedDB.IDBKeyRange; // Might be needed by Dexie
 
     DbService.skipSeeding = true;
     TestBed.configureTestingModule({
       providers: [DbService]
     });
     service = TestBed.inject(DbService);
-  });
+    
+    // Dexie.clear() returns a promise.
+    await service.db.urls.clear();
+    await service.db.analytics.clear();
+  }, 30000); // 30s timeout for DB init in CI
 
   afterEach(async () => {
     if (service && service.db) {
