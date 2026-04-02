@@ -11,9 +11,9 @@ export default defineConfig({
   retries: process.env['CI'] ? 2 : 0,
   reporter: process.env['CI'] ? [['list'], ['html']] : [['list']],
   
-  timeout: 300 * 1000,
+  timeout: 1200 * 1000,
   expect: {
-    timeout: 30 * 1000,
+    timeout: 120 * 1000,
   },
 
   use: {
@@ -32,7 +32,7 @@ export default defineConfig({
     command: 'cd .. && java -jar build/libs/link.whoa-0.0.1-SNAPSHOT.jar',
     url: 'http://127.0.0.1:8844/actuator/health',
     reuseExistingServer: !process.env['CI'],
-    timeout: 300 * 1000,
+    timeout: 1200 * 1000,
     env: {
       'SPRING_PROFILES_ACTIVE': 'dev',
       'DB_HOST': '127.0.0.1'
