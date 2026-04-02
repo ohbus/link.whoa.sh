@@ -74,7 +74,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   
   // Keyset Pagination State
   currentPageNumber = signal<number>(1);
-  private pageTokenStack: (number | null)[] = [null]; // null represents the first page (latest items)
+  private pageTokenStack: (number | null)[] = [null]; 
 
   aggregatedGlobalClicks = computed(() => {
     return this.realGlobalClicksTotal();
@@ -86,7 +86,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   isSyncTaskRunning = this.backgroundSync.isSyncing;
 
   constructor() {
-    // Reactive Chart Updates
     effect(() => {
       const timeSeriesData = this.historicalAnalyticsSnapshots().map(snapshot => [snapshot.timestamp, snapshot.clicks] as [number, number]);
       this.clickVelocityChartOptions = {
@@ -95,7 +94,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       };
     });
 
-    // Reactive Token-Based Subscription
     effect(() => {
       const pageIndex = this.currentPageNumber() - 1;
       const currentToken = this.pageTokenStack[pageIndex];
@@ -119,21 +117,42 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Start background sync restricted to visible viewport
     this.backgroundSync.startSync(() => this.currentlyVisibleShortCodes, 30000);
-    
-    // Heartbeat for backend connectivity & metrics
     this.performHealthCheck();
     setInterval(() => this.performHealthCheck(), 60000);
-
-    // Initial fetch and poll for AUTHORITATIVE global clicks from backend
     this.fetchAuthoritativeGlobalClicks();
     setInterval(() => this.fetchAuthoritativeGlobalClicks(), 10000);
 
-    // Track total links for pagination meta-data
     const totalCountObservable = liveQuery(() => this.localDatabase.db.urls.count());
     totalCountObservable.subscribe(count => {
       this.totalRegistryCount.set(count);
+    });
+
+    const globalClicksObservable = liveQuery(() => 
+      this.localDatabase.db.urls.toArray().then(links => 
+        links.reduce((sum, link) => sum + link.totalClicks, 0)
+      )
+    );
+    globalClicksObservable.subscribe(total => {
+      this.realGlobalClicksTotal.set(total);
+    });
+
+    // Initial background sync with global registry
+    this.syncGlobalRegistryPage();
+  }
+
+  private syncGlobalRegistryPage(cursor: number | null = null) {
+    this.shortLinkApi.getPagedUrls(cursor, this.rowsPerPage()).subscribe({
+      next: async (res) => {
+        const transformedLinks = res.links.map(l => ({
+          shortCode: l.shortUrl.split('/').pop() || '',
+          originalUrl: l.originalUrl,
+          shortUrl: l.shortUrl,
+          clicks: l.clicks.valueOf() as number,
+          createdAt: l.createdAt
+        }));
+        await this.localDatabase.bulkAddUrls(transformedLinks);
+      }
     });
   }
 
@@ -225,10 +244,14 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     const currentItems = this.shortLinkRegistry();
     if (currentItems.length === 0) return;
     const nextToken = currentItems[currentItems.length - 1].createdAt;
+    
     if (this.currentPageNumber() < this.totalRegistryPages()) {
       this.pageTokenStack[this.currentPageNumber()] = nextToken;
       this.currentPageNumber.set(this.currentPageNumber() + 1);
       this.currentlyVisibleShortCodes.clear();
+      
+      // Speculative pre-fetch from server if we are nearing end of local cache
+      this.syncGlobalRegistryPage(nextToken);
     }
   }
 

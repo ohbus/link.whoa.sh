@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 
 export interface CreateShortUrlRequest {
@@ -16,11 +16,18 @@ export interface UrlAnalyticsResponse {
   originalUrl: string;
   shortUrl: string;
   clicks: number;
+  createdAt?: string; // ISO string from backend
 }
 
 export interface BulkAnalyticsResponse {
   clicks: { [key: string]: number };
   serverTimestamp: number;
+}
+
+export interface PagedUrlsResponse {
+  links: UrlAnalyticsResponse[];
+  nextCursor: number | null;
+  hasMore: boolean;
 }
 
 export interface GlobalClicksResponse {
@@ -63,6 +70,22 @@ export class ApiService {
 
   getBulkAnalytics(currentCounts: { [key: string]: number }, lastSyncedAt: number | null) {
     return this.http.post<BulkAnalyticsResponse>(`${this.baseUrl}/analytics/bulk`, { currentCounts, lastSyncedAt }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 0 || error.status >= 500) {
+          this.isBackendHealthy.set(false);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  getPagedUrls(cursor: number | null, limit: number = 10) {
+    let params = new HttpParams().set('limit', limit.toString());
+    if (cursor) {
+      params = params.set('cursor', cursor.toString());
+    }
+    
+    return this.http.get<PagedUrlsResponse>(this.baseUrl, { params }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 0 || error.status >= 500) {
           this.isBackendHealthy.set(false);

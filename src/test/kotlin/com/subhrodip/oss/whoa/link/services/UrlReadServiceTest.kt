@@ -3,8 +3,10 @@ package com.subhrodip.oss.whoa.link.services
 import com.subhrodip.oss.whoa.link.domain.UrlEntity
 import com.subhrodip.oss.whoa.link.dto.UrlDto
 import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
+import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -13,6 +15,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.verify
+import org.springframework.test.util.ReflectionTestUtils
 
 @ExtendWith(MockitoExtension::class)
 class UrlReadServiceTest {
@@ -25,8 +28,16 @@ class UrlReadServiceTest {
     @Mock
     private lateinit var urlCacheService: UrlCacheService
 
+    @Mock
+    private lateinit var urlAnalyticsRepository: UrlAnalyticsRepository
+
     @InjectMocks
     private lateinit var urlReadService: UrlReadService
+
+    @BeforeEach
+    fun setup() {
+        ReflectionTestUtils.setField(urlReadService, "baseUrl", "http://localhost:8844")
+    }
 
     @Test
     fun `test getOriginalUrl`() {

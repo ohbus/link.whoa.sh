@@ -3,8 +3,10 @@ package com.subhrodip.oss.whoa.link.controllers
 import com.subhrodip.oss.whoa.link.constants.UrlConstants
 import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsRequest
 import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsResponse
+import com.subhrodip.oss.whoa.link.dto.PagedUrlsResponse
 import com.subhrodip.oss.whoa.link.dto.UrlAnalyticsResponse
 import com.subhrodip.oss.whoa.link.services.AnalyticsService
+import com.subhrodip.oss.whoa.link.services.UrlReadService
 import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Analytics", description = "Endpoints for retrieving URL usage statistics")
 class UrlAnalyticsController(
     private val analyticsService: AnalyticsService,
+    private val urlReadService: UrlReadService,
 ) {
     @GetMapping("/{shortCode}/analytics")
     @Timed(value = "whoa.analytics.single.time", description = "Time taken to fetch analytics for a single URL")
@@ -53,6 +57,23 @@ class UrlAnalyticsController(
         @RequestBody request: BulkAnalyticsRequest,
     ): ResponseEntity<BulkAnalyticsResponse> {
         val response = analyticsService.getBulkAnalytics(request.currentCounts, request.lastSyncedAt)
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping
+    @Timed(value = "whoa.urls.list.time", description = "Time taken to list paged URLs")
+    @Operation(
+        summary = "List registered short links",
+        description = "Returns a paged list of all short links registered in the global registry.",
+        responses = [
+            ApiResponse(responseCode = "200", description = "List retrieved successfully"),
+        ],
+    )
+    fun getPagedUrls(
+        @RequestParam(required = false) cursor: Long?,
+        @RequestParam(defaultValue = "10") limit: Int,
+    ): ResponseEntity<PagedUrlsResponse> {
+        val response = urlReadService.getPagedUrls(cursor, limit)
         return ResponseEntity.ok(response)
     }
 }
