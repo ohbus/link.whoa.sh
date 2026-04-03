@@ -208,7 +208,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // E2E Control Hook
     (window as any).WhoaApp = {
-      forceRefreshAnalytics: () => this.fetchAuthoritativeGlobalClicks()
+      forceRefreshAnalytics: () => this.fetchAuthoritativeGlobalClicks(),
     };
   }
 
