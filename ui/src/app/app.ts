@@ -124,7 +124,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   totalRegistryPages = computed(() => Math.ceil(this.totalRegistryCount() / this.rowsPerPage()));
 
-  isBackendReachable = this.shortLinkApi.isBackendHealthy;
+  isBackendReachable = computed(() => this.shortLinkApi.isBackendHealthy());
   isSyncTaskRunning = this.backgroundSync.isSyncing;
 
   constructor() {
@@ -181,6 +181,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Immediate E2E Control Hook Registration
+    (window as any).WhoaApp = {
+      forceRefreshAnalytics: () => this.fetchAuthoritativeGlobalClicks(),
+      forceHealthCheck: () => this.shortLinkApi.checkHealthRaw().subscribe(),
+    };
+
     this.backgroundSync.startSync(() => this.currentlyVisibleShortCodes);
     this.fetchAuthoritativeGlobalClicks();
 
@@ -205,12 +211,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         },
       });
     }, 15000);
-
-    // E2E Control Hook
-    (window as any).WhoaApp = {
-      forceRefreshAnalytics: () => this.fetchAuthoritativeGlobalClicks(),
-      forceHealthCheck: () => this.shortLinkApi.checkHealthRaw().subscribe(),
-    };
   }
 
   ngAfterViewInit() {
