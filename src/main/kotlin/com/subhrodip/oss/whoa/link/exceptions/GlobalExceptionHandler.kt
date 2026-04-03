@@ -1,15 +1,20 @@
 package com.subhrodip.oss.whoa.link.exceptions
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
+private val log = KotlinLogging.logger {}
+
 @RestControllerAdvice
 class GlobalExceptionHandler {
     @ExceptionHandler(UrlNotFoundException::class)
     fun handleUrlNotFoundException(ex: UrlNotFoundException): ResponseEntity<ErrorResponse> {
+        log.warn { "URL not found: ${ex.message}" }
         val errorResponse =
             ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
@@ -23,7 +28,8 @@ class GlobalExceptionHandler {
         ValidationException::class,
         MethodArgumentNotValidException::class,
     )
-    fun handleValidationException(ex: ValidationException): ResponseEntity<ErrorResponse> {
+    fun handleValidationException(ex: Exception): ResponseEntity<ErrorResponse> {
+        log.warn { "Validation failed: ${ex.message}" }
         val errorResponse =
             ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
@@ -35,6 +41,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodNotSupportedException::class)
     fun handleMethodNotSupportedException(ex: MethodNotSupportedException): ResponseEntity<ErrorResponse> {
+        log.warn { "Method not supported: ${ex.message}" }
         val errorResponse =
             ErrorResponse(
                 HttpStatus.METHOD_NOT_ALLOWED.value(),
@@ -46,6 +53,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(ShortCodeAlreadyExistsException::class)
     fun handleShortCodeAlreadyExistsException(ex: ShortCodeAlreadyExistsException): ResponseEntity<ErrorResponse> {
+        log.warn { "Short code already exists: ${ex.message}" }
         val errorResponse =
             ErrorResponse(
                 HttpStatus.CONFLICT.value(),
@@ -55,8 +63,9 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
     }
 
-    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException::class)
-    fun handleDataIntegrityViolationException(ex: org.springframework.dao.DataIntegrityViolationException): ResponseEntity<ErrorResponse> {
+    @ExceptionHandler(DataIntegrityViolationException::class)
+    fun handleDataIntegrityViolationException(ex: DataIntegrityViolationException): ResponseEntity<ErrorResponse> {
+        log.error(ex) { "Data integrity violation: ${ex.message}" }
         val errorResponse =
             ErrorResponse(
                 HttpStatus.CONFLICT.value(),
@@ -68,6 +77,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(InternalServerErrorException::class)
     fun handleInternalServerErrorException(ex: InternalServerErrorException): ResponseEntity<ErrorResponse> {
+        log.error(ex) { "Internal server error: ${ex.message}" }
         val errorResponse =
             ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -79,6 +89,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     fun handleGenericException(ex: Exception): ResponseEntity<ErrorResponse> {
+        log.error(ex) { "Unexpected system error: ${ex.message}" }
         val errorResponse =
             ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),

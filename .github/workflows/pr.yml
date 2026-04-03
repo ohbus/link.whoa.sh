@@ -1,85 +1,233 @@
-name: PR Check
+name: PR Validation
 
 on:
   pull_request:
-    branches: [ "master", "feature/*" ]
+    branches: [ "master" ]
 
 jobs:
-  format-checker:
-    name: Format Checker
-    runs-on: ubuntu-latest
+  backend-lint:
+    name: "Lint: Backend (ktlint)"
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'microsoft'
           cache: 'gradle'
-      - name: Check Formatting
+      - name: Run ktlint
         run: ./gradlew ktlintCheck
 
-  frontend-checker:
-    name: Frontend Checker
-    runs-on: ubuntu-latest
+  frontend-lint:
+    name: "Lint: Frontend (Prettier)"
+    runs-on: ubuntu-slim
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: ui/package-lock.json
-      - name: Install dependencies
+      - name: Install Prettier
         working-directory: ./ui
-        run: npm ci
-      - name: Lint Frontend
+        run: npm ci --ignore-scripts
+      - name: Run Prettier Check
         working-directory: ./ui
-        run: npm run lint --if-present
+        run: npm run lint
 
-  build-test-and-artifact:
-    name: Build, Test and Package
+  backend-checks:
+    name: "Backend: Tests"
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: read
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: link_whoa
+          POSTGRES_USER: whoa
+          POSTGRES_PASSWORD: whoa
+        ports:
+          - 5444:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'microsoft'
           cache: 'gradle'
       
-      - name: Build and Test
-        run: ./gradlew build
+      - name: Test
+        run: ./gradlew test
       
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v4
+      - name: Publish Backend Test Report
+        uses: mikepenz/action-junit-report@v6
         if: always()
         with:
-          report_paths: '**/test/TEST-*.xml'
+          report_paths: '**/build/test-results/test/*.xml'
           require_tests: true
           annotate_notice: false
+          annotate_only: true
+          check_name: "Backend: Unit Test Report"
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ci.Dockerfile
-          push: false
-          tags: whoa-app:pr-${{ github.event.pull_request.number }}
-          outputs: type=docker,dest=/tmp/whoa-app.tar
-
-      - name: Upload Docker Artifact
+      - name: Upload Test Results
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: docker-artifact-pr-${{ github.event.pull_request.number }}
-          path: /tmp/whoa-app.tar
-          retention-days: 90
+          name: backend-test-results
+          path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+      
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage-report
+          path: build/reports/jacoco/test/html/
+          retention-days: 7
+
+  frontend-checks:
+    name: "Frontend: Unit Tests"
+    runs-on: ubuntu-slim
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: ui/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: ./ui
+        run: npm ci --ignore-scripts
+      
+      - name: Run Vitest
+        working-directory: ./ui
+        run: npm run test:ci
+      
+      - name: Publish Frontend Test Report
+        uses: mikepenz/action-junit-report@v6
+        if: always()
+        with:
+          report_paths: '**/ui/junit.xml'
+          require_tests: true
+          annotate_notice: false
+          annotate_only: true
+          check_name: "Frontend: Unit Test Report"
+
+      - name: Upload Unit Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-unit-results
+          path: ui/junit.xml
+          retention-days: 7
+      
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage-report
+          path: ui/coverage/
+          retention-days: 7
+
+  e2e-checks:
+    name: "E2E: Playwright Shard ${{ matrix.shardIndex }}/${{ matrix.shardTotal }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    needs: [backend-checks, frontend-checks]
+    strategy:
+      fail-fast: true
+      matrix:
+        shardIndex: [1, 2, 3]
+        shardTotal: [3]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: link_whoa
+          POSTGRES_USER: whoa
+          POSTGRES_PASSWORD: whoa
+        ports:
+          - 5444:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+          cache: 'gradle'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: ui/package-lock.json
+      
+      - name: Install Frontend Deps
+        working-directory: ./ui
+        run: npm ci --ignore-scripts
+
+      - name: Get Playwright version
+        id: playwright-version
+        working-directory: ./ui
+        run: echo "version=$(npm list @playwright/test | grep @playwright/test | sed 's/.*@//')" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright browsers
+        id: cache-playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('ui/package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright Browsers
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        working-directory: ./ui
+        run: npx playwright install chromium --with-deps
+
+      - name: Install Playwright System Deps
+        if: steps.cache-playwright.outputs.cache-hit == 'true'
+        working-directory: ./ui
+        run: npx playwright install-deps chromium
+      
+      - name: Pre-build Unified Package
+        run: ./gradlew build -x test
+      
+      - name: Configure environment
+        run: |
+          if [ -f .env ]; then
+            sed -i 's/DB_HOST=db-postgres/DB_HOST=127.0.0.1/g' .env
+          fi
+
+      - name: Run Playwright Shard
+        working-directory: ./ui
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --reporter=list
+        env:
+          CI: true
+          SPRING_PROFILES_ACTIVE: dev
+          DB_HOST: 127.0.0.1
+      
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-shard-${{ matrix.shardIndex }}
+          path: ui/playwright-report/
+          retention-days: 30

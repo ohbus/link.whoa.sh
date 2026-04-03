@@ -29,6 +29,9 @@ class AnalyticsServiceTest {
     @Mock
     private lateinit var urlCacheService: UrlCacheService
 
+    @Mock
+    private lateinit var globalCounterService: GlobalCounterService
+
     @InjectMocks
     private lateinit var analyticsService: AnalyticsService
 
@@ -39,6 +42,7 @@ class AnalyticsServiceTest {
         analyticsService.trackAnalytics(urlEntity, "user-agent", "127.0.0.1")
 
         verify(urlAnalyticsRepository).save(any<UrlAnalyticsEntity>())
+        verify(globalCounterService).incrementRealTime()
     }
 
     @Test

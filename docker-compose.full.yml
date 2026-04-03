@@ -1,0 +1,24 @@
+---
+include:
+  - docker-compose.yml
+
+services:
+  whoa:
+    build: .
+    container_name: whoa
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    ports:
+      - "8844:8844"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - DB_HOST=db-postgres
+      - DB_PORT=5432
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8844/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 2s
+      start_interval: 1s

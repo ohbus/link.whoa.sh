@@ -3,14 +3,16 @@ package com.subhrodip.oss.whoa.link.services
 import com.subhrodip.oss.whoa.link.domain.UrlEntity
 import com.subhrodip.oss.whoa.link.dto.CreateShortUrlRequest
 import com.subhrodip.oss.whoa.link.dto.CreateShortUrlResponse
-import com.subhrodip.oss.whoa.link.dto.UrlDto
 import com.subhrodip.oss.whoa.link.exceptions.ShortCodeAlreadyExistsException
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
+import io.micrometer.core.annotation.Timed
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cache.annotation.CachePut
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.security.SecureRandom
+
+private val log = KotlinLogging.logger {}
 
 @Service
 @Transactional
@@ -24,6 +26,7 @@ class UrlWriteService(
     private val random = SecureRandom()
     private val shortCodeChars = "abcdefghijklmnopqrstuvwxyz".toCharArray()
 
+    @Timed(value = "whoa.service.urls.create.time", description = "Execution time for creation logic")
     fun createShortUrl(request: CreateShortUrlRequest): CreateShortUrlResponse {
         val shortCode =
             if (request.shortCode.isNullOrBlank()) {
@@ -41,6 +44,7 @@ class UrlWriteService(
                 shortCode = shortCode,
             )
         urlRepository.save(urlEntity)
+        log.info { "Created short URL: $shortCode -> ${request.url}" }
 
         // Populate the cache using the separate service to ensure proxy is used
         urlCacheService.putInCache(urlEntity)

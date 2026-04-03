@@ -11,8 +11,8 @@ plugins {
 }
 
 node {
-    version.set("22.14.0") // LTS version or your preferred node version
-    npmVersion.set("10.2.4")
+    version.set("22.14.0") // Latest LTS version
+    npmVersion.set("10.9.2")
     download.set(true)
     workDir.set(file("${project.projectDir}/.gradle/nodejs"))
     nodeProjectDir.set(file("${project.projectDir}/ui"))
@@ -64,8 +64,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
+    implementation("io.github.oshai:kotlin-logging:7.0.5")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("tools.jackson.module:jackson-module-kotlin")
 
     compileOnly("org.projectlombok:lombok")
