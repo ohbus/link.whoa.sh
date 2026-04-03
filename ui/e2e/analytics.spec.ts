@@ -48,8 +48,10 @@ test.describe('Analytics & Real-Time Pulse', () => {
     // Mock failure
     await context.route('**/actuator/health', route => route.fulfill({ status: 503 }));
     
-    // Wait for next heartbeat (max 15s)
-    await expect(page.getByTestId('system-status')).toContainText('Backend Offline', { timeout: 30000 });
+    // Force a check immediately
+    await page.evaluate(() => (window as any).WhoaApp.forceHealthCheck());
+    
+    await expect(page.getByTestId('system-status')).toContainText('Backend Offline', { timeout: 10000 });
     await expect(page.getByTestId('system-status')).toHaveClass(/text-error/);
   });
 });

@@ -62,7 +62,10 @@ export class SyncService {
       const allRegisteredLinks = await this.localDatabase.getUrls();
       const visibleLinks = allRegisteredLinks.filter((link) => codesInViewport.has(link.shortCode));
 
-      if (visibleLinks.length === 0) return;
+      if (visibleLinks.length === 0) {
+        this.isSyncing.set(false);
+        return;
+      }
 
       // Construct request map: [shortCode] -> [localClickCount]
       const localStateMap: { [shortCode: string]: number } = {};
@@ -72,21 +75,29 @@ export class SyncService {
 
       this.shortLinkApi
         .getBulkAnalytics(localStateMap, this.lastServerTimestamp)
-        .pipe(catchError(() => EMPTY))
+        .pipe(
+          catchError(() => {
+            this.isSyncing.set(false);
+            return EMPTY;
+          }),
+        )
         .subscribe(async (serverResponse) => {
-          // Update the marker for the next delta sync
-          this.lastServerTimestamp = serverResponse.serverTimestamp;
+          try {
+            // Update the marker for the next delta sync
+            this.lastServerTimestamp = serverResponse.serverTimestamp;
 
-          for (const [shortCode, serverClickCount] of Object.entries(serverResponse.clicks)) {
-            // Perform delta update only if server data has diverged
-            if (localStateMap[shortCode] !== serverClickCount) {
-              await this.localDatabase.updateAnalytics(shortCode, serverClickCount);
+            for (const [shortCode, serverClickCount] of Object.entries(serverResponse.clicks)) {
+              // Perform delta update only if server data has diverged
+              if (localStateMap[shortCode] !== serverClickCount) {
+                await this.localDatabase.updateAnalytics(shortCode, serverClickCount);
+              }
             }
+            this.lastSuccessfulSyncTimestamp.set(new Date());
+          } finally {
+            this.isSyncing.set(false);
           }
         });
-
-      this.lastSuccessfulSyncTimestamp.set(new Date());
-    } finally {
+    } catch (e) {
       this.isSyncing.set(false);
     }
   }

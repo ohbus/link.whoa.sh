@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { catchError, throwError } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 
 export interface CreateShortUrlRequest {
   url: string;
@@ -120,6 +120,9 @@ export class ApiService {
 
   checkHealthRaw() {
     return this.http.get<{ status: string }>('/actuator/health').pipe(
+      tap((res) => {
+        if (res.status === 'UP') this.isBackendHealthy.set(true);
+      }),
       catchError((error) => {
         this.isBackendHealthy.set(false);
         return throwError(() => error);

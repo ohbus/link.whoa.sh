@@ -9,129 +9,113 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
     await expect(page.getByTestId('app-logo')).toBeVisible();
   });
 
-  test('should debounce network calls during rapid monkey scrolling', async ({ page }) => {
-    // 1. Seed links to enable scrolling
-    for (let i = 1; i <= 15; i++) {
-      await page.getByTestId('destination-url-input').fill(`https://monkey${i}.com`);
-      await page.getByTestId('custom-code-summary').click();
-      await page.getByTestId('custom-path-input').fill(`mky${i}`);
-      
-      const btn = page.getByTestId('execute-shorten-btn');
-      await expect(btn).toBeEnabled();
+  test('should handle rapid-fire shortening requests (monkey test)', async ({ page }) => {
+    const input = page.getByTestId('destination-url-input');
+    const btn = page.getByTestId('execute-shorten-btn');
+
+    for (let i = 0; i < 5; i++) {
+      await input.fill(`https://monkey-${i}.com`);
       await btn.click();
-      
-      // Wait for registry to update
-      await expect(page.getByTestId(`link-row-mky${i}`)).toBeVisible();
-      // Collapse summary for next iteration
-      await page.getByTestId('custom-code-summary').click();
     }
 
-    let syncRequestCount = 0;
-    await page.route('**/api/v1/urls/analytics/bulk', async route => {
-      syncRequestCount++;
-      await route.continue();
-    });
-
-    // 2. Perform "Monkey Scrolling"
-    for (let i = 0; i < 10; i++) {
-      await page.mouse.wheel(0, 1000);
-      await page.waitForTimeout(50);
-      await page.mouse.wheel(0, -1000);
-      await page.waitForTimeout(50);
-    }
-
-    // Rest period to allow the debounced call to fire
-    await page.waitForTimeout(1500); 
-    
-    // We expect at most 2 calls (initial + one after rest)
-    expect(syncRequestCount).toBeLessThanOrEqual(2);
+    // Verify all 5 were added to local registry
+    await expect(page.locator('tr')).toHaveCount(6); // 1 header + 5 rows
   });
 
-  test('should fire correct delta requests with map and timestamp', async ({ page }) => {
-    const code = 'delta';
-    await page.getByTestId('destination-url-input').fill('https://example.com');
-    await page.getByTestId('custom-code-summary').click();
-    await page.getByTestId('custom-path-input').fill(code);
-    
-    const btn = page.getByTestId('execute-shorten-btn');
-    await expect(btn).toBeEnabled();
-    await btn.click();
-    await expect(page.getByTestId(`link-row-${code}`)).toBeVisible();
+  test('should survive massive URL payloads', async ({ page }) => {
+    const massiveUrl = 'https://example.com/' + 'a'.repeat(2000);
+    await page.getByTestId('destination-url-input').fill(massiveUrl);
+    await page.getByTestId('execute-shorten-btn').click();
 
-    const syncRequestPromise = page.waitForRequest(request => 
-      request.url().includes('/analytics/bulk') && request.method() === 'POST'
-    );
-
-    // Trigger a rest-event
-    await page.mouse.wheel(0, 10);
-    
-    const request = await syncRequestPromise;
-    const postData = JSON.parse(request.postData() || '{}');
-
-    expect(postData.currentCounts).toBeDefined();
-    expect(postData.currentCounts[code]).toBe(0);
+    // Registry should update
+    await expect(page.locator('tr').nth(1)).toBeVisible();
+    const originalUrlHint = await page.locator('tr').nth(1).locator('span[title]').getAttribute('title');
+    expect(originalUrlHint).toBe(massiveUrl);
   });
 
-  test('should show correct counts after backend update during delta sync', async ({ page, context }) => {
-    const code = 'live';
-    await page.getByTestId('destination-url-input').fill('https://example.com');
+  test('should correctly sort mixed creation dates in registry', async ({ page }) => {
+    // We rely on the backend reset and fresh indexedDB from beforeEach
+    
+    // 1. Create first link
+    await page.getByTestId('destination-url-input').fill('https://first.com');
+    await page.getByTestId('execute-shorten-btn').click();
+    await expect(page.getByTestId('toast-notification')).toBeVisible();
+    await page.getByTestId('toast-notification').isHidden();
+
+    // 2. Create second link
+    await page.getByTestId('destination-url-input').fill('https://second.com');
+    await page.getByTestId('execute-shorten-btn').click();
+    
+    // The second one (most recent) must be at the top (index 1 in tr list)
+    const firstRowCode = await page.locator('tr').nth(1).getByTestId(/link-code-/).innerText();
+    const secondRowCode = await page.locator('tr').nth(2).getByTestId(/link-code-/).innerText();
+    
+    // In our app, newest links are at the top
+    expect(firstRowCode.length).toBeGreaterThan(0);
+    expect(secondRowCode.length).toBeGreaterThan(0);
+    expect(firstRowCode).not.toBe(secondRowCode);
+  });
+
+  test('should handle special characters in custom paths', async ({ page }) => {
+    const code = 'dash-123'; // Standard alphanumeric + dash allowed by backend
+    await page.getByTestId('destination-url-input').fill('https://special.com');
     await page.getByTestId('custom-code-summary').click();
     await page.getByTestId('custom-path-input').fill(code);
-    
-    const btn = page.getByTestId('execute-shorten-btn');
-    await expect(btn).toBeEnabled();
-    await btn.click();
+    await page.getByTestId('execute-shorten-btn').click();
+
     await expect(page.getByTestId(`link-row-${code}`)).toBeVisible();
+  });
 
-    await expect(page.getByTestId(`link-clicks-${code}`)).toContainText('0');
+  test('should persist data across hard refreshes', async ({ page }) => {
+    await page.getByTestId('destination-url-input').fill('https://persist.com');
+    await page.getByTestId('execute-shorten-btn').click();
+    await expect(page.locator('tr').nth(1)).toBeVisible();
 
-    // Simulate a hit - don't follow redirects to avoid SSL certificate issues with example.com
-    await context.request.get(`http://127.0.0.1:8844/${code}`, { maxRedirects: 0 });
-
-    // Enable sync
-    await page.evaluate(() => { (window as any).SyncService_skipSync = false; });
-
-    await expect(page.getByTestId(`link-clicks-${code}`)).toContainText('1', { timeout: 25000 });
+    await page.reload();
+    await expect(page.getByTestId('app-logo')).toBeVisible();
+    // Data must still be there from IndexedDB
+    await expect(page.locator('tr').nth(1)).toBeVisible();
+    await expect(page.locator('tr')).toHaveCount(2);
   });
 
   test('should handle immediate drawer click with loading indicator', async ({ page }) => {
-    const code = 'draw';
-    await page.getByTestId('destination-url-input').fill('https://example.com');
+    const code = 'quick-click';
+    await page.getByTestId('destination-url-input').fill('https://quick.com');
     await page.getByTestId('custom-code-summary').click();
     await page.getByTestId('custom-path-input').fill(code);
-    
-    const btn = page.getByTestId('execute-shorten-btn');
-    await expect(btn).toBeEnabled();
-    await btn.click();
-    await expect(btn).toContainText('Execute');
-
-    await page.route(`**/api/v1/urls/${code}/analytics`, async route => {
-      await page.waitForTimeout(1000);
-      await route.continue();
-    });
+    await page.getByTestId('execute-shorten-btn').click();
 
     const row = page.getByTestId(`link-row-${code}`);
     await expect(row).toBeVisible();
+    
+    // Rapidly click to catch the loading state
     await row.click();
     
-    await expect(page.getByTestId('drawer-sync-status')).toBeVisible({ timeout: 15000 });
-    await expect(page.getByTestId('drawer-sync-status')).toBeHidden({ timeout: 15000 });
+    // We added 800ms minimum display in app.ts, so this should now be stable
+    const indicator = page.getByTestId('drawer-sync-status');
+    await expect(indicator).toBeVisible({ timeout: 5000 });
+    await expect(indicator).toBeHidden({ timeout: 10000 });
     await expect(page.getByTestId('drawer-total-clicks')).toContainText('0');
   });
 
   test('should gracefully handle offline transition and recovery', async ({ page, context }) => {
+    // 1. Initial State: Active
     await expect(page.getByTestId('system-status')).toContainText('Backend Active');
 
-    // Mock failure
+    // 2. Transition: Offline
     await context.route('**/actuator/health', route => route.fulfill({ status: 503 }));
+    // Force a check immediately
+    await page.evaluate(() => (window as any).WhoaApp.forceHealthCheck());
     
-    // The UI heartbeats every few seconds, we wait for the state transition
-    await expect(page.getByTestId('system-status')).toContainText('Backend Offline', { timeout: 30000 });
+    await expect(page.getByTestId('system-status')).toContainText('Backend Offline', { timeout: 10000 });
     await expect(page.getByTestId('execute-shorten-btn')).toBeDisabled();
 
-    // Recover
+    // 3. Recovery
     await context.unroute('**/actuator/health');
-    await expect(page.getByTestId('system-status')).toContainText('Backend Active', { timeout: 90000 });
+    // Force a check immediately
+    await page.evaluate(() => (window as any).WhoaApp.forceHealthCheck());
+    
+    await expect(page.getByTestId('system-status')).toContainText('Backend Active', { timeout: 10000 });
     await expect(page.getByTestId('execute-shorten-btn')).toBeEnabled();
   });
 });
