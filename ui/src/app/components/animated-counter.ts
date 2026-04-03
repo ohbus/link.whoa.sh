@@ -8,18 +8,20 @@ import { CommonModule } from '@angular/common';
   template: `
     <span class="tabular-nums transition-all duration-500">{{ displayValue() | number }}</span>
   `,
-  styles: [`
-    :host {
-      display: inline-block;
-    }
-  `]
+  styles: [
+    `
+      :host {
+        display: inline-block;
+      }
+    `,
+  ],
 })
 export class AnimatedCounterComponent implements OnDestroy {
   /**
    * The authoritative value to animate towards.
    */
   value = input.required<number>();
-  
+
   /**
    * Animation speed in milliseconds per step.
    */

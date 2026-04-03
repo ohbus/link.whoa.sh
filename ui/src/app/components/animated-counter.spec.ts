@@ -8,7 +8,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 @Component({
   standalone: true,
   imports: [AnimatedCounterComponent],
-  template: `<app-animated-counter [value]="targetValue()"></app-animated-counter>`
+  template: `<app-animated-counter [value]="targetValue()"></app-animated-counter>`,
 })
 class TestHostComponent {
   targetValue = signal(0);
@@ -22,7 +22,7 @@ describe('AnimatedCounterComponent', () => {
   beforeEach(async () => {
     vi.useFakeTimers();
     await TestBed.configureTestingModule({
-      imports: [AnimatedCounterComponent, TestHostComponent]
+      imports: [AnimatedCounterComponent, TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestHostComponent);
@@ -32,7 +32,7 @@ describe('AnimatedCounterComponent', () => {
   it('should animate from 0 to target value', async () => {
     const componentFixture = TestBed.createComponent(AnimatedCounterComponent);
     component = componentFixture.componentInstance;
-    
+
     // Set initial value
     componentFixture.componentRef.setInput('value', 100);
     componentFixture.detectChanges();
@@ -53,7 +53,7 @@ describe('AnimatedCounterComponent', () => {
   it('should handle decreasing values', async () => {
     const componentFixture = TestBed.createComponent(AnimatedCounterComponent);
     component = componentFixture.componentInstance;
-    
+
     // Set initial
     componentFixture.componentRef.setInput('value', 100);
     componentFixture.detectChanges();
@@ -63,7 +63,7 @@ describe('AnimatedCounterComponent', () => {
     // Decrease
     componentFixture.componentRef.setInput('value', 50);
     componentFixture.detectChanges();
-    
+
     vi.advanceTimersByTime(2000);
     componentFixture.detectChanges();
     expect(component.displayValue()).toBe(50);

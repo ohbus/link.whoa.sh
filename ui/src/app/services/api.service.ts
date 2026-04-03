@@ -36,11 +36,11 @@ export interface GlobalClicksResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
   private baseUrl = '/api/v1/urls';
-  
+
   // Expose backend health status
   isBackendHealthy = signal<boolean>(true);
 
@@ -53,7 +53,7 @@ export class ApiService {
           this.isBackendHealthy.set(false);
         }
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -64,19 +64,24 @@ export class ApiService {
           this.isBackendHealthy.set(false);
         }
         return throwError(() => error);
-      })
+      }),
     );
   }
 
   getBulkAnalytics(currentCounts: { [key: string]: number }, lastSyncedAt: number | null) {
-    return this.http.post<BulkAnalyticsResponse>(`${this.baseUrl}/analytics/bulk`, { currentCounts, lastSyncedAt }).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 0 || error.status >= 500) {
-          this.isBackendHealthy.set(false);
-        }
-        return throwError(() => error);
+    return this.http
+      .post<BulkAnalyticsResponse>(`${this.baseUrl}/analytics/bulk`, {
+        currentCounts,
+        lastSyncedAt,
       })
-    );
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 0 || error.status >= 500) {
+            this.isBackendHealthy.set(false);
+          }
+          return throwError(() => error);
+        }),
+      );
   }
 
   getPagedUrls(cursor: number | null, limit: number = 10) {
@@ -84,14 +89,14 @@ export class ApiService {
     if (cursor) {
       params = params.set('cursor', cursor.toString());
     }
-    
+
     return this.http.get<PagedUrlsResponse>(this.baseUrl, { params }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 0 || error.status >= 500) {
           this.isBackendHealthy.set(false);
         }
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -102,23 +107,23 @@ export class ApiService {
           this.isBackendHealthy.set(false);
         }
         return throwError(() => error);
-      })
+      }),
     );
   }
 
   checkHealth() {
     this.checkHealthRaw().subscribe({
       next: (res) => this.isBackendHealthy.set(res.status === 'UP'),
-      error: () => this.isBackendHealthy.set(false)
+      error: () => this.isBackendHealthy.set(false),
     });
   }
 
   checkHealthRaw() {
-    return this.http.get<{status: string}>('/actuator/health').pipe(
+    return this.http.get<{ status: string }>('/actuator/health').pipe(
       catchError((error) => {
         this.isBackendHealthy.set(false);
         return throwError(() => error);
-      })
+      }),
     );
   }
 }

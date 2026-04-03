@@ -1,6 +1,25 @@
-import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef, AfterViewInit, OnDestroy, ViewChildren, QueryList } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  computed,
+  inject,
+  effect,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  OnDestroy,
+  ViewChildren,
+  QueryList,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { liveQuery } from 'dexie';
 import { HighchartsChartComponent } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
@@ -13,9 +32,15 @@ import { AnimatedCounterComponent } from './components/animated-counter';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HighchartsChartComponent, AnimatedCounterComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HighchartsChartComponent,
+    AnimatedCounterComponent,
+  ],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('urlInput') destinationUrlInput!: ElementRef<HTMLInputElement>;
@@ -32,7 +57,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   // UI State: Sidebar & Form
   isSidebarCollapsed = signal<boolean>(false);
   shorteningForm: FormGroup;
-  
+
   isShorteningInProgress = signal<boolean>(false);
   shorteningErrorMessage = signal<string | null>(null);
   userNotificationMessage = signal<string | null>(null);
@@ -61,9 +86,26 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     title: { text: 'Clicks Over Time', style: { color: '#e5e2e1' } },
     chart: { backgroundColor: 'transparent', type: 'area' },
     xAxis: { type: 'datetime', labels: { style: { color: '#8f909e' } } },
-    yAxis: { title: { text: 'Total Clicks', style: { color: '#8f909e' } }, labels: { style: { color: '#8f909e' } } },
+    yAxis: {
+      title: { text: 'Total Clicks', style: { color: '#8f909e' } },
+      labels: { style: { color: '#8f909e' } },
+    },
     legend: { itemStyle: { color: '#e5e2e1' } },
-    series: [{ name: 'Clicks', type: 'area', data: [], color: '#bac3ff', fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(186, 195, 255, 0.5)'], [1, 'rgba(186, 195, 255, 0)']] } }]
+    series: [
+      {
+        name: 'Clicks',
+        type: 'area',
+        data: [],
+        color: '#bac3ff',
+        fillColor: {
+          linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+          stops: [
+            [0, 'rgba(186, 195, 255, 0.5)'],
+            [1, 'rgba(186, 195, 255, 0)'],
+          ],
+        },
+      },
+    ],
   };
 
   // Core Data: Registry with Token-based Pagination
@@ -71,10 +113,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   totalRegistryCount = signal<number>(0);
   rowsPerPage = signal<number>(10);
   realGlobalClicksTotal = signal<number>(0);
-  
+
   // Keyset Pagination State
   currentPageNumber = signal<number>(1);
-  private pageTokenStack: (number | null)[] = [null]; 
+  private pageTokenStack: (number | null)[] = [null];
 
   aggregatedGlobalClicks = computed(() => {
     return this.realGlobalClicksTotal();
@@ -87,15 +129,34 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor() {
     this.shorteningForm = this.fb.group({
-      destinationUrl: ['', [Validators.required, Validators.pattern(/^https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}.*/)]],
-      customShortPath: ['', [Validators.pattern(/^[a-zA-Z0-9-]*$/)]]
+      destinationUrl: [
+        '',
+        [Validators.required, Validators.pattern(/^https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}.*/)],
+      ],
+      customShortPath: ['', [Validators.pattern(/^[a-zA-Z0-9-]*$/)]],
     });
 
     effect(() => {
-      const timeSeriesData = this.historicalAnalyticsSnapshots().map(snapshot => [snapshot.timestamp, snapshot.clicks] as [number, number]);
+      const timeSeriesData = this.historicalAnalyticsSnapshots().map(
+        (snapshot) => [snapshot.timestamp, snapshot.clicks] as [number, number],
+      );
       this.clickVelocityChartOptions = {
         ...this.clickVelocityChartOptions,
-        series: [{ name: 'Clicks', type: 'area', data: timeSeriesData, color: '#bac3ff', fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(186, 195, 255, 0.5)'], [1, 'rgba(186, 195, 255, 0)']] } }]
+        series: [
+          {
+            name: 'Clicks',
+            type: 'area',
+            data: timeSeriesData,
+            color: '#bac3ff',
+            fillColor: {
+              linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+              stops: [
+                [0, 'rgba(186, 195, 255, 0.5)'],
+                [1, 'rgba(186, 195, 255, 0)'],
+              ],
+            },
+          },
+        ],
       };
     });
 
@@ -104,23 +165,25 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       const currentToken = this.pageTokenStack[pageIndex];
       const limit = this.rowsPerPage();
 
-      liveQuery(() => this.localDatabase.db.urls
-        .orderBy('createdAt')
-        .reverse()
-        .offset(pageIndex * limit)
-        .limit(limit)
-        .toArray()
-      ).subscribe(urls => this.shortLinkRegistry.set(urls));
+      liveQuery(() =>
+        this.localDatabase.db.urls
+          .orderBy('createdAt')
+          .reverse()
+          .offset(pageIndex * limit)
+          .limit(limit)
+          .toArray(),
+      ).subscribe((urls) => this.shortLinkRegistry.set(urls));
 
-      liveQuery(() => this.localDatabase.db.urls.count())
-        .subscribe(count => this.totalRegistryCount.set(count));
+      liveQuery(() => this.localDatabase.db.urls.count()).subscribe((count) =>
+        this.totalRegistryCount.set(count),
+      );
     });
   }
 
   ngOnInit() {
     this.backgroundSync.startSync(() => this.currentlyVisibleShortCodes);
     this.fetchAuthoritativeGlobalClicks();
-    
+
     // Setup health monitoring
     setInterval(() => {
       const start = Date.now();
@@ -134,7 +197,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         error: () => {
           this.totalPings++;
           this.uptimePercentage.set(Math.round((this.successfulPings / this.totalPings) * 100));
-        }
+        },
       });
     }, 15000);
   }
@@ -166,7 +229,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const shorteningRequest: CreateShortUrlRequest = {
       url: destinationUrl,
-      shortCode: customShortPath || undefined
+      shortCode: customShortPath || undefined,
     };
 
     this.shortLinkApi.createShortUrl(shorteningRequest).subscribe({
@@ -181,21 +244,23 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       error: (error) => {
         if (error.status === 409) {
-          this.shorteningErrorMessage.set(`The path '${shorteningRequest.shortCode}' is already registered.`);
+          this.shorteningErrorMessage.set(
+            `The path '${shorteningRequest.shortCode}' is already registered.`,
+          );
         } else {
           this.shorteningErrorMessage.set('An unexpected system error occurred.');
         }
         this.isShorteningInProgress.set(false);
-      }
+      },
     });
   }
 
   navigateToNextPage() {
     const currentItems = this.shortLinkRegistry();
     if (currentItems.length === 0) return;
-    
+
     const nextToken = currentItems[currentItems.length - 1].createdAt;
-    
+
     if (this.currentPageNumber() < this.totalRegistryPages()) {
       this.pageTokenStack[this.currentPageNumber()] = nextToken;
       this.currentPageNumber.set(this.currentPageNumber() + 1);
@@ -227,7 +292,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private async fetchLatestDetailedAnalytics(shortCode: string, isSilent: boolean = false) {
     if (!isSilent) this.isFetchingDetailedAnalytics.set(true);
-    
+
     this.shortLinkApi.getAnalytics(shortCode).subscribe({
       next: async (data) => {
         await this.localDatabase.updateAnalytics(shortCode, data.clicks);
@@ -235,32 +300,37 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         this.historicalAnalyticsSnapshots.set(history);
         this.isFetchingDetailedAnalytics.set(false);
       },
-      error: () => this.isFetchingDetailedAnalytics.set(false)
+      error: () => this.isFetchingDetailedAnalytics.set(false),
     });
   }
 
   private initViewportObserver() {
-    this.viewportIntersectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const shortCode = entry.target.getAttribute('data-short-code');
-        if (shortCode) {
-          if (entry.isIntersecting) {
-            this.currentlyVisibleShortCodes.add(shortCode);
-          } else {
-            this.currentlyVisibleShortCodes.delete(shortCode);
+    this.viewportIntersectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const shortCode = entry.target.getAttribute('data-short-code');
+          if (shortCode) {
+            if (entry.isIntersecting) {
+              this.currentlyVisibleShortCodes.add(shortCode);
+            } else {
+              this.currentlyVisibleShortCodes.delete(shortCode);
+            }
           }
-        }
-      });
+        });
 
-      if (this.scrollRestStabilizationTimer) clearTimeout(this.scrollRestStabilizationTimer);
-      this.scrollRestStabilizationTimer = setTimeout(() => {
-        this.backgroundSync.performSync(() => this.currentlyVisibleShortCodes);
-      }, 500);
-    }, { threshold: 0.1 });
+        if (this.scrollRestStabilizationTimer) clearTimeout(this.scrollRestStabilizationTimer);
+        this.scrollRestStabilizationTimer = setTimeout(() => {
+          this.backgroundSync.performSync(() => this.currentlyVisibleShortCodes);
+        }, 500);
+      },
+      { threshold: 0.1 },
+    );
 
     this.shortLinkTableRows.changes.subscribe(() => {
       this.viewportIntersectionObserver?.disconnect();
-      this.shortLinkTableRows.forEach(row => this.viewportIntersectionObserver?.observe(row.nativeElement));
+      this.shortLinkTableRows.forEach((row) =>
+        this.viewportIntersectionObserver?.observe(row.nativeElement),
+      );
     });
   }
 
@@ -276,7 +346,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private fetchAuthoritativeGlobalClicks() {
     this.shortLinkApi.getGlobalClicks().subscribe({
-      next: (res) => this.realGlobalClicksTotal.set(res.totalClicks)
+      next: (res) => this.realGlobalClicksTotal.set(res.totalClicks),
     });
   }
 

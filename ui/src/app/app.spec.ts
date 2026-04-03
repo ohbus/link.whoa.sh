@@ -11,7 +11,7 @@ class MockIntersectionObserver {
 Object.defineProperty(window, 'IntersectionObserver', {
   writable: true,
   configurable: true,
-  value: MockIntersectionObserver
+  value: MockIntersectionObserver,
 });
 
 import 'fake-indexeddb/auto';
@@ -40,27 +40,31 @@ describe('AppComponent', () => {
       getGlobalClicks: vi.fn().mockReturnValue(of({ totalClicks: 100 })),
       createShortUrl: vi.fn(),
       getAnalytics: vi.fn().mockReturnValue(of({ clicks: 10 })),
-      getPagedUrls: vi.fn().mockReturnValue(of({ links: [], nextCursor: null, hasMore: false }))
+      getPagedUrls: vi.fn().mockReturnValue(of({ links: [], nextCursor: null, hasMore: false })),
     };
 
     dbMock = {
       db: {
         urls: {
-          orderBy: () => ({ reverse: () => ({ offset: () => ({ limit: () => ({ toArray: () => Promise.resolve([]) }) }) }) }),
+          orderBy: () => ({
+            reverse: () => ({
+              offset: () => ({ limit: () => ({ toArray: () => Promise.resolve([]) }) }),
+            }),
+          }),
           count: () => Promise.resolve(0),
-          toArray: () => Promise.resolve([])
-        }
+          toArray: () => Promise.resolve([]),
+        },
       },
       addUrl: vi.fn().mockResolvedValue(undefined),
       bulkAddUrls: vi.fn().mockResolvedValue(undefined),
       updateAnalytics: vi.fn().mockResolvedValue(undefined),
-      getAnalyticsHistory: vi.fn().mockResolvedValue([])
+      getAnalyticsHistory: vi.fn().mockResolvedValue([]),
     };
 
     syncMock = {
       isSyncing: signal(false),
       startSync: vi.fn(),
-      performSync: vi.fn()
+      performSync: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -69,8 +73,8 @@ describe('AppComponent', () => {
         { provide: ApiService, useValue: apiMock },
         { provide: DbService, useValue: dbMock },
         { provide: SyncService, useValue: syncMock },
-        provideHighcharts()
-      ]
+        provideHighcharts(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);
@@ -91,10 +95,10 @@ describe('AppComponent', () => {
   it('should handle successful shortening', async () => {
     const mockResponse = { originalUrl: 'https://test.com', shortUrl: 'http://loc/abc' };
     apiMock.createShortUrl.mockReturnValue(of(mockResponse));
-    
+
     component.shorteningForm.patchValue({ destinationUrl: 'https://test.com' });
     await component.executeShorteningTask();
-    
+
     expect(dbMock.addUrl).toHaveBeenCalledWith('abc', 'https://test.com', 'http://loc/abc');
     expect(component.shorteningForm.get('destinationUrl')?.value).toBe(null); // After reset
     expect(component.userNotificationMessage()).toContain('successfully');
@@ -102,18 +106,21 @@ describe('AppComponent', () => {
 
   it('should handle shortening error 409', async () => {
     apiMock.createShortUrl.mockReturnValue(throwError(() => ({ status: 409 })));
-    
-    component.shorteningForm.patchValue({ destinationUrl: 'https://test.com', customShortPath: 'taken' });
+
+    component.shorteningForm.patchValue({
+      destinationUrl: 'https://test.com',
+      customShortPath: 'taken',
+    });
     await component.executeShorteningTask();
-    
+
     expect(component.shorteningErrorMessage()).toContain('already registered');
   });
 
   it('should open analytics drawer', async () => {
     const mockUrl = { shortCode: 'abc', originalUrl: 'https://test.com', totalClicks: 10 } as any;
-    
+
     await component.openAnalyticsInsightDrawer(mockUrl);
-    
+
     expect(component.isAnalyticsDrawerOpen()).toBe(true);
     expect(component.selectedShortLinkMetadata()).toEqual(mockUrl);
     expect(apiMock.getAnalytics).toHaveBeenCalledWith('abc');
