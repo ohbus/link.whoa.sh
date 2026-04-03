@@ -140,5 +140,9 @@ sonar {
     properties {
         property("sonar.projectKey", "ohbus_link.whoa.sh")
         property("sonar.organization", "ohbus")
+        property("sonar.javascript.lcov.reportPaths", "ui/coverage/lcov.info")
+        property("sonar.sources", "src/main/kotlin,ui/src/app")
+        property("sonar.tests", "src/test/kotlin,ui/src/app")
+        property("sonar.test.inclusions", "**/*.spec.ts,**/*Test.kt,**/*Tests.kt")
     }
 }

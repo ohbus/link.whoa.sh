@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="14" failures="14" errors="0" time="0.008827125">
+    <testsuite name="src/app/services/api.service.spec.ts" timestamp="2026-04-03T21:04:08.434Z" hostname="CP-AT-D9CGW53372" tests="14" failures="14" errors="0" skipped="0" time="0.008827125">
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should be created" time="0.005780125">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should create a short URL" time="0.000238834">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error 500 when creating short URL" time="0.000209625">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get analytics for a short code" time="0.000203167">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get bulk analytics" time="0.000199959">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get global clicks" time="0.0001925">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get paged URLs" time="0.000217541">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get paged URLs with cursor" time="0.000158167">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getAnalytics" time="0.000174083">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getBulkAnalytics" time="0.000163">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getPagedUrls" time="0.000176292">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getGlobalClicks" time="0.000145584">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should check health raw correctly" time="0.000146667">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in checkHealthRaw" time="0.000146958">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+    </testsuite>
+</testsuites>

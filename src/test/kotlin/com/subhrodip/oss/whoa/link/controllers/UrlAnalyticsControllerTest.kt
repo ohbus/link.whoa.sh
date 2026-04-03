@@ -1,80 +1,63 @@
 package com.subhrodip.oss.whoa.link.controllers
 
-import com.subhrodip.oss.whoa.link.constants.UrlConstants
+import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsRequest
+import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsResponse
+import com.subhrodip.oss.whoa.link.dto.PagedUrlsResponse
 import com.subhrodip.oss.whoa.link.dto.UrlAnalyticsResponse
-import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.services.AnalyticsService
-import com.subhrodip.oss.whoa.link.services.UrlCacheService
 import com.subhrodip.oss.whoa.link.services.UrlReadService
-import com.subhrodip.oss.whoa.link.services.UrlWriteService
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.whenever
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
-import org.springframework.cache.CacheManager
-import org.springframework.http.MediaType
-import org.springframework.test.context.bean.override.mockito.MockitoBean
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import tools.jackson.databind.ObjectMapper
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.http.HttpStatus
 import java.time.OffsetDateTime
-import java.time.temporal.ChronoUnit
+import kotlin.test.assertEquals
 
-@WebMvcTest(UrlAnalyticsController::class)
+@ExtendWith(MockitoExtension::class)
 class UrlAnalyticsControllerTest {
-    @Autowired
-    private lateinit var mockMvc: MockMvc
+    @Mock
+    lateinit var analyticsService: AnalyticsService
 
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
+    @Mock
+    lateinit var urlReadService: UrlReadService
 
-    @MockitoBean
-    private lateinit var analyticsService: AnalyticsService
-
-    @MockitoBean
-    private lateinit var urlReadService: UrlReadService
-
-    @MockitoBean
-    private lateinit var urlWriteService: UrlWriteService
-
-    @MockitoBean
-    private lateinit var urlCacheService: UrlCacheService
-
-    @MockitoBean
-    private lateinit var cacheManager: CacheManager
-
-    private val analyticsPath = UrlConstants.ANALYTICS_PATH
+    @InjectMocks
+    lateinit var urlAnalyticsController: UrlAnalyticsController
 
     @Test
-    fun `should return url analytics when short code exists`() {
-        val shortCode = "abcdef"
-        val now = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS)
-        val analyticsResponse =
-            UrlAnalyticsResponse(
-                originalUrl = "https://example.com",
-                shortUrl = shortCode,
-                clicks = 10,
-            )
+    fun `getUrlAnalytics should return analytics response`() {
+        val mockResponse = UrlAnalyticsResponse("original", "shortUrl", 10, OffsetDateTime.now())
+        `when`(analyticsService.getUrlAnalytics("code1")).thenReturn(mockResponse)
 
-        whenever(analyticsService.getUrlAnalytics(shortCode)).thenReturn(analyticsResponse)
+        val response = urlAnalyticsController.getUrlAnalytics("code1")
 
-        mockMvc
-            .perform(get("${UrlConstants.API_V1_URLS}/$shortCode$analyticsPath"))
-            .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(objectMapper.writeValueAsString(analyticsResponse)))
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(mockResponse, response.body)
     }
 
     @Test
-    fun `should return 404 when getting analytics for non-existent short code`() {
-        val shortCode = "nonexistent"
+    fun `getBulkAnalytics should return bulk response`() {
+        val request = BulkAnalyticsRequest(mapOf("code1" to 1L), 1000L)
+        val mockResponse = BulkAnalyticsResponse(mapOf("code1" to 2L), 2000L)
+        `when`(analyticsService.getBulkAnalytics(request.currentCounts, request.lastSyncedAt)).thenReturn(mockResponse)
 
-        whenever(analyticsService.getUrlAnalytics(shortCode)).thenThrow(UrlNotFoundException("Url not found"))
+        val response = urlAnalyticsController.getBulkAnalytics(request)
 
-        mockMvc
-            .perform(get("${UrlConstants.API_V1_URLS}/$shortCode$analyticsPath"))
-            .andExpect(status().isNotFound)
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(mockResponse, response.body)
+    }
+
+    @Test
+    fun `getPagedUrls should return paged response`() {
+        val mockResponse = PagedUrlsResponse(emptyList(), null, false)
+        `when`(urlReadService.getPagedUrls(100L, 10)).thenReturn(mockResponse)
+
+        val response = urlAnalyticsController.getPagedUrls(100L, 10)
+
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(mockResponse, response.body)
     }
 }

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SyncService } from './sync.service';
 import { ApiService } from './api.service';
@@ -62,5 +62,65 @@ describe('SyncService', () => {
 
     await service.performSync(provider);
     expect(dbMock.updateAnalytics).not.toHaveBeenCalled();
+  });
+
+  it('should schedule sync jobs correctly', () => {
+    vi.useFakeTimers();
+    const provider = vi.fn().mockReturnValue(new Set());
+
+    service.startSync(provider, 1000);
+    expect(provider).toHaveBeenCalledTimes(1); // Initial call
+
+    vi.advanceTimersByTime(1000);
+    expect(provider).toHaveBeenCalledTimes(2);
+
+    service.stopSync();
+    vi.advanceTimersByTime(1000);
+    expect(provider).toHaveBeenCalledTimes(2);
+
+    vi.useRealTimers();
+  });
+
+  it('should respect skipSync flag', () => {
+    vi.useFakeTimers();
+    (window as any).SyncService_skipSync = true;
+    const provider = vi.fn().mockReturnValue(new Set());
+
+    service.startSync(provider, 1000);
+    expect(provider).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(1000);
+    expect(provider).not.toHaveBeenCalled();
+
+    (window as any).SyncService_skipSync = false;
+    vi.useRealTimers();
+  });
+
+  it('should handle empty viewport in performSync', async () => {
+    const provider = () => new Set<string>();
+    await service.performSync(provider);
+    expect(apiMock.getBulkAnalytics).not.toHaveBeenCalled();
+  });
+
+  it('should handle no matching links in performSync', async () => {
+    const provider = () => new Set(['unknown']);
+    await service.performSync(provider);
+    expect(apiMock.getBulkAnalytics).not.toHaveBeenCalled();
+  });
+
+  it('should handle API error in performSync', async () => {
+    const provider = () => new Set(['code1']);
+    apiMock.getBulkAnalytics.mockReturnValue(throwError(() => new Error('API Fail')));
+
+    await service.performSync(provider);
+    expect(service.isSyncing()).toBe(false);
+  });
+
+  it('should handle generic error in performSync', async () => {
+    const provider = () => new Set(['code1']);
+    dbMock.getUrls.mockRejectedValue(new Error('DB Fail'));
+
+    await service.performSync(provider);
+    expect(service.isSyncing()).toBe(false);
   });
 });
