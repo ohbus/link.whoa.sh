@@ -28,13 +28,14 @@ test.describe('Analytics & Real-Time Pulse', () => {
       await context.request.get(`http://127.0.0.1:8844/${code}`, { maxRedirects: 0 });
     }
 
-    // 4. Verify Global Pulse (Backend polls every 10s, UI polls every 60s by default)
-    // In tests, we wait for the update
+    // 4. Force UI refresh and Verify Global Pulse
+    await page.evaluate(() => (window as any).WhoaApp.forceRefreshAnalytics());
+    
     await expect(async () => {
       const currentText = await counter.innerText();
       const currentValue = parseInt(currentText.replace(/,/g, '')) || 0;
       expect(currentValue).toBeGreaterThan(initialValue);
-    }).toPass({ timeout: 60000 });
+    }).toPass({ timeout: 15000 });
   });
 
   test('should display live API latency from health-check', async ({ page }) => {

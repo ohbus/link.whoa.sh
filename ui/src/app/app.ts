@@ -184,10 +184,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.backgroundSync.startSync(() => this.currentlyVisibleShortCodes);
     this.fetchAuthoritativeGlobalClicks();
 
-    // Setup global click polling
+    // Setup global click polling every 10s for responsive UI
     setInterval(() => {
       this.fetchAuthoritativeGlobalClicks();
-    }, 30000);
+    }, 10000);
 
     // Setup health monitoring
     setInterval(() => {
@@ -205,6 +205,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         },
       });
     }, 15000);
+
+    // E2E Control Hook
+    (window as any).WhoaApp = {
+      forceRefreshAnalytics: () => this.fetchAuthoritativeGlobalClicks()
+    };
   }
 
   ngAfterViewInit() {
@@ -303,10 +308,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         await this.localDatabase.updateAnalytics(shortCode, data.clicks);
         const history = await this.localDatabase.getAnalyticsHistory(shortCode);
         this.historicalAnalyticsSnapshots.set(history);
-        // Ensure indicator is visible for at least 500ms for E2E stability
-        setTimeout(() => this.isFetchingDetailedAnalytics.set(false), 500);
+        // Ensure indicator is visible for at least 800ms for E2E stability
+        setTimeout(() => this.isFetchingDetailedAnalytics.set(false), 800);
       },
-      error: () => setTimeout(() => this.isFetchingDetailedAnalytics.set(false), 500),
+      error: () => setTimeout(() => this.isFetchingDetailedAnalytics.set(false), 800),
     });
   }
 

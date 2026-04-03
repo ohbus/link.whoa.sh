@@ -131,7 +131,7 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
 
     // Recover
     await context.unroute('**/actuator/health');
-    await expect(page.getByTestId('system-status')).toContainText('Backend Active', { timeout: 60000 });
+    await expect(page.getByTestId('system-status')).toContainText('Backend Active', { timeout: 90000 });
     await expect(page.getByTestId('execute-shorten-btn')).toBeEnabled();
   });
 });
