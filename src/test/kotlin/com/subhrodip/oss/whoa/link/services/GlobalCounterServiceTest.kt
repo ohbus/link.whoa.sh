@@ -5,13 +5,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import kotlin.test.assertEquals
 
 @ExtendWith(MockitoExtension::class)
 class GlobalCounterServiceTest {
-
     @Mock
     lateinit var urlAnalyticsRepository: UrlAnalyticsRepository
 
@@ -36,7 +35,7 @@ class GlobalCounterServiceTest {
     fun `incrementRealTime should increment local state instantly`() {
         `when`(urlAnalyticsRepository.countAllClicks()).thenReturn(0L)
         globalCounterService.init()
-        
+
         globalCounterService.incrementRealTime()
         assertEquals(1L, globalCounterService.getTotalClicks())
     }

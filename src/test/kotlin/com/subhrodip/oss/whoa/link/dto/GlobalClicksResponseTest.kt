@@ -5,7 +5,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 class GlobalClicksResponseTest {
-
     @Test
     fun `GlobalClicksResponse should implement equals and hashCode correctly`() {
         val res1 = GlobalClicksResponse(100L, 1000L)
@@ -16,7 +15,7 @@ class GlobalClicksResponseTest {
         assertEquals(res1.hashCode(), res2.hashCode())
         assertNotEquals(res1, res3)
         assertNotEquals(res1.hashCode(), res3.hashCode())
-        
+
         val resStr = res1.toString()
         assert(resStr.contains("100"))
         assert(resStr.contains("1000"))

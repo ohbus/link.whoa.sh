@@ -8,12 +8,11 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.test.util.ReflectionTestUtils
 import javax.sql.DataSource
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @ExtendWith(MockitoExtension::class)
 class DataSourceConfigTest {
-
     @InjectMocks
     lateinit var dataSourceConfig: DataSourceConfig
 
@@ -72,7 +71,7 @@ class DataSourceConfigTest {
     fun `dataSource bean builds routing proxy`() {
         val writer = HikariDataSource()
         val reader = HikariDataSource()
-        
+
         val ds = dataSourceConfig.dataSource(writer, reader)
         assertNotNull(ds)
     }

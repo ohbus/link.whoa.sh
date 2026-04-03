@@ -10,15 +10,14 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpStatus
-import kotlin.test.assertEquals
 import java.time.OffsetDateTime
+import kotlin.test.assertEquals
 
 @ExtendWith(MockitoExtension::class)
 class UrlAnalyticsControllerTest {
-
     @Mock
     lateinit var analyticsService: AnalyticsService
 

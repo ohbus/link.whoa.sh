@@ -5,9 +5,13 @@ import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import com.subhrodip.oss.whoa.link.services.GlobalCounterService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
@@ -16,7 +20,6 @@ import kotlin.test.assertEquals
 
 @ExtendWith(MockitoExtension::class)
 class TestingControllerTest {
-
     @Mock
     lateinit var urlRepository: UrlRepository
 
@@ -42,7 +45,7 @@ class TestingControllerTest {
 
         assertEquals(HttpStatus.OK, response.statusCode)
         assertEquals("success", response.body?.get("status"))
-        
+
         verify(urlAnalyticsRepository).deleteAllInBatch()
         verify(urlRepository).deleteAllInBatch()
         verify(cacheManager, times(2)).getCache(anyString())
