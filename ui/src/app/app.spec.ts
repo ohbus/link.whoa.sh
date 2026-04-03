@@ -92,19 +92,18 @@ describe('AppComponent', () => {
     const mockResponse = { originalUrl: 'https://test.com', shortUrl: 'http://loc/abc' };
     apiMock.createShortUrl.mockReturnValue(of(mockResponse));
     
-    component.destinationUrl.set('https://test.com');
+    component.shorteningForm.patchValue({ destinationUrl: 'https://test.com' });
     await component.executeShorteningTask();
     
     expect(dbMock.addUrl).toHaveBeenCalledWith('abc', 'https://test.com', 'http://loc/abc');
-    expect(component.destinationUrl()).toBe('');
+    expect(component.shorteningForm.get('destinationUrl')?.value).toBe(null); // After reset
     expect(component.userNotificationMessage()).toContain('successfully');
   });
 
   it('should handle shortening error 409', async () => {
     apiMock.createShortUrl.mockReturnValue(throwError(() => ({ status: 409 })));
     
-    component.destinationUrl.set('https://test.com');
-    component.customShortPath.set('taken');
+    component.shorteningForm.patchValue({ destinationUrl: 'https://test.com', customShortPath: 'taken' });
     await component.executeShorteningTask();
     
     expect(component.shorteningErrorMessage()).toContain('already registered');

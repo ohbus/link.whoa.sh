@@ -11,16 +11,20 @@ test.describe('Shortening & Integrity', () => {
 
   test('should fail to shorten an invalid URL', async ({ page }) => {
     const input = page.getByTestId('destination-url-input');
+    
+    // Fill and trigger validation
     await input.fill('not-a-url');
+    await input.blur();
     
-    // Attempt to click - might be blocked by browser validation or just stay on page
-    await page.getByTestId('execute-shorten-btn').click();
-    
-    // Verify input is marked invalid (Angular adds ng-invalid)
+    // Verify Angular validation state via standard class
     await expect(input).toHaveClass(/ng-invalid/);
     
-    // Button might be disabled depending on implementation, or just show no toast
-    await expect(page.getByTestId('toast-notification')).not.toBeVisible();
+    // Verify UI error message appears
+    await expect(page.getByTestId('url-validation-error')).toBeVisible();
+    
+    // Button must be disabled
+    const btn = page.getByTestId('execute-shorten-btn');
+    await expect(btn).toBeDisabled();
   });
 
   test('should handle custom code collisions with conflict styling', async ({ page }) => {
@@ -40,9 +44,12 @@ test.describe('Shortening & Integrity', () => {
     // Try to create another with the same code
     await page.getByTestId('destination-url-input').fill('https://bing.com');
     await page.getByTestId('custom-path-input').fill(code);
+    
+    // Form should still be valid
+    await expect(btn).toBeEnabled();
     await btn.click();
 
-    // Verify Error Messaging
+    // Verify Error Messaging (from backend)
     const errorEl = page.getByTestId('shortening-error');
     await expect(errorEl).toBeVisible();
     await expect(errorEl).toContainText('already registered');
