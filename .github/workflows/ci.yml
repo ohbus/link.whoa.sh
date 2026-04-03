@@ -7,7 +7,7 @@ on:
 jobs:
   backend-lint:
     name: "Lint: Backend (ktlint)"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-java@v5
@@ -20,7 +20,7 @@ jobs:
 
   frontend-lint:
     name: "Lint: Frontend (Prettier)"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
