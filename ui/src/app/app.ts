@@ -128,6 +128,14 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   isSyncTaskRunning = this.backgroundSync.isSyncing;
 
   constructor() {
+    // Late-binding actual implementations to the E2E namespace
+    if ((window as any).WhoaApp) {
+      (window as any).WhoaApp.forceRefreshAnalytics = () => this.fetchAuthoritativeGlobalClicks();
+      (window as any).WhoaApp.forceHealthCheck = () =>
+        this.shortLinkApi.checkHealthRaw().subscribe();
+      (window as any).WhoaApp.getRegistryCount = () => this.totalRegistryCount();
+    }
+
     this.shorteningForm = this.fb.group({
       destinationUrl: [
         '',
@@ -181,12 +189,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Immediate E2E Control Hook Registration
-    (window as any).WhoaApp = {
-      forceRefreshAnalytics: () => this.fetchAuthoritativeGlobalClicks(),
-      forceHealthCheck: () => this.shortLinkApi.checkHealthRaw().subscribe(),
-    };
-
     this.backgroundSync.startSync(() => this.currentlyVisibleShortCodes);
     this.fetchAuthoritativeGlobalClicks();
 
