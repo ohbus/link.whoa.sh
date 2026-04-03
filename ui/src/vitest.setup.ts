@@ -5,9 +5,8 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from '@angular/platform-browser-dynamic/testing';
+import 'fake-indexeddb/auto';
 import { vi } from 'vitest';
-
-console.log("VITEST SETUP LOADED");
 
 getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,

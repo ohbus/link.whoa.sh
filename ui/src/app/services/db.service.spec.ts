@@ -80,4 +80,41 @@ describe('DbService', () => {
     expect(history.length).toBe(1);
     expect(history[0].clicks).toBe(50);
   });
+
+  it('should seed data if empty', async () => {
+    await (service as any).seedDataIfEmpty();
+    
+    const urls = await service.getUrls();
+    expect(urls.length).toBeGreaterThan(0);
+    
+    const initialCount = urls.length;
+    await (service as any).seedDataIfEmpty();
+    const finalUrls = await service.getUrls();
+    expect(finalUrls.length).toBe(initialCount);
+  });
+
+  it('should update existing URLs in bulkAddUrls', async () => {
+    await service.addUrl('code1', 'old', 'old');
+    
+    const links = [
+      {
+        shortCode: 'code1',
+        originalUrl: 'new',
+        shortUrl: 'new',
+        clicks: 100,
+        createdAt: '2026-01-01T00:00:00Z'
+      }
+    ];
+
+    await service.bulkAddUrls(links);
+
+    const urls = await service.getUrls();
+    expect(urls[0].totalClicks).toBe(100);
+  });
+
+  it('should return live urls', async () => {
+    await service.addUrl('abc', 'url', 'url');
+    const urls = await service.liveUrls();
+    expect(urls.length).toBe(1);
+  });
 });
