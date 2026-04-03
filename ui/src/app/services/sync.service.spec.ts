@@ -67,17 +67,17 @@ describe('SyncService', () => {
   it('should schedule sync jobs correctly', () => {
     vi.useFakeTimers();
     const provider = vi.fn().mockReturnValue(new Set());
-    
+
     service.startSync(provider, 1000);
     expect(provider).toHaveBeenCalledTimes(1); // Initial call
-    
+
     vi.advanceTimersByTime(1000);
     expect(provider).toHaveBeenCalledTimes(2);
-    
+
     service.stopSync();
     vi.advanceTimersByTime(1000);
     expect(provider).toHaveBeenCalledTimes(2);
-    
+
     vi.useRealTimers();
   });
 
@@ -85,13 +85,13 @@ describe('SyncService', () => {
     vi.useFakeTimers();
     (window as any).SyncService_skipSync = true;
     const provider = vi.fn().mockReturnValue(new Set());
-    
+
     service.startSync(provider, 1000);
     expect(provider).not.toHaveBeenCalled();
-    
+
     vi.advanceTimersByTime(1000);
     expect(provider).not.toHaveBeenCalled();
-    
+
     (window as any).SyncService_skipSync = false;
     vi.useRealTimers();
   });
@@ -111,7 +111,7 @@ describe('SyncService', () => {
   it('should handle API error in performSync', async () => {
     const provider = () => new Set(['code1']);
     apiMock.getBulkAnalytics.mockReturnValue(throwError(() => new Error('API Fail')));
-    
+
     await service.performSync(provider);
     expect(service.isSyncing()).toBe(false);
   });
@@ -119,7 +119,7 @@ describe('SyncService', () => {
   it('should handle generic error in performSync', async () => {
     const provider = () => new Set(['code1']);
     dbMock.getUrls.mockRejectedValue(new Error('DB Fail'));
-    
+
     await service.performSync(provider);
     expect(service.isSyncing()).toBe(false);
   });

@@ -83,10 +83,10 @@ describe('DbService', () => {
 
   it('should seed data if empty', async () => {
     await (service as any).seedDataIfEmpty();
-    
+
     const urls = await service.getUrls();
     expect(urls.length).toBeGreaterThan(0);
-    
+
     const initialCount = urls.length;
     await (service as any).seedDataIfEmpty();
     const finalUrls = await service.getUrls();
@@ -95,15 +95,15 @@ describe('DbService', () => {
 
   it('should update existing URLs in bulkAddUrls', async () => {
     await service.addUrl('code1', 'old', 'old');
-    
+
     const links = [
       {
         shortCode: 'code1',
         originalUrl: 'new',
         shortUrl: 'new',
         clicks: 100,
-        createdAt: '2026-01-01T00:00:00Z'
-      }
+        createdAt: '2026-01-01T00:00:00Z',
+      },
     ];
 
     await service.bulkAddUrls(links);

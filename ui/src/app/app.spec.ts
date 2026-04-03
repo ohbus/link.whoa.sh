@@ -144,7 +144,7 @@ describe('AppComponent', () => {
     component.destinationUrlInput.nativeElement.scrollIntoView = vi.fn();
     const focusSpy = vi.spyOn(component.destinationUrlInput.nativeElement, 'focus');
     const scrollSpy = vi.spyOn(component.destinationUrlInput.nativeElement, 'scrollIntoView');
-    
+
     component.focusDestinationInput();
     expect(focusSpy).toHaveBeenCalled();
     expect(scrollSpy).toHaveBeenCalled();
@@ -271,13 +271,11 @@ describe('AppComponent', () => {
     window.IntersectionObserver = MockIntersectionObserver;
 
     // Mock ViewChildren QueryList
-    const mockRows = [
-      { nativeElement: document.createElement('tr') },
-    ];
+    const mockRows = [{ nativeElement: document.createElement('tr') }];
     // @ts-ignore
     component.shortLinkTableRows = {
       changes: of(mockRows),
-      forEach: (cb: any) => mockRows.forEach(cb)
+      forEach: (cb: any) => mockRows.forEach(cb),
     };
 
     // @ts-ignore
@@ -286,10 +284,12 @@ describe('AppComponent', () => {
     expect(observerCallback).toBeDefined();
 
     // Trigger callback
-    const entries = [{
-      target: { getAttribute: () => 'abc' },
-      isIntersecting: true
-    }];
+    const entries = [
+      {
+        target: { getAttribute: () => 'abc' },
+        isIntersecting: true,
+      },
+    ];
     observerCallback(entries);
 
     // Verify sync was scheduled
@@ -297,5 +297,4 @@ describe('AppComponent', () => {
     expect(syncMock.performSync).toHaveBeenCalled();
     vi.useRealTimers();
   });
-
-  });
+});
