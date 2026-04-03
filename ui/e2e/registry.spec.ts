@@ -19,11 +19,23 @@ test.describe('Registry & Navigation', () => {
     for (let i = 1; i <= 12; i++) {
       await page.getByTestId('destination-url-input').fill(`https://link${i}.com`);
       const btn = page.getByTestId('execute-shorten-btn');
+      
+      // Ensure button is ready
       await expect(btn).toBeEnabled();
       await btn.click();
+      
+      // Wait for the specific success indicator for this iteration
+      await expect(page.getByTestId('toast-notification')).toBeVisible();
+      // Button returns to stable state
       await expect(btn).toContainText('Execute');
-      // Verify registry update
+      // Wait for registry list to physically grow
       await expect(page.locator('tr')).toHaveCount(Math.min(i + 1, 11));
+      
+      // Clear toast for next run
+      await page.evaluate(() => {
+        const toast = document.querySelector('[data-testid="toast-notification"]');
+        if (toast) toast.remove();
+      });
     }
 
     // 2. Verify Page 1
@@ -45,9 +57,18 @@ test.describe('Registry & Navigation', () => {
     for (let i = 1; i <= 15; i++) {
       await page.getByTestId('destination-url-input').fill(`https://synctest${i}.com`);
       const btn = page.getByTestId('execute-shorten-btn');
+      
       await expect(btn).toBeEnabled();
       await btn.click();
+      
+      // Wait for stability before next fill
       await expect(btn).toContainText('Execute');
+      await expect(page.getByTestId('toast-notification')).toBeVisible();
+      
+      await page.evaluate(() => {
+        const toast = document.querySelector('[data-testid="toast-notification"]');
+        if (toast) toast.remove();
+      });
     }
 
     // Intercept bulk sync
