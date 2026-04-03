@@ -56,9 +56,8 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
     await expect(row).toBeVisible();
 
     const redirectUrl = `http://127.0.0.1:8844/${customCode}`;
-    const visitPage = await context.newPage();
-    await visitPage.goto(redirectUrl);
-    await visitPage.close();
+    // Use API context to avoid browser navigation/SSL flakiness on external targets
+    await context.request.get(redirectUrl, { maxRedirects: 0 });
 
     // Re-enable sync to fetch the new hit
     await page.evaluate(() => {
@@ -66,8 +65,11 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
       window.SyncService_skipSync = false;
     });
 
+    // Trigger the component's natural hover-prefetch logic to update the data instantly
+    await row.hover();
+
     await expect(page.getByTestId(`link-clicks-${customCode}`)).toContainText('1', {
-      timeout: 20000,
+      timeout: 15000,
     });
   });
 

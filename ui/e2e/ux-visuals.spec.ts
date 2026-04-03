@@ -78,8 +78,8 @@ test.describe('UX & Visual Interactions', () => {
     const chartSvg = page.locator('.highcharts-container svg');
     await expect(chartSvg).toBeVisible();
 
-    // Close using backdrop
-    await page.getByTestId('drawer-backdrop').click({ position: { x: 10, y: 10 } });
+    // Close using backdrop (click below the top nav which intercepts pointer events)
+    await page.getByTestId('drawer-backdrop').click({ position: { x: 10, y: 100 }, force: true });
     await expect(page.getByTestId('analytics-drawer')).toBeHidden();
   });
 });

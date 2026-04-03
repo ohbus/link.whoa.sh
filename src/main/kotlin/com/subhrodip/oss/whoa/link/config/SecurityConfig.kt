@@ -14,6 +14,7 @@ class SecurityConfig {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .cors { } // Enable CORS support for API-first architecture
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { it.anyRequest().permitAll() }
@@ -21,8 +22,11 @@ class SecurityConfig {
                 headers
                     .frameOptions { it.deny() }
                     .xssProtection { it.disable() } // Handled by browser or modern CSP
-                    .contentSecurityPolicy { it.policyDirectives("default-src 'self'; script-src 'self'; style-src 'self';") }
-                    .referrerPolicy { it.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN) }
+                    .contentSecurityPolicy {
+                        it.policyDirectives(
+                            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';",
+                        )
+                    }.referrerPolicy { it.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN) }
                     .httpStrictTransportSecurity { it.includeSubDomains(true).maxAgeInSeconds(31536000) }
             }
 
