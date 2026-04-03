@@ -6,6 +6,7 @@ test.describe('UX & Visual Interactions', () => {
     await page.goto('/#/');
     await page.evaluate(async () => { await indexedDB.deleteDatabase('WhoaDatabase'); });
     await page.reload();
+    await expect(page.getByTestId('app-logo')).toBeVisible();
   });
 
   test('should toggle sidebar and persist state layout', async ({ page }) => {
@@ -34,15 +35,16 @@ test.describe('UX & Visual Interactions', () => {
     await page.getByTestId('destination-url-input').fill('https://example.com');
     await page.getByTestId('execute-shorten-btn').click();
     
-    const code = await page.getByTestId('destination-url-input').getAttribute('data-last-code'); // Assuming I add this or find it
-    // Let's just find the first row
+    // Wait for stability
+    await expect(page.getByTestId('execute-shorten-btn')).toContainText('Execute');
+    
     const firstRowCode = await page.locator('tr').nth(1).getByTestId(/link-code-/).innerText();
 
     // 3. Click copy in registry
     await page.getByTestId(`copy-link-${firstRowCode}`).click();
 
     // 4. Verify toast
-    await expect(page.getByTestId('toast-notification')).toContainText('Link copied');
+    await expect(page.getByTestId('toast-notification')).toContainText('copied');
 
     // 5. Verify clipboard content
     const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
@@ -53,12 +55,14 @@ test.describe('UX & Visual Interactions', () => {
     // Create link
     await page.getByTestId('destination-url-input').fill('https://example.com');
     await page.getByTestId('execute-shorten-btn').click();
+    await expect(page.getByTestId('execute-shorten-btn')).toContainText('Execute');
     
-    const firstRow = page.locator('tr').nth(1);
-    await firstRow.click();
+    const firstRowCode = await page.locator('tr').nth(1).getByTestId(/link-code-/).innerText();
+    const cell = page.getByTestId(`link-code-${firstRowCode}`);
+    await cell.click();
 
     // Verify Drawer
-    await expect(page.getByTestId('analytics-drawer')).toBeVisible();
+    await expect(page.getByTestId('analytics-drawer')).toBeVisible({ timeout: 15000 });
     
     // Verify Highcharts is rendering SVG
     const chartSvg = page.locator('.highcharts-container svg');

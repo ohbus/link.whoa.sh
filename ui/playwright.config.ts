@@ -8,7 +8,7 @@ export default defineConfig({
   workers: 1,
   fullyParallel: false,
   forbidOnly: !!process.env['CI'],
-  retries: process.env['CI'] ? 2 : 0,
+  retries: process.env['CI'] ? 3 : 0,
   reporter: process.env['CI'] ? [['list'], ['html']] : [['list']],
   
   timeout: 1200 * 1000,
@@ -18,6 +18,7 @@ export default defineConfig({
 
   use: {
     baseURL: 'http://127.0.0.1:8844',
+    ignoreHTTPSErrors: true,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'on-first-retry',

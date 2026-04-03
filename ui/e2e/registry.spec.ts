@@ -6,6 +6,7 @@ test.describe('Registry & Navigation', () => {
     await page.goto('/#/');
     await page.evaluate(async () => { await indexedDB.deleteDatabase('WhoaDatabase'); });
     await page.reload();
+    await expect(page.getByTestId('app-logo')).toBeVisible();
   });
 
   test('should show empty state when no links exist', async ({ page }) => {
@@ -20,7 +21,9 @@ test.describe('Registry & Navigation', () => {
       const btn = page.getByTestId('execute-shorten-btn');
       await expect(btn).toBeEnabled();
       await btn.click();
-      await expect(page.getByTestId(/link-row-pw/).or(page.locator('tr')).first()).toBeVisible();
+      await expect(btn).toContainText('Execute');
+      // Verify registry update
+      await expect(page.locator('tr')).toHaveCount(Math.min(i + 1, 11));
     }
 
     // 2. Verify Page 1
@@ -44,6 +47,7 @@ test.describe('Registry & Navigation', () => {
       const btn = page.getByTestId('execute-shorten-btn');
       await expect(btn).toBeEnabled();
       await btn.click();
+      await expect(btn).toContainText('Execute');
     }
 
     // Intercept bulk sync
@@ -51,7 +55,7 @@ test.describe('Registry & Navigation', () => {
       request.url().includes('/analytics/bulk')
     );
 
-    // Trigger scroll rest
+    // Trigger scroll rest by scrolling slightly
     await page.mouse.wheel(0, 10);
     
     const request = await syncRequestPromise;

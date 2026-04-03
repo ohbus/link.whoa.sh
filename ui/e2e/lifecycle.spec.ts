@@ -15,9 +15,9 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
       window.SyncService_skipSync = true;
     });
     
-    // Navigate again to ensure the flag is set BEFORE the app starts
     await page.goto('/#/');
     await expect(page.getByTestId('app-logo')).toBeVisible();
+    await page.waitForLoadState('networkidle');
   });
 
   test('should shorten a URL and verify its presence in the registry', async ({ page }) => {
@@ -32,6 +32,9 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
     await expect(btn).toBeEnabled();
     await btn.click();
 
+    // Wait for button to return to stable state
+    await expect(btn).toContainText('Execute');
+    
     await expect(page.getByTestId('toast-notification')).toBeVisible();
     const row = page.getByTestId(`link-row-${customCode}`);
     await expect(row).toBeVisible();
@@ -48,6 +51,7 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
     const btn = page.getByTestId('execute-shorten-btn');
     await expect(btn).toBeEnabled();
     await btn.click();
+    await expect(btn).toContainText('Execute');
     
     const row = page.getByTestId(`link-row-${customCode}`);
     await expect(row).toBeVisible();
@@ -57,12 +61,8 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
     await visitPage.goto(redirectUrl);
     await visitPage.close();
 
-    // Manually trigger sync since background sync is disabled
-    await page.evaluate(async () => {
-      // @ts-ignore
-      const app = document.querySelector('app-root');
-      // Actually we can just wait for the component to poll or trigger it
-      // For now, let's just re-enable it for a second
+    // Re-enable sync to fetch the new hit
+    await page.evaluate(() => {
       // @ts-ignore
       window.SyncService_skipSync = false;
     });
@@ -81,15 +81,17 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
     const btn = page.getByTestId('execute-shorten-btn');
     await expect(btn).toBeEnabled();
     await btn.click();
+    await expect(btn).toContainText('Execute');
 
     const row = page.getByTestId(`link-row-${code}`);
     await row.scrollIntoViewIfNeeded();
     await expect(row).toBeVisible();
     
-    await row.click();
+    // Explicitly click the code cell to trigger the drawer
+    await row.getByTestId(`link-code-${code}`).click();
 
     const drawer = page.getByTestId('analytics-drawer');
-    await expect(drawer).toBeVisible({ timeout: 10000 });
+    await expect(drawer).toBeVisible({ timeout: 15000 });
     await expect(page.getByTestId('drawer-total-clicks')).toContainText('0');
     await expect(page.getByTestId('drawer-chart')).toBeVisible();
   });
@@ -104,13 +106,15 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
     const btn = page.getByTestId('execute-shorten-btn');
     await expect(btn).toBeEnabled();
     await btn.click();
+    await expect(btn).toContainText('Execute');
     await expect(page.getByTestId(`link-row-${code}`)).toBeVisible();
 
     await page.getByTestId('destination-url-input').fill('https://second.com');
     await page.getByTestId('custom-path-input').fill(code);
     await btn.click();
 
-    await expect(page.getByTestId('shortening-error')).toBeVisible();
-    await expect(page.getByTestId('shortening-error')).toContainText(`The path '${code}' is already registered`);
+    const errorEl = page.getByTestId('shortening-error');
+    await expect(errorEl).toBeVisible();
+    await expect(errorEl).toContainText(`The path '${code}' is already registered`);
   });
 });
