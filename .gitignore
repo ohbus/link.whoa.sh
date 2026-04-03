@@ -43,3 +43,8 @@ out/
 ### Logs ###
 *.log
 **/*.log
+
+### Planning ###
+ARCHITECTURE_IMPROVEMENT_ISSUES.md
+SECURITY_HARDENING_ISSUES.md
+DATABASE_PARTITIONING_ROADMAP.md
