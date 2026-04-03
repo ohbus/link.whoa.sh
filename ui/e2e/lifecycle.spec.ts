@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Whoa Link Shortener Full Lifecycle', () => {
-  
   test.beforeEach(async ({ page, request }) => {
     // 1. Reset Backend State
     const resetResponse = await request.post('http://127.0.0.1:8844/api/testing/reset');
@@ -14,7 +13,7 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
       // @ts-ignore
       window.SyncService_skipSync = true;
     });
-    
+
     await page.goto('/#/');
     await expect(page.getByTestId('app-logo')).toBeVisible();
     await page.waitForLoadState('networkidle');
@@ -34,7 +33,7 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
 
     // Wait for button to return to stable state
     await expect(btn).toContainText('Execute');
-    
+
     await expect(page.getByTestId('toast-notification')).toBeVisible();
     const row = page.getByTestId(`link-row-${customCode}`);
     await expect(row).toBeVisible();
@@ -47,12 +46,12 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
     await page.getByTestId('destination-url-input').fill(targetUrl);
     await page.getByTestId('custom-code-summary').click();
     await page.getByTestId('custom-path-input').fill(customCode);
-    
+
     const btn = page.getByTestId('execute-shorten-btn');
     await expect(btn).toBeEnabled();
     await btn.click();
     await expect(btn).toContainText('Execute');
-    
+
     const row = page.getByTestId(`link-row-${customCode}`);
     await expect(row).toBeVisible();
 
@@ -67,7 +66,9 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
       window.SyncService_skipSync = false;
     });
 
-    await expect(page.getByTestId(`link-clicks-${customCode}`)).toContainText('1', { timeout: 20000 });
+    await expect(page.getByTestId(`link-clicks-${customCode}`)).toContainText('1', {
+      timeout: 20000,
+    });
   });
 
   test('should show detailed analytics drawer with time-series chart', async ({ page }) => {
@@ -77,7 +78,7 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
     await page.getByTestId('destination-url-input').fill(targetUrl);
     await page.getByTestId('custom-code-summary').click();
     await page.getByTestId('custom-path-input').fill(code);
-    
+
     const btn = page.getByTestId('execute-shorten-btn');
     await expect(btn).toBeEnabled();
     await btn.click();
@@ -86,7 +87,7 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
     const row = page.getByTestId(`link-row-${code}`);
     await row.scrollIntoViewIfNeeded();
     await expect(row).toBeVisible();
-    
+
     // Explicitly click the code cell to trigger the drawer
     await row.getByTestId(`link-code-${code}`).click();
 
@@ -98,11 +99,11 @@ test.describe('Whoa Link Shortener Full Lifecycle', () => {
 
   test('should handle custom code collisions gracefully', async ({ page }) => {
     const code = 'coll';
-    
+
     await page.getByTestId('destination-url-input').fill('https://first.com');
     await page.getByTestId('custom-code-summary').click();
     await page.getByTestId('custom-path-input').fill(code);
-    
+
     const btn = page.getByTestId('execute-shorten-btn');
     await expect(btn).toBeEnabled();
     await btn.click();

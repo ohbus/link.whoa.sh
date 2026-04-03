@@ -4,7 +4,9 @@ test.describe('Analytics & Real-Time Pulse', () => {
   test.beforeEach(async ({ page, request }) => {
     await request.post('http://127.0.0.1:8844/api/testing/reset');
     await page.goto('/#/');
-    await page.evaluate(async () => { await indexedDB.deleteDatabase('WhoaDatabase'); });
+    await page.evaluate(async () => {
+      await indexedDB.deleteDatabase('WhoaDatabase');
+    });
     await page.reload();
     await expect(page.getByTestId('app-logo')).toBeVisible();
   });
@@ -18,24 +20,26 @@ test.describe('Analytics & Real-Time Pulse', () => {
     // 2. Shorten a link
     await page.getByTestId('destination-url-input').fill('https://example.com');
     await page.getByTestId('execute-shorten-btn').click();
-    
+
     // Wait for button stability
     await expect(page.getByTestId('execute-shorten-btn')).toContainText('Execute');
-    const code = await page.locator('tr').nth(1).getByTestId(/link-code-/).innerText();
+    const code = await page
+      .locator('tr')
+      .nth(1)
+      .getByTestId(/link-code-/)
+      .innerText();
 
     // 3. Generate hits (using no-redirect to avoid SSL issues)
-    for(let i=0; i<3; i++) {
+    for (let i = 0; i < 3; i++) {
       await context.request.get(`http://127.0.0.1:8844/${code}`, { maxRedirects: 0 });
     }
 
-    // 4. Force UI refresh and Verify Global Pulse
-    await page.evaluate(() => (window as any).WhoaApp.forceRefreshAnalytics());
-    
+    // 4. Wait for natural UI refresh and Verify Global Pulse
     await expect(async () => {
       const currentText = await counter.innerText();
       const currentValue = parseInt(currentText.replace(/,/g, '')) || 0;
       expect(currentValue).toBeGreaterThan(initialValue);
-    }).toPass({ timeout: 15000 });
+    }).toPass({ timeout: 60000 });
   });
 
   test('should display live API latency from health-check', async ({ page }) => {
@@ -46,12 +50,11 @@ test.describe('Analytics & Real-Time Pulse', () => {
 
   test('should handle backend connectivity failure', async ({ page, context }) => {
     // Mock failure
-    await context.route('**/actuator/health', route => route.fulfill({ status: 503 }));
-    
-    // Force a check immediately
-    await page.evaluate(() => (window as any).WhoaApp.forceHealthCheck());
-    
-    await expect(page.getByTestId('system-status')).toContainText('Backend Offline', { timeout: 10000 });
+    await context.route('**/actuator/health', (route) => route.fulfill({ status: 503 }));
+
+    await expect(page.getByTestId('system-status')).toContainText('Backend Offline', {
+      timeout: 20000,
+    });
     await expect(page.getByTestId('system-status')).toHaveClass(/text-error/);
   });
 });

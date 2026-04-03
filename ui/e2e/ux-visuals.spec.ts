@@ -4,7 +4,9 @@ test.describe('UX & Visual Interactions', () => {
   test.beforeEach(async ({ page, request }) => {
     await request.post('http://127.0.0.1:8844/api/testing/reset');
     await page.goto('/#/');
-    await page.evaluate(async () => { await indexedDB.deleteDatabase('WhoaDatabase'); });
+    await page.evaluate(async () => {
+      await indexedDB.deleteDatabase('WhoaDatabase');
+    });
     await page.reload();
     await expect(page.getByTestId('app-logo')).toBeVisible();
   });
@@ -34,11 +36,15 @@ test.describe('UX & Visual Interactions', () => {
     // 2. Create a link
     await page.getByTestId('destination-url-input').fill('https://example.com');
     await page.getByTestId('execute-shorten-btn').click();
-    
+
     // Wait for stability
     await expect(page.getByTestId('execute-shorten-btn')).toContainText('Execute');
-    
-    const firstRowCode = await page.locator('tr').nth(1).getByTestId(/link-code-/).innerText();
+
+    const firstRowCode = await page
+      .locator('tr')
+      .nth(1)
+      .getByTestId(/link-code-/)
+      .innerText();
 
     // 3. Click copy in registry
     await page.getByTestId(`copy-link-${firstRowCode}`).click();
@@ -56,18 +62,22 @@ test.describe('UX & Visual Interactions', () => {
     await page.getByTestId('destination-url-input').fill('https://example.com');
     await page.getByTestId('execute-shorten-btn').click();
     await expect(page.getByTestId('execute-shorten-btn')).toContainText('Execute');
-    
-    const firstRowCode = await page.locator('tr').nth(1).getByTestId(/link-code-/).innerText();
+
+    const firstRowCode = await page
+      .locator('tr')
+      .nth(1)
+      .getByTestId(/link-code-/)
+      .innerText();
     const cell = page.getByTestId(`link-code-${firstRowCode}`);
     await cell.click();
 
     // Verify Drawer
     await expect(page.getByTestId('analytics-drawer')).toBeVisible({ timeout: 15000 });
-    
+
     // Verify Highcharts is rendering SVG
     const chartSvg = page.locator('.highcharts-container svg');
     await expect(chartSvg).toBeVisible();
-    
+
     // Close using backdrop
     await page.getByTestId('drawer-backdrop').click({ position: { x: 10, y: 10 } });
     await expect(page.getByTestId('analytics-drawer')).toBeHidden();

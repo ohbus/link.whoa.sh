@@ -129,12 +129,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor() {
     // Late-binding actual implementations to the E2E namespace
-    if ((window as any).WhoaApp) {
-      (window as any).WhoaApp.forceRefreshAnalytics = () => this.fetchAuthoritativeGlobalClicks();
-      (window as any).WhoaApp.forceHealthCheck = () =>
-        this.shortLinkApi.checkHealthRaw().subscribe();
-      (window as any).WhoaApp.getRegistryCount = () => this.totalRegistryCount();
-    }
+    (window as any).WhoaApp = (window as any).WhoaApp || {};
+    (window as any).WhoaApp.forceRefreshAnalytics = () => this.fetchAuthoritativeGlobalClicks();
+    (window as any).WhoaApp.forceHealthCheck = () => this.shortLinkApi.checkHealthRaw().subscribe();
+    (window as any).WhoaApp.getRegistryCount = () => this.totalRegistryCount();
 
     this.shorteningForm = this.fb.group({
       destinationUrl: [
@@ -247,13 +245,16 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.shortLinkApi.createShortUrl(shorteningRequest).subscribe({
       next: async (response) => {
-        const urlSegments = response.shortUrl.split('/');
-        const extractedCode = urlSegments[urlSegments.length - 1];
-        await this.localDatabase.addUrl(extractedCode, response.originalUrl, response.shortUrl);
-        this.shorteningForm.reset();
-        this.showTransientNotification('Short URL generated successfully!');
-        this.isShorteningInProgress.set(false);
-        if (this.currentPageNumber() !== 1) this.currentPageNumber.set(1);
+        try {
+          const urlSegments = response.shortUrl.split('/');
+          const extractedCode = urlSegments[urlSegments.length - 1];
+          await this.localDatabase.addUrl(extractedCode, response.originalUrl, response.shortUrl);
+          this.shorteningForm.reset();
+          this.showTransientNotification('Short URL generated successfully!');
+          if (this.currentPageNumber() !== 1) this.currentPageNumber.set(1);
+        } finally {
+          this.isShorteningInProgress.set(false);
+        }
       },
       error: (error) => {
         if (error.status === 409) {

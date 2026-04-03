@@ -4,24 +4,26 @@ test.describe('Shortening & Integrity', () => {
   test.beforeEach(async ({ page, request }) => {
     await request.post('http://127.0.0.1:8844/api/testing/reset');
     await page.goto('/#/');
-    await page.evaluate(async () => { await indexedDB.deleteDatabase('WhoaDatabase'); });
+    await page.evaluate(async () => {
+      await indexedDB.deleteDatabase('WhoaDatabase');
+    });
     await page.reload();
     await expect(page.getByTestId('app-logo')).toBeVisible();
   });
 
   test('should fail to shorten an invalid URL', async ({ page }) => {
     const input = page.getByTestId('destination-url-input');
-    
+
     // Fill and trigger validation
     await input.fill('not-a-url');
     await input.blur();
-    
+
     // Verify Angular validation state via standard class
     await expect(input).toHaveClass(/ng-invalid/);
-    
+
     // Verify UI error message appears
     await expect(page.getByTestId('url-validation-error')).toBeVisible();
-    
+
     // Button must be disabled
     const btn = page.getByTestId('execute-shorten-btn');
     await expect(btn).toBeDisabled();
@@ -32,19 +34,19 @@ test.describe('Shortening & Integrity', () => {
     await page.getByTestId('destination-url-input').fill('https://google.com');
     await page.getByTestId('custom-code-summary').click();
     await page.getByTestId('custom-path-input').fill(code);
-    
+
     const btn = page.getByTestId('execute-shorten-btn');
     await expect(btn).toBeEnabled();
     await btn.click();
     await expect(btn).toContainText('Execute');
-    
+
     // Wait for the first one to appear
     await expect(page.getByTestId(`link-row-${code}`)).toBeVisible();
 
     // Try to create another with the same code
     await page.getByTestId('destination-url-input').fill('https://bing.com');
     await page.getByTestId('custom-path-input').fill(code);
-    
+
     // Form should still be valid
     await expect(btn).toBeEnabled();
     await btn.click();

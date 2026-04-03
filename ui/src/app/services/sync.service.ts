@@ -30,12 +30,13 @@ export class SyncService {
   startSync(visibleCodesProvider: () => Set<string>, syncIntervalMs: number = 60000) {
     this.stopSync();
 
-    if (SyncService.skipSync) return;
-
-    // Initial execution
-    this.performSync(visibleCodesProvider);
+    // Initial execution if not suppressed
+    if (!SyncService.skipSync) {
+      this.performSync(visibleCodesProvider);
+    }
 
     this.scheduledSyncJobId = setInterval(() => {
+      if (SyncService.skipSync) return;
       this.performSync(visibleCodesProvider);
     }, syncIntervalMs);
   }

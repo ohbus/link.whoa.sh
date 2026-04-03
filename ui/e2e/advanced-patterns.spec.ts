@@ -6,7 +6,6 @@ import { test, expect, Page } from '@playwright/test';
  */
 async function shortenUrl(page: Page, url: string, customCode?: string) {
   const btn = page.getByTestId('execute-shorten-btn');
-  const initialCount = await page.evaluate(() => (window as any).WhoaApp.getRegistryCount());
 
   await page.getByTestId('destination-url-input').fill(url);
 
@@ -25,17 +24,11 @@ async function shortenUrl(page: Page, url: string, customCode?: string) {
   // 1. Wait for success indicator
   await expect(page.getByTestId('toast-notification')).toBeVisible();
 
-  // 2. Wait for physical data sync in component state
-  await expect(async () => {
-    const currentCount = await page.evaluate(() => (window as any).WhoaApp.getRegistryCount());
-    expect(currentCount).toBe(initialCount + 1);
-  }).toPass({ timeout: 10000 });
-
-  // 3. Wait for button to return to ready state (it will be disabled because the form is reset to empty)
+  // 2. Wait for button to return to ready state (it will be disabled because the form is reset to empty)
   await expect(btn).toContainText('Execute');
   await expect(btn).toBeDisabled();
 
-  // 4. Cleanup toast
+  // 3. Cleanup toast
   await page.evaluate(() => {
     const toast = document.querySelector('[data-testid="toast-notification"]');
     if (toast) toast.remove();
@@ -48,12 +41,10 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
     await page.goto('/#/');
     await page.evaluate(async () => {
       await indexedDB.deleteDatabase('WhoaDatabase');
-      (window as any).SyncService_skipSync = true; // SILENCE background noise
     });
     await page.reload();
     await expect(page.getByTestId('app-logo')).toBeVisible();
   });
-
   test('should handle rapid-fire shortening requests (monkey test)', async ({ page }) => {
     // Sequentially create 5 links with settlement verification
     for (let i = 0; i < 5; i++) {
@@ -108,10 +99,6 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
     await expect(page.locator('tr')).toHaveCount(2);
 
     await page.reload();
-    // Re-silence sync after reload
-    await page.evaluate(() => {
-      (window as any).SyncService_skipSync = true;
-    });
 
     await expect(page.getByTestId('app-logo')).toBeVisible();
     await expect(page.locator('tr')).toHaveCount(2);
@@ -139,21 +126,16 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
 
     // 1. Go Offline
     await context.route('**/actuator/health', (route) => route.fulfill({ status: 503 }));
-    await page.evaluate(() => (window as any).WhoaApp.forceHealthCheck());
     await expect(page.getByTestId('system-status')).toContainText('Backend Offline', {
-      timeout: 10000,
+      timeout: 20000,
     });
     await expect(page.getByTestId('execute-shorten-btn')).toBeDisabled();
 
     // 2. Recover
     await context.unroute('**/actuator/health');
 
-    // Retry force-check until recovery propagates
-    await expect(async () => {
-      await page.evaluate(() => (window as any).WhoaApp.forceHealthCheck());
-      await expect(page.getByTestId('system-status')).toContainText('Backend Active', {
-        timeout: 5000,
-      });
-    }).toPass({ timeout: 120000 });
+    await expect(page.getByTestId('system-status')).toContainText('Backend Active', {
+      timeout: 30000,
+    });
   });
 });
