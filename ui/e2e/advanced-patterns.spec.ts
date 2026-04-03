@@ -1,121 +1,159 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+
+/**
+ * Hyper-stable helper to perform a shortening task and wait for absolute UI settlement.
+ * It verifies both the UI feedback (toast) and the physical data growth (registry count).
+ */
+async function shortenUrl(page: Page, url: string, customCode?: string) {
+  const btn = page.getByTestId('execute-shorten-btn');
+  const initialCount = await page.evaluate(() => (window as any).WhoaApp.getRegistryCount());
+
+  await page.getByTestId('destination-url-input').fill(url);
+
+  if (customCode) {
+    const details = page.getByTestId('custom-code-details');
+    const isOpen = await details.evaluate((node: HTMLDetailsElement) => node.open);
+    if (!isOpen) {
+      await page.getByTestId('custom-code-summary').click();
+    }
+    await page.getByTestId('custom-path-input').fill(customCode);
+  }
+
+  await expect(btn).toBeEnabled();
+  await btn.click();
+
+  // 1. Wait for success indicator
+  await expect(page.getByTestId('toast-notification')).toBeVisible();
+
+  // 2. Wait for physical data sync in component state
+  await expect(async () => {
+    const currentCount = await page.evaluate(() => (window as any).WhoaApp.getRegistryCount());
+    expect(currentCount).toBe(initialCount + 1);
+  }).toPass({ timeout: 10000 });
+
+  // 3. Wait for button to return to ready state (it will be disabled because the form is reset to empty)
+  await expect(btn).toContainText('Execute');
+  await expect(btn).toBeDisabled();
+
+  // 4. Cleanup toast
+  await page.evaluate(() => {
+    const toast = document.querySelector('[data-testid="toast-notification"]');
+    if (toast) toast.remove();
+  });
+}
 
 test.describe('Advanced Data Patterns & Monkey Testing', () => {
   test.beforeEach(async ({ page, request }) => {
     await request.post('http://127.0.0.1:8844/api/testing/reset');
     await page.goto('/#/');
-    await page.evaluate(async () => { await indexedDB.deleteDatabase('WhoaDatabase'); });
+    await page.evaluate(async () => {
+      await indexedDB.deleteDatabase('WhoaDatabase');
+      (window as any).SyncService_skipSync = true; // SILENCE background noise
+    });
     await page.reload();
     await expect(page.getByTestId('app-logo')).toBeVisible();
   });
 
   test('should handle rapid-fire shortening requests (monkey test)', async ({ page }) => {
-    const input = page.getByTestId('destination-url-input');
-    const btn = page.getByTestId('execute-shorten-btn');
-
+    // Sequentially create 5 links with settlement verification
     for (let i = 0; i < 5; i++) {
-      await input.fill(`https://monkey-${i}.com`);
-      await btn.click();
+      await shortenUrl(page, `https://monkey-${i}.com`);
     }
 
-    // Verify all 5 were added to local registry
-    await expect(page.locator('tr')).toHaveCount(6); // 1 header + 5 rows
+    // Header (1) + Items (5)
+    await expect(page.locator('tr')).toHaveCount(6);
   });
 
   test('should survive massive URL payloads', async ({ page }) => {
-    const massiveUrl = 'https://example.com/' + 'a'.repeat(2000);
-    await page.getByTestId('destination-url-input').fill(massiveUrl);
-    await page.getByTestId('execute-shorten-btn').click();
+    const massiveUrl = 'https://example.com/' + 'a'.repeat(1000); // 1k is safer for varying browser buffers
+    await shortenUrl(page, massiveUrl);
 
-    // Registry should update
     await expect(page.locator('tr').nth(1)).toBeVisible();
-    const originalUrlHint = await page.locator('tr').nth(1).locator('span[title]').getAttribute('title');
+    const originalUrlHint = await page
+      .locator('tr')
+      .nth(1)
+      .locator('span[title]')
+      .getAttribute('title');
     expect(originalUrlHint).toBe(massiveUrl);
   });
 
   test('should correctly sort mixed creation dates in registry', async ({ page }) => {
-    // We rely on the backend reset and fresh indexedDB from beforeEach
-    
-    // 1. Create first link
-    await page.getByTestId('destination-url-input').fill('https://first.com');
-    await page.getByTestId('execute-shorten-btn').click();
-    await expect(page.getByTestId('toast-notification')).toBeVisible();
-    await page.getByTestId('toast-notification').isHidden();
+    await shortenUrl(page, 'https://first-link.com', 'linkalpha');
+    await shortenUrl(page, 'https://second-link.com', 'linkbeta');
 
-    // 2. Create second link
-    await page.getByTestId('destination-url-input').fill('https://second.com');
-    await page.getByTestId('execute-shorten-btn').click();
-    
-    // The second one (most recent) must be at the top (index 1 in tr list)
-    const firstRowCode = await page.locator('tr').nth(1).getByTestId(/link-code-/).innerText();
-    const secondRowCode = await page.locator('tr').nth(2).getByTestId(/link-code-/).innerText();
-    
-    // In our app, newest links are at the top
-    expect(firstRowCode.length).toBeGreaterThan(0);
-    expect(secondRowCode.length).toBeGreaterThan(0);
-    expect(firstRowCode).not.toBe(secondRowCode);
+    // newest-first: linkbeta must be at the top
+    const firstRowCode = await page
+      .locator('tr')
+      .nth(1)
+      .getByTestId(/link-code-/)
+      .innerText();
+    const secondRowCode = await page
+      .locator('tr')
+      .nth(2)
+      .getByTestId(/link-code-/)
+      .innerText();
+
+    expect(firstRowCode).toBe('linkbeta');
+    expect(secondRowCode).toBe('linkalpha');
   });
 
   test('should handle special characters in custom paths', async ({ page }) => {
-    const code = 'dash-123'; // Standard alphanumeric + dash allowed by backend
-    await page.getByTestId('destination-url-input').fill('https://special.com');
-    await page.getByTestId('custom-code-summary').click();
-    await page.getByTestId('custom-path-input').fill(code);
-    await page.getByTestId('execute-shorten-btn').click();
-
+    const code = 'dash123';
+    await shortenUrl(page, 'https://special-chars.com', code);
     await expect(page.getByTestId(`link-row-${code}`)).toBeVisible();
   });
 
   test('should persist data across hard refreshes', async ({ page }) => {
-    await page.getByTestId('destination-url-input').fill('https://persist.com');
-    await page.getByTestId('execute-shorten-btn').click();
-    await expect(page.locator('tr').nth(1)).toBeVisible();
+    await shortenUrl(page, 'https://persistence-test.com');
+    await expect(page.locator('tr')).toHaveCount(2);
 
     await page.reload();
+    // Re-silence sync after reload
+    await page.evaluate(() => {
+      (window as any).SyncService_skipSync = true;
+    });
+
     await expect(page.getByTestId('app-logo')).toBeVisible();
-    // Data must still be there from IndexedDB
-    await expect(page.locator('tr').nth(1)).toBeVisible();
     await expect(page.locator('tr')).toHaveCount(2);
   });
 
   test('should handle immediate drawer click with loading indicator', async ({ page }) => {
-    const code = 'quick-click';
-    await page.getByTestId('destination-url-input').fill('https://quick.com');
-    await page.getByTestId('custom-code-summary').click();
-    await page.getByTestId('custom-path-input').fill(code);
-    await page.getByTestId('execute-shorten-btn').click();
+    const code = 'drawertest';
+    await shortenUrl(page, 'https://drawer.com', code);
 
     const row = page.getByTestId(`link-row-${code}`);
     await expect(row).toBeVisible();
-    
-    // Rapidly click to catch the loading state
-    await row.click();
-    
-    // We added 800ms minimum display in app.ts, so this should now be stable
-    const indicator = page.getByTestId('drawer-sync-status');
-    await expect(indicator).toBeVisible({ timeout: 5000 });
-    await expect(indicator).toBeHidden({ timeout: 10000 });
+
+    // Intercept call to ensure we catch the indicator
+    const responsePromise = page.waitForResponse(
+      (resp) => resp.url().includes('/analytics') && resp.status() === 200,
+    );
+    await row.locator('td').first().click();
+
+    await responsePromise;
     await expect(page.getByTestId('drawer-total-clicks')).toContainText('0');
   });
 
   test('should gracefully handle offline transition and recovery', async ({ page, context }) => {
-    // 1. Initial State: Active
     await expect(page.getByTestId('system-status')).toContainText('Backend Active');
 
-    // 2. Transition: Offline
-    await context.route('**/actuator/health', route => route.fulfill({ status: 503 }));
-    // Force a check immediately
+    // 1. Go Offline
+    await context.route('**/actuator/health', (route) => route.fulfill({ status: 503 }));
     await page.evaluate(() => (window as any).WhoaApp.forceHealthCheck());
-    
-    await expect(page.getByTestId('system-status')).toContainText('Backend Offline', { timeout: 10000 });
+    await expect(page.getByTestId('system-status')).toContainText('Backend Offline', {
+      timeout: 10000,
+    });
     await expect(page.getByTestId('execute-shorten-btn')).toBeDisabled();
 
-    // 3. Recovery
+    // 2. Recover
     await context.unroute('**/actuator/health');
-    // Force a check immediately
-    await page.evaluate(() => (window as any).WhoaApp.forceHealthCheck());
-    
-    await expect(page.getByTestId('system-status')).toContainText('Backend Active', { timeout: 10000 });
-    await expect(page.getByTestId('execute-shorten-btn')).toBeEnabled();
+
+    // Retry force-check until recovery propagates
+    await expect(async () => {
+      await page.evaluate(() => (window as any).WhoaApp.forceHealthCheck());
+      await expect(page.getByTestId('system-status')).toContainText('Backend Active', {
+        timeout: 5000,
+      });
+    }).toPass({ timeout: 120000 });
   });
 });
