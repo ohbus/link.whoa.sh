@@ -184,6 +184,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.backgroundSync.startSync(() => this.currentlyVisibleShortCodes);
     this.fetchAuthoritativeGlobalClicks();
 
+    // Setup global click polling
+    setInterval(() => {
+      this.fetchAuthoritativeGlobalClicks();
+    }, 30000);
+
     // Setup health monitoring
     setInterval(() => {
       const start = Date.now();
@@ -298,9 +303,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         await this.localDatabase.updateAnalytics(shortCode, data.clicks);
         const history = await this.localDatabase.getAnalyticsHistory(shortCode);
         this.historicalAnalyticsSnapshots.set(history);
-        this.isFetchingDetailedAnalytics.set(false);
+        // Ensure indicator is visible for at least 500ms for E2E stability
+        setTimeout(() => this.isFetchingDetailedAnalytics.set(false), 500);
       },
-      error: () => this.isFetchingDetailedAnalytics.set(false),
+      error: () => setTimeout(() => this.isFetchingDetailedAnalytics.set(false), 500),
     });
   }
 

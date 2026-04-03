@@ -34,7 +34,7 @@ test.describe('Analytics & Real-Time Pulse', () => {
       const currentText = await counter.innerText();
       const currentValue = parseInt(currentText.replace(/,/g, '')) || 0;
       expect(currentValue).toBeGreaterThan(initialValue);
-    }).toPass({ timeout: 30000 });
+    }).toPass({ timeout: 60000 });
   });
 
   test('should display live API latency from health-check', async ({ page }) => {

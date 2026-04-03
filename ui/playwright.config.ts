@@ -11,9 +11,9 @@ export default defineConfig({
   retries: process.env['CI'] ? 3 : 0,
   reporter: process.env['CI'] ? [['list'], ['html']] : [['list']],
   
-  timeout: 1200 * 1000,
+  timeout: 120 * 1000,
   expect: {
-    timeout: 120 * 1000,
+    timeout: 15 * 1000,
   },
 
   use: {

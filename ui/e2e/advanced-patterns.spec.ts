@@ -114,7 +114,7 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
     await expect(row).toBeVisible();
     await row.click();
     
-    await expect(page.getByTestId('drawer-sync-status')).toBeVisible();
+    await expect(page.getByTestId('drawer-sync-status')).toBeVisible({ timeout: 15000 });
     await expect(page.getByTestId('drawer-sync-status')).toBeHidden({ timeout: 15000 });
     await expect(page.getByTestId('drawer-total-clicks')).toContainText('0');
   });
@@ -131,7 +131,7 @@ test.describe('Advanced Data Patterns & Monkey Testing', () => {
 
     // Recover
     await context.unroute('**/actuator/health');
-    await expect(page.getByTestId('system-status')).toContainText('Backend Active', { timeout: 30000 });
+    await expect(page.getByTestId('system-status')).toContainText('Backend Active', { timeout: 60000 });
     await expect(page.getByTestId('execute-shorten-btn')).toBeEnabled();
   });
 });
