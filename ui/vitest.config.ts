@@ -10,7 +10,6 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['src/vitest.setup.ts'],
     include: ['src/**/*.{spec,test}.ts'],
     reporters: ['default', 'junit'],
     outputFile: {
@@ -28,7 +27,7 @@ export default defineConfig({
     },
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       include: ['src/app/**/*.ts'],
       exclude: ['src/app/**/*.spec.ts', 'src/app/app.config.ts', 'src/app/app.routes.ts', 'src/vitest.setup.ts']
     },

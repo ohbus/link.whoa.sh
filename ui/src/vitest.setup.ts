@@ -1,12 +1,18 @@
 import 'zone.js';
 import 'zone.js/testing';
-import 'fake-indexeddb/auto';
 import { getTestBed } from '@angular/core/testing';
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from '@angular/platform-browser-dynamic/testing';
 import { vi } from 'vitest';
+
+console.log("VITEST SETUP LOADED");
+
+getTestBed().initTestEnvironment(
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting(),
+);
 
 // Mock IntersectionObserver
 class MockIntersectionObserver {
@@ -23,8 +29,3 @@ Object.defineProperty(window, 'IntersectionObserver', {
 
 // Polyfill for global
 (window as any).global = window;
-
-getTestBed().initTestEnvironment(
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting(),
-);

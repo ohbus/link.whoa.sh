@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="22" failures="22" errors="0" time="0.138611708">
+    <testsuite name="src/app/app.spec.ts" timestamp="2026-04-03T20:42:36.758Z" hostname="CP-AT-D9CGW53372" tests="6" failures="6" errors="0" skipped="0" time="0.078866">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should create the app" time="0.014723542">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/app.spec.ts:70:19
+ ❯ new ZoneAwarePromise node_modules/zone.js/fesm2015/zone.js:2221:23
+            </failure>
+        </testcase>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should toggle sidebar" time="0.061565958">
+            <failure message="Cannot read properties of null (reading &apos;ngModule&apos;)" type="TypeError">
+TypeError: Cannot read properties of null (reading &apos;ngModule&apos;)
+ ❯ ngModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/util.ts:18:37
+ ❯ isModuleWithProviders ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:683:6
+ ❯ map ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:154:13
+ ❯ NG_MOD_DEF ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:18:14
+ ❯ getNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:22:22
+ ❯ getNgModuleDefOrThrow ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:257:18
+ ❯ verifySemanticsOfNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:200:21
+ ❯ TestBedCompiler.applyProviderOverridesInScope ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:627:31
+ ❯ TestBedCompiler.compileTestModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:987:10
+            </failure>
+        </testcase>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle successful shortening" time="0.000454709">
+            <failure message="Cannot read properties of null (reading &apos;ngModule&apos;)" type="TypeError">
+TypeError: Cannot read properties of null (reading &apos;ngModule&apos;)
+ ❯ ngModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/util.ts:18:37
+ ❯ isModuleWithProviders ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:683:6
+ ❯ map ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:154:13
+ ❯ NG_MOD_DEF ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:18:14
+ ❯ getNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:22:22
+ ❯ getNgModuleDefOrThrow ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:257:18
+ ❯ verifySemanticsOfNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:200:21
+ ❯ TestBedCompiler.applyProviderOverridesInScope ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:627:31
+ ❯ TestBedCompiler.compileTestModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:987:10
+            </failure>
+        </testcase>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle shortening error 409" time="0.000454375">
+            <failure message="Cannot read properties of null (reading &apos;ngModule&apos;)" type="TypeError">
+TypeError: Cannot read properties of null (reading &apos;ngModule&apos;)
+ ❯ ngModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/util.ts:18:37
+ ❯ isModuleWithProviders ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:683:6
+ ❯ map ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:154:13
+ ❯ NG_MOD_DEF ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:18:14
+ ❯ getNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:22:22
+ ❯ getNgModuleDefOrThrow ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:257:18
+ ❯ verifySemanticsOfNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:200:21
+ ❯ TestBedCompiler.applyProviderOverridesInScope ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:627:31
+ ❯ TestBedCompiler.compileTestModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:987:10
+            </failure>
+        </testcase>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should open analytics drawer" time="0.000375666">
+            <failure message="Cannot read properties of null (reading &apos;ngModule&apos;)" type="TypeError">
+TypeError: Cannot read properties of null (reading &apos;ngModule&apos;)
+ ❯ ngModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/util.ts:18:37
+ ❯ isModuleWithProviders ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:683:6
+ ❯ map ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:154:13
+ ❯ NG_MOD_DEF ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:18:14
+ ❯ getNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:22:22
+ ❯ getNgModuleDefOrThrow ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:257:18
+ ❯ verifySemanticsOfNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:200:21
+ ❯ TestBedCompiler.applyProviderOverridesInScope ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:627:31
+ ❯ TestBedCompiler.compileTestModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:987:10
+            </failure>
+        </testcase>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should close analytics drawer" time="0.00041375">
+            <failure message="Cannot read properties of null (reading &apos;ngModule&apos;)" type="TypeError">
+TypeError: Cannot read properties of null (reading &apos;ngModule&apos;)
+ ❯ ngModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/util.ts:18:37
+ ❯ isModuleWithProviders ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:683:6
+ ❯ map ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:154:13
+ ❯ NG_MOD_DEF ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:18:14
+ ❯ getNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:22:22
+ ❯ getNgModuleDefOrThrow ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:257:18
+ ❯ verifySemanticsOfNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:200:21
+ ❯ TestBedCompiler.applyProviderOverridesInScope ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:627:31
+ ❯ TestBedCompiler.compileTestModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:987:10
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/services/api.service.spec.ts" timestamp="2026-04-03T20:42:36.761Z" hostname="CP-AT-D9CGW53372" tests="8" failures="8" errors="0" skipped="0" time="0.01204025">
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should be created" time="0.009629292">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should create a short URL" time="0.000269208">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error 500 when creating short URL" time="0.000340875">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get analytics for a short code" time="0.000306375">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get bulk analytics" time="0.000211125">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get global clicks" time="0.000182083">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should check health correctly" time="0.000174458">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle health check failure" time="0.000175375">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/api.service.spec.ts:18:13
+            </failure>
+            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
+TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
+ ❯ src/app/services/api.service.spec.ts:27:14
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/services/db.service.spec.ts" timestamp="2026-04-03T20:42:36.763Z" hostname="CP-AT-D9CGW53372" tests="4" failures="4" errors="0" skipped="0" time="0.009445292">
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should be created" time="0.006500333">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/db.service.spec.ts:15:13
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should add a URL correctly" time="0.001651167">
+            <failure message="Cannot read properties of null (reading &apos;ngModule&apos;)" type="TypeError">
+TypeError: Cannot read properties of null (reading &apos;ngModule&apos;)
+ ❯ ngModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/util.ts:18:37
+ ❯ isModuleWithProviders ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:683:6
+ ❯ map ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:154:13
+ ❯ NG_MOD_DEF ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:18:14
+ ❯ getNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:22:22
+ ❯ getNgModuleDefOrThrow ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:257:18
+ ❯ verifySemanticsOfNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:200:21
+ ❯ TestBedCompiler.applyProviderOverridesInScope ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:627:31
+ ❯ TestBedCompiler.compileTestModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:987:10
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should bulk add URLs correctly" time="0.000255">
+            <failure message="Cannot read properties of null (reading &apos;ngModule&apos;)" type="TypeError">
+TypeError: Cannot read properties of null (reading &apos;ngModule&apos;)
+ ❯ ngModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/util.ts:18:37
+ ❯ isModuleWithProviders ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:683:6
+ ❯ map ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:154:13
+ ❯ NG_MOD_DEF ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:18:14
+ ❯ getNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:22:22
+ ❯ getNgModuleDefOrThrow ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:257:18
+ ❯ verifySemanticsOfNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:200:21
+ ❯ TestBedCompiler.applyProviderOverridesInScope ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:627:31
+ ❯ TestBedCompiler.compileTestModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:987:10
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should update analytics and add snapshot" time="0.000182208">
+            <failure message="Cannot read properties of null (reading &apos;ngModule&apos;)" type="TypeError">
+TypeError: Cannot read properties of null (reading &apos;ngModule&apos;)
+ ❯ ngModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/util.ts:18:37
+ ❯ isModuleWithProviders ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:683:6
+ ❯ map ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:154:13
+ ❯ NG_MOD_DEF ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:18:14
+ ❯ getNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:22:22
+ ❯ getNgModuleDefOrThrow ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:257:18
+ ❯ verifySemanticsOfNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:200:21
+ ❯ TestBedCompiler.applyProviderOverridesInScope ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:627:31
+ ❯ TestBedCompiler.compileTestModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:987:10
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/services/sync.service.spec.ts" timestamp="2026-04-03T20:42:36.764Z" hostname="CP-AT-D9CGW53372" tests="2" failures="2" errors="0" skipped="0" time="0.009800375">
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should send lastServerTimestamp in subsequent requests" time="0.007515291">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/services/sync.service.spec.ts:28:13
+            </failure>
+        </testcase>
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should only update DB if clicks have changed" time="0.001626459">
+            <failure message="Cannot read properties of null (reading &apos;ngModule&apos;)" type="TypeError">
+TypeError: Cannot read properties of null (reading &apos;ngModule&apos;)
+ ❯ ngModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/util.ts:18:37
+ ❯ isModuleWithProviders ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:683:6
+ ❯ map ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:154:13
+ ❯ NG_MOD_DEF ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:18:14
+ ❯ getNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:22:22
+ ❯ getNgModuleDefOrThrow ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:257:18
+ ❯ verifySemanticsOfNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:200:21
+ ❯ TestBedCompiler.applyProviderOverridesInScope ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:627:31
+ ❯ TestBedCompiler.compileTestModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:987:10
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/components/animated-counter.spec.ts" timestamp="2026-04-03T20:42:36.765Z" hostname="CP-AT-D9CGW53372" tests="2" failures="2" errors="0" skipped="0" time="0.028459791">
+        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should animate from 0 to target value" time="0.013596">
+            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
+Error: Need to call TestBed.initTestEnvironment() first
+ ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
+ ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
+ ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
+ ❯ src/app/components/animated-counter.spec.ts:24:19
+ ❯ new ZoneAwarePromise node_modules/zone.js/fesm2015/zone.js:2221:23
+            </failure>
+        </testcase>
+        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should handle decreasing values" time="0.013955791">
+            <failure message="Cannot read properties of null (reading &apos;ngModule&apos;)" type="TypeError">
+TypeError: Cannot read properties of null (reading &apos;ngModule&apos;)
+ ❯ ngModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/util.ts:18:37
+ ❯ isModuleWithProviders ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:683:6
+ ❯ map ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:154:13
+ ❯ NG_MOD_DEF ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:18:14
+ ❯ getNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/def_getters.ts:22:22
+ ❯ getNgModuleDefOrThrow ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:257:18
+ ❯ verifySemanticsOfNgModuleDef ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/src/render3/jit/module.ts:200:21
+ ❯ TestBedCompiler.applyProviderOverridesInScope ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:627:31
+ ❯ TestBedCompiler.compileTestModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed_compiler.ts:987:10
+            </failure>
+        </testcase>
+    </testsuite>
+</testsuites>
