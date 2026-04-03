@@ -39,3 +39,7 @@ out/
 ### Kotlin ###
 .kotlin
 /stitch/
+
+### Logs ###
+*.log
+**/*.log
