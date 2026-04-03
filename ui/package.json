@@ -8,6 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --watch=false",
+    "lint": "prettier --check \"src/app/**/*.ts\"",
     "e2e": "npx playwright test"
   },
   "private": true,
