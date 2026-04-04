@@ -14,6 +14,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.springframework.test.util.ReflectionTestUtils
 
@@ -98,5 +99,49 @@ class UrlReadServiceTest {
         assertThrows<UrlNotFoundException> {
             urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")
         }
+    }
+
+    @Test
+    fun `test getPagedUrls initial load`() {
+        val urlEntity = UrlEntity(originalUrl = "https://example.com", shortCode = "abc")
+        urlEntity.id = 1L
+        val entities = listOf(urlEntity)
+        `when`(urlRepository.findLatest(any())).thenReturn(entities)
+        `when`(urlAnalyticsRepository.countByUrlIds(any())).thenReturn(emptyList())
+
+        val result = urlReadService.getPagedUrls(null, 10)
+
+        assertEquals(1, result.links.size)
+        assertEquals("https://example.com", result.links[0].originalUrl)
+        assertEquals(false, result.hasMore)
+    }
+
+    @Test
+    fun `test getPagedUrls empty`() {
+        `when`(urlRepository.findLatest(any())).thenReturn(emptyList())
+
+        val result = urlReadService.getPagedUrls(null, 10)
+
+        assertEquals(0, result.links.size)
+        assertEquals(false, result.hasMore)
+        assertEquals(null, result.nextCursor)
+    }
+
+    @Test
+    fun `test getPagedUrls with cursor and hasMore`() {
+        val url1 = UrlEntity(originalUrl = "https://url1.com", shortCode = "abc")
+        url1.id = 1L
+        val url2 = UrlEntity(originalUrl = "https://url2.com", shortCode = "def")
+        url2.id = 2L
+
+        // Return 2 entities when limit is 1 to trigger hasMore
+        `when`(urlRepository.findByCreatedAtBefore(any(), any())).thenReturn(listOf(url1, url2))
+        `when`(urlAnalyticsRepository.countByUrlIds(any())).thenReturn(emptyList())
+
+        val result = urlReadService.getPagedUrls(123456789L, 1)
+
+        assertEquals(1, result.links.size)
+        assertEquals(true, result.hasMore)
+        assertEquals(true, result.nextCursor != null)
     }
 }

@@ -1,187 +1,716 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="14" failures="14" errors="0" time="0.008827125">
-    <testsuite name="src/app/services/api.service.spec.ts" timestamp="2026-04-03T21:04:08.434Z" hostname="CP-AT-D9CGW53372" tests="14" failures="14" errors="0" skipped="0" time="0.008827125">
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should be created" time="0.005780125">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+<testsuites name="vitest tests" tests="50" failures="0" errors="0" time="0.312749333">
+    <testsuite name="src/app/app.config.spec.ts" timestamp="2026-04-04T18:42:52.421Z" hostname="CP-AT-D9CGW53372" tests="1" failures="0" errors="0" skipped="0" time="0.002297792">
+        <testcase classname="src/app/app.config.spec.ts" name="AppConfig &gt; should have providers defined" time="0.001511584">
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should create a short URL" time="0.000238834">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+    </testsuite>
+    <testsuite name="src/app/app.routes.spec.ts" timestamp="2026-04-04T18:42:52.422Z" hostname="CP-AT-D9CGW53372" tests="1" failures="0" errors="0" skipped="0" time="0.002181583">
+        <testcase classname="src/app/app.routes.spec.ts" name="AppRoutes &gt; should be defined as an array" time="0.001384334">
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error 500 when creating short URL" time="0.000209625">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+    </testsuite>
+    <testsuite name="src/app/app.spec.ts" timestamp="2026-04-04T18:42:52.422Z" hostname="CP-AT-D9CGW53372" tests="17" failures="0" errors="0" skipped="0" time="0.173674458">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should create the app" time="0.037664083">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get analytics for a short code" time="0.000203167">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should toggle sidebar" time="0.011021292">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get bulk analytics" time="0.000199959">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle successful shortening" time="0.010404584">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get global clicks" time="0.0001925">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle shortening error 409" time="0.010685542">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get paged URLs" time="0.000217541">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should open analytics drawer" time="0.00908025">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get paged URLs with cursor" time="0.000158167">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should close analytics drawer" time="0.008321083">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getAnalytics" time="0.000174083">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should toggle sidebar expansion" time="0.007430542">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getBulkAnalytics" time="0.000163">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should focus destination input" time="0.008213417">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getPagedUrls" time="0.000176292">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should copy to clipboard and show notification" time="0.01060375">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getGlobalClicks" time="0.000145584">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should navigate between pages" time="0.007168583">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should check health raw correctly" time="0.000146667">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle hovering over short links" time="0.00689275">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
         </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in checkHealthRaw" time="0.000146958">
-            <failure message="Need to call TestBed.initTestEnvironment() first" type="Error">
-Error: Need to call TestBed.initTestEnvironment() first
- ❯ _TestBedImpl.compiler ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:718:13
- ❯ _TestBedImpl.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:584:10
- ❯ Function.configureTestingModule ../darwin_arm64-fastbuild-ST-fdfa778d11ba/bin/packages/core/testing/src/test_bed.ts:319:33
- ❯ src/app/services/api.service.spec.ts:18:13
-            </failure>
-            <failure message="Cannot read properties of undefined (reading &apos;verify&apos;)" type="TypeError">
-TypeError: Cannot read properties of undefined (reading &apos;verify&apos;)
- ❯ src/app/services/api.service.spec.ts:27:14
-            </failure>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should poll global clicks and health" time="0.007759875">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should cleanup observer on destroy" time="0.008915708">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle navigation edge cases" time="0.007412459">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle analytics fetch error" time="0.0069675">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should expose global WhoaApp hooks" time="0.006838292">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should initialize viewport observer and handle changes" time="0.007414708">
+            <system-err>
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+  It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
+  when you set up this control in your component class, the disabled attribute will actually be set in the DOM for
+  you. We recommend using this approach to avoid &apos;changed after checked&apos; errors.
+
+  Example:
+  // Specify the `disabled` property at control creation time:
+  form = new FormGroup({
+    first: new FormControl({value: &apos;Nancy&apos;, disabled: true}, Validators.required),
+    last: new FormControl(&apos;Drew&apos;, Validators.required)
+  });
+
+  // Controls can also be enabled/disabled after creation:
+  form.get(&apos;first&apos;)?.enable();
+  form.get(&apos;last&apos;)?.disable();
+
+
+            </system-err>
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/components/animated-counter.spec.ts" timestamp="2026-04-04T18:42:52.424Z" hostname="CP-AT-D9CGW53372" tests="2" failures="0" errors="0" skipped="0" time="0.031607667">
+        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should animate from 0 to target value" time="0.026930625">
+        </testcase>
+        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should handle decreasing values" time="0.0039725">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/services/api.service.spec.ts" timestamp="2026-04-04T18:42:52.424Z" hostname="CP-AT-D9CGW53372" tests="14" failures="0" errors="0" skipped="0" time="0.032492167">
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should be created" time="0.009133875">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should create a short URL" time="0.007719959">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error 500 when creating short URL" time="0.001943875">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get analytics for a short code" time="0.00144725">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get bulk analytics" time="0.001411167">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get global clicks" time="0.001222958">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get paged URLs" time="0.001340833">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get paged URLs with cursor" time="0.001056834">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getAnalytics" time="0.00140525">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getBulkAnalytics" time="0.0011715">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getPagedUrls" time="0.000962208">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in getGlobalClicks" time="0.000938375">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should check health raw correctly" time="0.00094925">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle error in checkHealthRaw" time="0.000878375">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/services/db.service.spec.ts" timestamp="2026-04-04T18:42:52.424Z" hostname="CP-AT-D9CGW53372" tests="7" failures="0" errors="0" skipped="0" time="0.049268208">
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should be created" time="0.014149625">
+        </testcase>
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should add a URL correctly" time="0.004293875">
+        </testcase>
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should bulk add URLs correctly" time="0.003757375">
+        </testcase>
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should update analytics and add snapshot" time="0.004354875">
+        </testcase>
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should seed data if empty" time="0.015702917">
+            <system-out>
+Local development mode: Seeding IndexedDB with sample data...
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should update existing URLs in bulkAddUrls" time="0.003999959">
+        </testcase>
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should return live urls" time="0.002104875">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/services/sync.service.spec.ts" timestamp="2026-04-04T18:42:52.425Z" hostname="CP-AT-D9CGW53372" tests="8" failures="0" errors="0" skipped="0" time="0.021227458">
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should send lastServerTimestamp in subsequent requests" time="0.010287291">
+        </testcase>
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should only update DB if clicks have changed" time="0.00164675">
+        </testcase>
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should schedule sync jobs correctly" time="0.0022945">
+        </testcase>
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should respect skipSync flag" time="0.001139167">
+        </testcase>
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should handle empty viewport in performSync" time="0.000950291">
+        </testcase>
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should handle no matching links in performSync" time="0.000936834">
+        </testcase>
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should handle API error in performSync" time="0.001104458">
+        </testcase>
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should handle generic error in performSync" time="0.002091791">
         </testcase>
     </testsuite>
 </testsuites>

@@ -20,6 +20,11 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistra
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.resource.PathResourceResolver
 
+import org.mockito.ArgumentCaptor
+import org.springframework.core.io.ClassPathResource
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+
 @ExtendWith(MockitoExtension::class)
 class SpaWebMvcConfigTest {
     @InjectMocks
@@ -47,21 +52,44 @@ class SpaWebMvcConfigTest {
     }
 
     @Test
-    fun `addResourceHandlers should configure handlers correctly`() {
+    fun `addResourceHandlers should configure handlers and resolver correctly`() {
         val registry = mock(ResourceHandlerRegistry::class.java)
         val registration = mock(ResourceHandlerRegistration::class.java)
         val chain = mock(ResourceChainRegistration::class.java)
+        val resolverCaptor = ArgumentCaptor.forClass(PathResourceResolver::class.java)
 
         `when`(registry.addResourceHandler(anyString())).thenReturn(registration)
         `when`(registration.addResourceLocations(anyString())).thenReturn(registration)
         `when`(registration.resourceChain(anyBoolean())).thenReturn(chain)
-        `when`(chain.addResolver(any())).thenReturn(chain)
+        `when`(chain.addResolver(resolverCaptor.capture())).thenReturn(chain)
 
         spaWebMvcConfig.addResourceHandlers(registry)
 
-        verify(registry).addResourceHandler("/**")
-        verify(registration).addResourceLocations("classpath:/static/")
-        verify(registration).resourceChain(true)
-        verify(chain).addResolver(any(PathResourceResolver::class.java))
+        val resolver = resolverCaptor.value
+        val getResourceMethod = PathResourceResolver::class.java.getDeclaredMethod(
+            "getResource", 
+            String::class.java, 
+            Resource::class.java
+        )
+        getResourceMethod.isAccessible = true
+        
+        // Test resolver with existing resource
+        val location = mock(Resource::class.java)
+        val resource = mock(Resource::class.java)
+        `when`(location.createRelative("test.js")).thenReturn(resource)
+        `when`(resource.exists()).thenReturn(true)
+        `when`(resource.isReadable).thenReturn(true)
+        
+        val result = getResourceMethod.invoke(resolver, "test.js", location) as Resource
+        assertEquals(resource, result)
+        
+        // Test resolver with non-existing resource (should return index.html)
+        val nonExistent = mock(Resource::class.java)
+        `when`(location.createRelative("non-existent")).thenReturn(nonExistent)
+        `when`(nonExistent.exists()).thenReturn(false)
+        
+        val resultIndex = getResourceMethod.invoke(resolver, "non-existent", location) as Resource
+        assertTrue(resultIndex is ClassPathResource)
+        assertEquals("static/index.html", (resultIndex as ClassPathResource).path)
     }
 }

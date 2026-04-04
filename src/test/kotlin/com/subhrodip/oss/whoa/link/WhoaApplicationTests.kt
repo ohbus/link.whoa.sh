@@ -12,4 +12,17 @@ class WhoaApplicationTests {
             WhoaApplication()
         }
     }
+
+    @Test
+    fun `main method should run`() {
+        assertDoesNotThrow {
+            main(arrayOf(
+                "--spring.main.web-application-type=none",
+                "--spring.main.lazy-initialization=true",
+                "--spring.liquibase.enabled=false",
+                "--server.port=0",
+                "--spring.main.banner-mode=off"
+            ))
+        }
+    }
 }
