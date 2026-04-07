@@ -71,6 +71,20 @@ class UrlReadServiceTest {
     }
 
     @Test
+    fun `test getOriginalUrl with http protocol`() {
+        val shortCode = "abcdef"
+        val originalUrl = "http://example.com"
+        val urlDto = UrlDto(id = 1L, originalUrl = originalUrl, shortCode = shortCode)
+
+        `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
+
+        val result = urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")
+
+        assertEquals("http://example.com", result)
+        verify(analyticsService).trackAnalytics(1L, "abcdef", "user-agent", "127.0.0.1")
+    }
+
+    @Test
     fun `test getOriginalUrl case sensitivity`() {
         val shortCode = "abcdef"
         val originalUrl = "https://example.com"

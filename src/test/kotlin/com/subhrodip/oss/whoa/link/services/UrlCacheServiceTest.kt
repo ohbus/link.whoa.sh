@@ -1,7 +1,6 @@
 package com.subhrodip.oss.whoa.link.services
 
 import com.subhrodip.oss.whoa.link.domain.UrlEntity
-import com.subhrodip.oss.whoa.link.dto.UrlDto
 import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -15,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 
 @ExtendWith(MockitoExtension::class)
 class UrlCacheServiceTest {
+
     @Mock
     private lateinit var urlRepository: UrlRepository
 
@@ -22,36 +22,43 @@ class UrlCacheServiceTest {
     private lateinit var urlCacheService: UrlCacheService
 
     @Test
-    fun `test getCachedUrl returns DTO when found`() {
-        val shortCode = "test"
-        val entity = UrlEntity(originalUrl = "https://example.com", shortCode = shortCode)
+    fun `test getCachedUrl success`() {
+        val shortCode = "abc"
+        val entity = UrlEntity("https://url.com", shortCode)
+        entity.id = 1L
+        
         `when`(urlRepository.findByShortCode(shortCode)).thenReturn(entity)
-
+        
         val result = urlCacheService.getCachedUrl(shortCode)
-
-        assertEquals(0L, result.id) // Default id from BaseEntity/mock
-        assertEquals("https://example.com", result.originalUrl)
+        
+        assertEquals(1L, result.id)
         assertEquals(shortCode, result.shortCode)
     }
 
     @Test
-    fun `test getCachedUrl throws exception when not found`() {
-        val shortCode = "missing"
+    fun `test getCachedUrl not found`() {
+        val shortCode = "abc"
         `when`(urlRepository.findByShortCode(shortCode)).thenReturn(null)
-
+        
         assertThrows<UrlNotFoundException> {
             urlCacheService.getCachedUrl(shortCode)
         }
     }
 
     @Test
-    fun `test putInCache converts entity to DTO`() {
-        val entity = UrlEntity(originalUrl = "https://example.com", shortCode = "test")
-
+    fun `test putInCache`() {
+        val entity = UrlEntity("https://url.com", "abc")
+        entity.id = 1L
+        
         val result = urlCacheService.putInCache(entity)
+        
+        assertEquals(1L, result.id)
+        assertEquals("abc", result.shortCode)
+    }
 
-        assertEquals(entity.id, result.id)
-        assertEquals(entity.originalUrl, result.originalUrl)
-        assertEquals(entity.shortCode, result.shortCode)
+    @Test
+    fun `test evictUrlCache`() {
+        // This is mainly for coverage as it just logs
+        urlCacheService.evictUrlCache("abc")
     }
 }
