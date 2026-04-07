@@ -17,23 +17,23 @@ class GlobalExceptionHandler {
      */
     @ExceptionHandler(RuntimeException::class)
     fun handleWhoaException(ex: Exception): ResponseEntity<ErrorResponse> {
-        if (ex is WhoaException) {
-            val status = ex.statusCode
+        val whoaEx = ex as? WhoaException
+        if (whoaEx != null) {
+            val status = whoaEx.statusCode
             if (status.is5xxServerError) {
-                log.error(ex) { "Server Error [${ex.errorCode}]: ${ex.message}" }
+                log.error(ex) { "Server Error [${whoaEx.errorCode}]: ${ex.message}" }
             } else {
-                log.warn { "Client Error [${ex.errorCode}]: ${ex.message}" }
+                log.warn { "Client Error [${whoaEx.errorCode}]: ${ex.message}" }
             }
 
             val response =
                 ErrorResponse(
                     statusCode = status.value(),
-                    errorCode = ex.errorCode,
+                    errorCode = whoaEx.errorCode,
                     message = if (status.is5xxServerError) "Internal System Error" else ex.message,
                 )
             return ResponseEntity(response, status)
         }
-        // If it's not a WhoaException, fall through to generic handler
         return handleGenericException(ex)
     }
 

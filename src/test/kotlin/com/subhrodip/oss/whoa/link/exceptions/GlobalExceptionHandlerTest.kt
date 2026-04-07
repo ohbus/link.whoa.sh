@@ -59,6 +59,14 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    fun `test handleWhoaException with non-WhoaException`() {
+        val ex = RuntimeException("Standard runtime error")
+        val response = handler.handleWhoaException(ex)
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.statusCode)
+        assertEquals("WHOA-9999", response.body?.errorCode)
+    }
+
+    @Test
     fun `test handleGenericException`() {
         val ex = Exception("Unknown")
         val response = handler.handleGenericException(ex)

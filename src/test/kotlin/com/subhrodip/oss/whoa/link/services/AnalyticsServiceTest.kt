@@ -7,7 +7,8 @@ import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -80,5 +81,24 @@ class AnalyticsServiceTest {
         assertThrows<UrlNotFoundException> {
             analyticsService.getUrlAnalytics(shortCode)
         }
+    }
+
+    @Test
+    fun `test getBulkAnalytics with empty input`() {
+        val result = analyticsService.getBulkAnalytics(emptyMap(), null)
+        assertTrue(result.clicks.isEmpty())
+    }
+
+    @Test
+    fun `test getBulkAnalytics with null lastSyncedAt`() {
+        val shortCode = "abc"
+        val urlDto = UrlDto(id = 1L, originalUrl = "https://a.com", shortCode = shortCode)
+        `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
+        `when`(urlAnalyticsRepository.countByUrlIds(listOf(1L))).thenReturn(emptyList())
+
+        val result = analyticsService.getBulkAnalytics(mapOf(shortCode to 0L), null)
+
+        assertTrue(result.clicks.isEmpty())
+        verify(urlAnalyticsRepository).countByUrlIds(listOf(1L))
     }
 }

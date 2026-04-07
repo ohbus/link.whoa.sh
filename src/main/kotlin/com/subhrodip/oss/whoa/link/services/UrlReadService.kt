@@ -32,10 +32,11 @@ class UrlReadService(
         userAgent: String?,
         ipAddress: String?,
     ): String {
+        val safeUserAgent = userAgent ?: ""
         val urlDto = urlCacheService.getCachedUrl(shortCode)
         log.debug { "Resolved short code $shortCode to ${urlDto.originalUrl}" }
 
-        analyticsService.trackAnalytics(urlDto.id, urlDto.shortCode, userAgent, ipAddress)
+        analyticsService.trackAnalytics(urlDto.id, urlDto.shortCode, safeUserAgent, ipAddress)
 
         val originalUrl = urlDto.originalUrl
         if (!originalUrl.startsWith("http")) {

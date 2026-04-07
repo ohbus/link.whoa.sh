@@ -34,19 +34,13 @@ class ConfigTest {
         val config = CacheConfig()
         ReflectionTestUtils.setField(config, "initialCapacity", 10)
         ReflectionTestUtils.setField(config, "maximumSize", 100L)
-        ReflectionTestUtils.setField(config, "expireAfterWrite", "5m")
         
-        assertNotNull(config.cacheManager())
-        
-        // Test durations
-        ReflectionTestUtils.setField(config, "expireAfterWrite", "10s")
-        assertNotNull(config.cacheManager())
-        ReflectionTestUtils.setField(config, "expireAfterWrite", "1h")
-        assertNotNull(config.cacheManager())
-        ReflectionTestUtils.setField(config, "expireAfterWrite", "1d")
-        assertNotNull(config.cacheManager())
-        ReflectionTestUtils.setField(config, "expireAfterWrite", "1x")
-        assertNotNull(config.cacheManager())
+        // Test durations: s, m, h, d, and default
+        val units = listOf("10s", "5m", "1h", "1d", "10x", "10")
+        units.forEach { unit ->
+            ReflectionTestUtils.setField(config, "expireAfterWrite", unit)
+            assertNotNull(config.cacheManager(), "Failed for unit $unit")
+        }
     }
 
     @Test

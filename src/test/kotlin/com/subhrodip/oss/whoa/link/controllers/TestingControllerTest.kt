@@ -10,6 +10,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoInteractions
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.cache.Cache
@@ -49,5 +50,16 @@ class TestingControllerTest {
         verify(urlRepository).deleteAllInBatch()
         verify(mockCache).clear()
         verify(globalCounterService).refreshFromDatabase()
+    }
+
+    @Test
+    fun `test resetState with no caches`() {
+        `when`(cacheManager.cacheNames).thenReturn(emptyList())
+
+        val result = controller.resetState()
+
+        assertEquals(HttpStatus.OK, result.statusCode)
+        verify(urlAnalyticsRepository).deleteAllInBatch()
+        verify(urlRepository).deleteAllInBatch()
     }
 }
