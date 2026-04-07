@@ -48,12 +48,11 @@ class UrlReadServiceTest {
         val urlDto = UrlDto(id = 1L, originalUrl = originalUrl, shortCode = shortCode)
 
         `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
-        `when`(urlRepository.getReferenceById(urlDto.id)).thenReturn(urlEntity)
 
         val result = urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")
 
         assertEquals(originalUrl, result)
-        verify(analyticsService).trackAnalytics(urlEntity, "user-agent", "127.0.0.1")
+        verify(analyticsService).trackAnalytics(1L, "abcdef", "user-agent", "127.0.0.1")
     }
 
     @Test
@@ -64,12 +63,11 @@ class UrlReadServiceTest {
         val urlDto = UrlDto(id = 1L, originalUrl = originalUrl, shortCode = shortCode)
 
         `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
-        `when`(urlRepository.getReferenceById(urlDto.id)).thenReturn(urlEntity)
 
         val result = urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")
 
         assertEquals("https://example.com", result)
-        verify(analyticsService).trackAnalytics(urlEntity, "user-agent", "127.0.0.1")
+        verify(analyticsService).trackAnalytics(1L, "abcdef", "user-agent", "127.0.0.1")
     }
 
     @Test
@@ -80,12 +78,12 @@ class UrlReadServiceTest {
         val urlDto = UrlDto(id = 1L, originalUrl = originalUrl, shortCode = shortCode)
 
         `when`(urlCacheService.getCachedUrl(shortCode)).thenReturn(urlDto)
-        `when`(urlRepository.getReferenceById(urlDto.id)).thenReturn(urlEntity)
         `when`(urlCacheService.getCachedUrl("Abcdef")).thenThrow(UrlNotFoundException("Not found"))
 
         val result = urlReadService.getOriginalUrl(shortCode, "user-agent", "127.0.0.1")
 
         assertEquals(originalUrl, result)
+        verify(analyticsService).trackAnalytics(1L, "abcdef", "user-agent", "127.0.0.1")
         assertThrows<UrlNotFoundException> {
             urlReadService.getOriginalUrl("Abcdef", "user-agent", "127.0.0.1")
         }
@@ -107,7 +105,6 @@ class UrlReadServiceTest {
         urlEntity.id = 1L
         val entities = listOf(urlEntity)
         `when`(urlRepository.findLatest(any())).thenReturn(entities)
-        `when`(urlAnalyticsRepository.countByUrlIds(any())).thenReturn(emptyList())
 
         val result = urlReadService.getPagedUrls(null, 10)
 
@@ -136,7 +133,6 @@ class UrlReadServiceTest {
 
         // Return 2 entities when limit is 1 to trigger hasMore
         `when`(urlRepository.findByCreatedAtBefore(any(), any())).thenReturn(listOf(url1, url2))
-        `when`(urlAnalyticsRepository.countByUrlIds(any())).thenReturn(emptyList())
 
         val result = urlReadService.getPagedUrls(123456789L, 1)
 

@@ -54,7 +54,6 @@ class UrlReadPaginationTest {
             )
 
         `when`(urlRepository.findLatest(any())).thenReturn(urls)
-        `when`(urlAnalyticsRepository.countByUrlIds(any())).thenReturn(emptyList())
 
         val response = urlReadService.getPagedUrls(null, 10)
 
@@ -82,7 +81,6 @@ class UrlReadPaginationTest {
             )
 
         `when`(urlRepository.findLatest(any())).thenReturn(urls)
-        `when`(urlAnalyticsRepository.countByUrlIds(any())).thenReturn(emptyList())
 
         val response = urlReadService.getPagedUrls(null, 2)
 

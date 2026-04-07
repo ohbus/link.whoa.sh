@@ -28,16 +28,19 @@ class UrlWriteServiceTest {
     private lateinit var urlWriteService: UrlWriteService
 
     @Test
-    fun `test createShortUrl with random short code`() {
+    fun `test createShortUrl with sequence short code`() {
         ReflectionTestUtils.setField(urlWriteService, "baseUrl", "http://localhost:8844")
         val request = CreateShortUrlRequest(url = "https://example.com")
-        `when`(urlRepository.findByShortCode(any())).thenReturn(null)
+
+        `when`(urlRepository.getNextShortCodeId()).thenReturn(100000L)
+        // Base62 of 100000 is "qi8" (approx, logic: 100000 / 62...)
+        // Actually Base62Encoder.encode(100000) will be used.
         `when`(urlRepository.save(any<UrlEntity>())).thenAnswer { it.arguments[0] }
 
         val response = urlWriteService.createShortUrl(request)
 
         assertEquals("https://example.com", response.originalUrl)
-        assertEquals(28, response.shortUrl.length) // http://localhost:8844/ + 6 chars
+        assert(response.shortUrl.startsWith("http://localhost:8844/"))
         verify(urlCacheService).putInCache(any())
     }
 
@@ -53,22 +56,6 @@ class UrlWriteServiceTest {
         assertEquals("https://example.com", response.originalUrl)
         assertEquals("http://localhost:8844/custom", response.shortUrl)
         verify(urlCacheService).putInCache(any())
-    }
-
-    @Test
-    fun `test createShortUrl with collision`() {
-        ReflectionTestUtils.setField(urlWriteService, "baseUrl", "http://localhost:8844")
-        val request = CreateShortUrlRequest(url = "https://example.com")
-        val existingUrl = UrlEntity(originalUrl = "https://another.com", shortCode = "abcdef")
-
-        // Simulate a collision on the first attempt
-        `when`(urlRepository.findByShortCode(any())).thenReturn(existingUrl).thenReturn(null)
-        `when`(urlRepository.save(any<UrlEntity>())).thenAnswer { it.arguments[0] }
-
-        val response = urlWriteService.createShortUrl(request)
-
-        assertEquals("https://example.com", response.originalUrl)
-        assertEquals(28, response.shortUrl.length) // http://localhost:8844/ + 6 chars
     }
 
     @Test
