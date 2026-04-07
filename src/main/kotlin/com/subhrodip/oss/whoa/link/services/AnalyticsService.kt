@@ -4,6 +4,7 @@ import com.subhrodip.oss.whoa.link.domain.UrlAnalyticsEntity
 import com.subhrodip.oss.whoa.link.domain.UrlEntity
 import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsResponse
 import com.subhrodip.oss.whoa.link.dto.UrlAnalyticsResponse
+import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -31,10 +32,12 @@ class AnalyticsService(
     @Transactional
     @Timed(value = "whoa.service.analytics.track.time", description = "Time taken to asynchronously save a click")
     fun trackAnalytics(
-        urlEntity: UrlEntity,
+        urlId: Long,
+        shortCode: String,
         userAgent: String?,
         ipAddress: String?,
     ) {
+        val urlEntity = urlRepository.getReferenceById(urlId)
         val analytics =
             UrlAnalyticsEntity(
                 urlEntity = urlEntity,
@@ -42,20 +45,23 @@ class AnalyticsService(
                 ipAddress = ipAddress,
             )
         urlAnalyticsRepository.save(analytics)
+        urlRepository.incrementClickCount(urlId)
+        urlCacheService.evictUrlCache(shortCode)
         globalCounterService.incrementRealTime()
-        log.debug { "Tracked click for short code: ${urlEntity.shortCode}" }
+        log.debug { "Tracked click for short code: $shortCode" }
     }
 
     @Transactional(readOnly = true)
     @Timed(value = "whoa.service.analytics.single.time", description = "Execution time for single URL analytics lookup")
     fun getUrlAnalytics(shortCode: String): UrlAnalyticsResponse {
         val urlDto = urlCacheService.getCachedUrl(shortCode)
-        val clicks = urlAnalyticsRepository.countByUrlEntityId(urlDto.id)
-        log.debug { "Retrieved analytics for code: $shortCode (Clicks: $clicks)" }
+
+        log.debug { "Retrieved analytics for code: $shortCode (Clicks: ${urlDto.totalClicks})" }
         return UrlAnalyticsResponse(
             originalUrl = urlDto.originalUrl,
             shortUrl = "$baseUrl/${urlDto.shortCode}",
-            clicks = clicks,
+            clicks = urlDto.totalClicks,
+            createdAt = urlDto.createdAt,
         )
     }
 

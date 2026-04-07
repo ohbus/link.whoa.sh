@@ -26,6 +26,8 @@ class UrlCacheService(
             id = entity.id,
             originalUrl = entity.originalUrl,
             shortCode = entity.shortCode,
+            totalClicks = entity.totalClicks,
+            createdAt = entity.createdAt,
         )
     }
 
@@ -35,5 +37,12 @@ class UrlCacheService(
             id = urlEntity.id,
             originalUrl = urlEntity.originalUrl,
             shortCode = urlEntity.shortCode,
+            totalClicks = urlEntity.totalClicks,
+            createdAt = urlEntity.createdAt,
         )
+
+    @org.springframework.cache.annotation.CacheEvict(value = ["urls"], key = "'url:' + #shortCode")
+    fun evictUrlCache(shortCode: String) {
+        log.trace { "Evicted short code $shortCode from cache" }
+    }
 }

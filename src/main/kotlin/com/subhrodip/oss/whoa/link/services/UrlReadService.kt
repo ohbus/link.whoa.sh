@@ -35,8 +35,7 @@ class UrlReadService(
         val urlDto = urlCacheService.getCachedUrl(shortCode)
         log.debug { "Resolved short code $shortCode to ${urlDto.originalUrl}" }
 
-        val urlEntity = urlRepository.getReferenceById(urlDto.id)
-        analyticsService.trackAnalytics(urlEntity, userAgent, ipAddress)
+        analyticsService.trackAnalytics(urlDto.id, urlDto.shortCode, userAgent, ipAddress)
 
         val originalUrl = urlDto.originalUrl
         if (!originalUrl.startsWith("http")) {
@@ -64,23 +63,12 @@ class UrlReadService(
         val hasMore = entities.size > limit
         val linksToReturn = if (hasMore) entities.take(limit) else entities
 
-        // Optimized bulk count by ID (No Join)
-        val ids = linksToReturn.map { it.id }
-        val counts =
-            if (ids.isNotEmpty()) {
-                urlAnalyticsRepository
-                    .countByUrlIds(ids)
-                    .associate { it.urlId to it.totalClicks }
-            } else {
-                emptyMap()
-            }
-
         val results =
             linksToReturn.map { entity ->
                 UrlAnalyticsResponse(
                     originalUrl = entity.originalUrl,
                     shortUrl = "$baseUrl/${entity.shortCode}",
-                    clicks = counts[entity.id] ?: 0L,
+                    clicks = entity.totalClicks,
                     createdAt = entity.createdAt,
                 )
             }
