@@ -54,23 +54,23 @@ describe('AnimatedCounterComponent', () => {
   it('should return early if target is same as current', () => {
     fixture.componentRef.setInput('value', 0);
     fixture.detectChanges();
-    
+
     const spy = vi.spyOn(window, 'setInterval');
-    
+
     // Set same value again
     fixture.componentRef.setInput('value', 0);
     fixture.detectChanges();
-    
+
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('should cleanup interval on destroy', () => {
     fixture.componentRef.setInput('value', 100);
     fixture.detectChanges();
-    
+
     const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
     component.ngOnDestroy();
-    
+
     expect(clearIntervalSpy).toHaveBeenCalled();
   });
 });

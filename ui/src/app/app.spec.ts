@@ -336,7 +336,7 @@ describe('AppComponent', () => {
       {
         target: { getAttribute: () => null }, // Branch coverage for if(shortCode)
         isIntersecting: true,
-      }
+      },
     ];
     observerCallback(entries);
 

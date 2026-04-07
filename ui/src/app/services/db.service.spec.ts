@@ -8,7 +8,7 @@ describe('DbService', () => {
   beforeEach(async () => {
     // Disable seeding by default for tests to have clean state
     DbService.skipSeeding = true;
-    
+
     const dbService = new DbService();
     await dbService.db.urls.clear();
     await dbService.db.analytics.clear();
@@ -27,7 +27,7 @@ describe('DbService', () => {
     await (service as any).seedDataIfEmpty();
     const count = await service.db.urls.count();
     expect(count).toBeGreaterThan(0);
-    
+
     // Should return early if already seeded
     await (service as any).seedDataIfEmpty();
     const countAfter = await service.db.urls.count();
@@ -37,7 +37,7 @@ describe('DbService', () => {
   it('should add a URL', async () => {
     const shortCode = 'testAdd';
     await service.addUrl(shortCode, 'https://example.com', 'http://localhost/testAdd');
-    
+
     const url = await service.db.urls.get(shortCode);
     expect(url).toBeTruthy();
     expect(url?.originalUrl).toBe('https://example.com');
@@ -45,8 +45,14 @@ describe('DbService', () => {
 
   it('should bulk add URLs', async () => {
     const links = [
-      { shortCode: 'b1', originalUrl: 'u1', shortUrl: 's1', clicks: 10, createdAt: new Date().toISOString() },
-      { shortCode: 'b2', originalUrl: 'u2', shortUrl: 's2', clicks: 20 } // No createdAt
+      {
+        shortCode: 'b1',
+        originalUrl: 'u1',
+        shortUrl: 's1',
+        clicks: 10,
+        createdAt: new Date().toISOString(),
+      },
+      { shortCode: 'b2', originalUrl: 'u2', shortUrl: 's2', clicks: 20 }, // No createdAt
     ];
 
     await service.bulkAddUrls(links);
@@ -68,12 +74,12 @@ describe('DbService', () => {
   it('should update analytics', async () => {
     const shortCode = 'updateTest';
     await service.addUrl(shortCode, 'u', 's');
-    
+
     await service.updateAnalytics(shortCode, 50);
-    
+
     const url = await service.db.urls.get(shortCode);
     expect(url?.totalClicks).toBe(50);
-    
+
     const history = await service.getAnalyticsHistory(shortCode);
     expect(history.length).toBe(1);
     expect(history[0].clicks).toBe(50);

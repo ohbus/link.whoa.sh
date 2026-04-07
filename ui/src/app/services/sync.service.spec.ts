@@ -54,10 +54,12 @@ describe('SyncService', () => {
   it('should perform sync successfully', async () => {
     const visibleCodes = new Set(['abc']);
     dbMock.getUrls.mockResolvedValue([{ shortCode: 'abc', totalClicks: 10 }]);
-    apiMock.getBulkAnalytics.mockReturnValue(of({
-      clicks: { abc: 15 },
-      serverTimestamp: 12345
-    }));
+    apiMock.getBulkAnalytics.mockReturnValue(
+      of({
+        clicks: { abc: 15 },
+        serverTimestamp: 12345,
+      }),
+    );
 
     await service.performSync(() => visibleCodes);
 
@@ -89,26 +91,26 @@ describe('SyncService', () => {
   it('should start and stop scheduled sync', async () => {
     vi.useFakeTimers();
     const provider = () => new Set(['abc']);
-    
+
     // Mock successful sync to ensure isSyncing is reset
     dbMock.getUrls.mockResolvedValue([{ shortCode: 'abc', totalClicks: 10 }]);
     apiMock.getBulkAnalytics.mockReturnValue(of({ clicks: {}, serverTimestamp: 1 }));
 
     service.startSync(provider, 1000);
-    
+
     expect(service['scheduledSyncJobId']).toBeDefined();
-    
+
     // The first call happens immediately. We need to let it finish.
     await Promise.resolve(); // Flush microtasks
-    
+
     vi.advanceTimersByTime(1000);
     await Promise.resolve();
-    
+
     expect(dbMock.getUrls).toHaveBeenCalledTimes(2);
 
     service.stopSync();
     vi.advanceTimersByTime(1000);
-    expect(dbMock.getUrls).toHaveBeenCalledTimes(2); 
+    expect(dbMock.getUrls).toHaveBeenCalledTimes(2);
     vi.useRealTimers();
   });
 
@@ -116,9 +118,9 @@ describe('SyncService', () => {
     (window as any).SyncService_skipSync = true;
     const provider = () => new Set(['abc']);
     service.startSync(provider, 1000);
-    
+
     expect(dbMock.getUrls).not.toHaveBeenCalled();
-    
+
     (window as any).SyncService_skipSync = false;
   });
 });

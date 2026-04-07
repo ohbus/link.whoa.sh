@@ -78,7 +78,9 @@ describe('ApiService', () => {
 
     service.isBackendHealthy.set(true);
     service.getAnalytics('abc').subscribe({ error: () => {} });
-    httpMock.expectOne('/api/v1/urls/abc/analytics').flush('Error', { status: 404, statusText: 'Not Found' });
+    httpMock
+      .expectOne('/api/v1/urls/abc/analytics')
+      .flush('Error', { status: 404, statusText: 'Not Found' });
     expect(service.isBackendHealthy()).toBe(true);
   });
 
@@ -89,7 +91,9 @@ describe('ApiService', () => {
 
     service.isBackendHealthy.set(true);
     service.getBulkAnalytics({}, null).subscribe({ error: () => {} });
-    httpMock.expectOne('/api/v1/urls/analytics/bulk').flush('Error', { status: 400, statusText: 'Error' });
+    httpMock
+      .expectOne('/api/v1/urls/analytics/bulk')
+      .flush('Error', { status: 400, statusText: 'Error' });
     expect(service.isBackendHealthy()).toBe(true);
   });
 
@@ -100,7 +104,9 @@ describe('ApiService', () => {
 
     service.isBackendHealthy.set(true);
     service.getPagedUrls(null).subscribe({ error: () => {} });
-    httpMock.expectOne('/api/v1/urls?limit=10').flush('Error', { status: 401, statusText: 'Unauthorized' });
+    httpMock
+      .expectOne('/api/v1/urls?limit=10')
+      .flush('Error', { status: 401, statusText: 'Unauthorized' });
     expect(service.isBackendHealthy()).toBe(true);
   });
 
@@ -111,7 +117,9 @@ describe('ApiService', () => {
 
     service.isBackendHealthy.set(true);
     service.getGlobalClicks().subscribe({ error: () => {} });
-    httpMock.expectOne('/api/v1/urls/analytics/global').flush('Error', { status: 403, statusText: 'Forbidden' });
+    httpMock
+      .expectOne('/api/v1/urls/analytics/global')
+      .flush('Error', { status: 403, statusText: 'Forbidden' });
     expect(service.isBackendHealthy()).toBe(true);
   });
 
@@ -130,7 +138,7 @@ describe('ApiService', () => {
       expect(res.status).toBe('UP');
     });
     httpMock.expectOne('/actuator/health').flush({ status: 'UP' });
-    
+
     service.checkHealthRaw().subscribe({ error: () => {} });
     httpMock.expectOne('/actuator/health').flush('Down', { status: 500, statusText: 'Down' });
     expect(service.isBackendHealthy()).toBe(false);
@@ -148,12 +156,14 @@ describe('ApiService', () => {
   });
 
   it('should get bulk analytics success', () => {
-    service.getBulkAnalytics({a: 1}, 123).subscribe();
+    service.getBulkAnalytics({ a: 1 }, 123).subscribe();
     httpMock.expectOne('/api/v1/urls/analytics/bulk').flush({ clicks: {}, serverTimestamp: 0 });
   });
 
   it('should get global clicks success', () => {
     service.getGlobalClicks().subscribe();
-    httpMock.expectOne('/api/v1/urls/analytics/global').flush({ totalClicks: 0, serverTimestamp: 0 });
+    httpMock
+      .expectOne('/api/v1/urls/analytics/global')
+      .flush({ totalClicks: 0, serverTimestamp: 0 });
   });
 });
