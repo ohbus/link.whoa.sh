@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: link-whoa-qa
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ohbus/link.whoa.sh.git
+    targetRevision: main
+    path: deploy/qa/helm/link-whoa-qa
+    helm:
+      valueFiles:
+        - values-qa.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: link-whoa-qa
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
