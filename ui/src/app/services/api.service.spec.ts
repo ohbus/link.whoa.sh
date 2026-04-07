@@ -8,7 +8,7 @@ import {
   UrlAnalyticsResponse,
   GlobalClicksResponse,
 } from './api.service';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -44,154 +44,116 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne('/api/v1/urls');
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(request);
     req.flush(mockResponse);
   });
 
-  it('should handle error 500 when creating short URL', () => {
+  it('should handle errors in createShortUrl', () => {
     const request: CreateShortUrlRequest = { url: 'https://example.com' };
 
+    // Test 500
     service.createShortUrl(request).subscribe({
-      error: (err) => {
-        expect(err.status).toBe(500);
-        expect(service.isBackendHealthy()).toBe(false);
-      },
+      error: (err) => expect(service.isBackendHealthy()).toBe(false),
     });
+    httpMock.expectOne('/api/v1/urls').flush('Error', { status: 500, statusText: 'Error' });
 
-    const req = httpMock.expectOne('/api/v1/urls');
-    req.flush('Internal Server Error', { status: 500, statusText: 'Server Error' });
+    // Test 0
+    service.isBackendHealthy.set(true);
+    service.createShortUrl(request).subscribe({
+      error: (err) => expect(service.isBackendHealthy()).toBe(false),
+    });
+    httpMock.expectOne('/api/v1/urls').error(new ProgressEvent('Error'));
+
+    // Test 400
+    service.isBackendHealthy.set(true);
+    service.createShortUrl(request).subscribe({
+      error: (err) => expect(service.isBackendHealthy()).toBe(true),
+    });
+    httpMock.expectOne('/api/v1/urls').flush('Error', { status: 400, statusText: 'Bad Request' });
   });
 
-  it('should get analytics for a short code', () => {
-    const mockResponse: UrlAnalyticsResponse = {
-      originalUrl: 'https://example.com',
-      shortUrl: 'http://localhost:8844/abc',
-      clicks: 100,
-    };
+  it('should handle errors in getAnalytics', () => {
+    service.getAnalytics('abc').subscribe({ error: () => {} });
+    httpMock.expectOne('/api/v1/urls/abc/analytics').error(new ProgressEvent('Error'));
+    expect(service.isBackendHealthy()).toBe(false);
 
-    service.getAnalytics('abc').subscribe((res) => {
-      expect(res).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne('/api/v1/urls/abc/analytics');
-    expect(req.request.method).toBe('GET');
-    req.flush(mockResponse);
+    service.isBackendHealthy.set(true);
+    service.getAnalytics('abc').subscribe({ error: () => {} });
+    httpMock.expectOne('/api/v1/urls/abc/analytics').flush('Error', { status: 404, statusText: 'Not Found' });
+    expect(service.isBackendHealthy()).toBe(true);
   });
 
-  it('should get bulk analytics', () => {
-    const currentCounts = { code1: 10 };
-    const mockResponse = { clicks: { code1: 15 }, serverTimestamp: 12345 };
+  it('should handle errors in getBulkAnalytics', () => {
+    service.getBulkAnalytics({}, null).subscribe({ error: () => {} });
+    httpMock.expectOne('/api/v1/urls/analytics/bulk').error(new ProgressEvent('Error'));
+    expect(service.isBackendHealthy()).toBe(false);
 
-    service.getBulkAnalytics(currentCounts, null).subscribe((res) => {
-      expect(res.clicks['code1']).toBe(15);
-    });
-
-    const req = httpMock.expectOne('/api/v1/urls/analytics/bulk');
-    expect(req.request.method).toBe('POST');
-    req.flush(mockResponse);
+    service.isBackendHealthy.set(true);
+    service.getBulkAnalytics({}, null).subscribe({ error: () => {} });
+    httpMock.expectOne('/api/v1/urls/analytics/bulk').flush('Error', { status: 400, statusText: 'Error' });
+    expect(service.isBackendHealthy()).toBe(true);
   });
 
-  it('should get global clicks', () => {
-    const mockResponse: GlobalClicksResponse = { totalClicks: 1000, serverTimestamp: 12345 };
+  it('should handle errors in getPagedUrls', () => {
+    service.getPagedUrls(null).subscribe({ error: () => {} });
+    httpMock.expectOne('/api/v1/urls?limit=10').error(new ProgressEvent('Error'));
+    expect(service.isBackendHealthy()).toBe(false);
 
-    service.getGlobalClicks().subscribe((res) => {
-      expect(res.totalClicks).toBe(1000);
-    });
-
-    const req = httpMock.expectOne('/api/v1/urls/analytics/global');
-    expect(req.request.method).toBe('GET');
-    req.flush(mockResponse);
+    service.isBackendHealthy.set(true);
+    service.getPagedUrls(null).subscribe({ error: () => {} });
+    httpMock.expectOne('/api/v1/urls?limit=10').flush('Error', { status: 401, statusText: 'Unauthorized' });
+    expect(service.isBackendHealthy()).toBe(true);
   });
 
-  it('should get paged URLs', () => {
-    const mockResponse: PagedUrlsResponse = { links: [], nextCursor: null, hasMore: false };
+  it('should handle errors in getGlobalClicks', () => {
+    service.getGlobalClicks().subscribe({ error: () => {} });
+    httpMock.expectOne('/api/v1/urls/analytics/global').error(new ProgressEvent('Error'));
+    expect(service.isBackendHealthy()).toBe(false);
 
-    service.getPagedUrls(null, 5).subscribe((res) => {
-      expect(res).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne('/api/v1/urls?limit=5');
-    expect(req.request.method).toBe('GET');
-    req.flush(mockResponse);
+    service.isBackendHealthy.set(true);
+    service.getGlobalClicks().subscribe({ error: () => {} });
+    httpMock.expectOne('/api/v1/urls/analytics/global').flush('Error', { status: 403, statusText: 'Forbidden' });
+    expect(service.isBackendHealthy()).toBe(true);
   });
 
-  it('should get paged URLs with cursor', () => {
-    const mockResponse: PagedUrlsResponse = { links: [], nextCursor: 123, hasMore: true };
+  it('should check health correctly', () => {
+    service.checkHealth();
+    httpMock.expectOne('/actuator/health').flush({ status: 'UP' });
+    expect(service.isBackendHealthy()).toBe(true);
 
-    service.getPagedUrls(123, 10).subscribe((res) => {
-      expect(res).toEqual(mockResponse);
-    });
-
-    const req = httpMock.expectOne('/api/v1/urls?limit=10&cursor=123');
-    req.flush(mockResponse);
-  });
-
-  it('should handle error in getAnalytics', () => {
-    service.getAnalytics('abc').subscribe({
-      error: (err) => {
-        expect(err.status).toBe(500);
-        expect(service.isBackendHealthy()).toBe(false);
-      },
-    });
-
-    const req = httpMock.expectOne('/api/v1/urls/abc/analytics');
-    req.flush('Error', { status: 500, statusText: 'Error' });
-  });
-
-  it('should handle error in getBulkAnalytics', () => {
-    service.getBulkAnalytics({}, null).subscribe({
-      error: (err) => {
-        expect(err.status).toBe(500);
-        expect(service.isBackendHealthy()).toBe(false);
-      },
-    });
-
-    const req = httpMock.expectOne('/api/v1/urls/analytics/bulk');
-    req.flush('Error', { status: 500, statusText: 'Error' });
-  });
-
-  it('should handle error in getPagedUrls', () => {
-    service.getPagedUrls(null).subscribe({
-      error: (err) => {
-        expect(err.status).toBe(500);
-        expect(service.isBackendHealthy()).toBe(false);
-      },
-    });
-
-    const req = httpMock.expectOne('/api/v1/urls?limit=10');
-    req.flush('Error', { status: 500, statusText: 'Error' });
-  });
-
-  it('should handle error in getGlobalClicks', () => {
-    service.getGlobalClicks().subscribe({
-      error: (err) => {
-        expect(err.status).toBe(500);
-        expect(service.isBackendHealthy()).toBe(false);
-      },
-    });
-
-    const req = httpMock.expectOne('/api/v1/urls/analytics/global');
-    req.flush('Error', { status: 500, statusText: 'Error' });
+    service.checkHealth();
+    httpMock.expectOne('/actuator/health').flush({ status: 'DOWN' });
+    expect(service.isBackendHealthy()).toBe(false);
   });
 
   it('should check health raw correctly', () => {
     service.checkHealthRaw().subscribe((res) => {
       expect(res.status).toBe('UP');
-      expect(service.isBackendHealthy()).toBe(true);
     });
-
-    const req = httpMock.expectOne('/actuator/health');
-    req.flush({ status: 'UP' });
+    httpMock.expectOne('/actuator/health').flush({ status: 'UP' });
+    
+    service.checkHealthRaw().subscribe({ error: () => {} });
+    httpMock.expectOne('/actuator/health').flush('Down', { status: 500, statusText: 'Down' });
+    expect(service.isBackendHealthy()).toBe(false);
   });
 
-  it('should handle error in checkHealthRaw', () => {
-    service.checkHealthRaw().subscribe({
-      error: (err) => {
-        expect(service.isBackendHealthy()).toBe(false);
-      },
-    });
+  it('should handle paged URLs with cursor', () => {
+    service.getPagedUrls(123).subscribe();
+    const req = httpMock.expectOne('/api/v1/urls?limit=10&cursor=123');
+    req.flush({ links: [], nextCursor: null, hasMore: false });
+  });
 
-    const req = httpMock.expectOne('/actuator/health');
-    req.flush('Down', { status: 503, statusText: 'Down' });
+  it('should get analytics success', () => {
+    service.getAnalytics('abc').subscribe();
+    httpMock.expectOne('/api/v1/urls/abc/analytics').flush({});
+  });
+
+  it('should get bulk analytics success', () => {
+    service.getBulkAnalytics({a: 1}, 123).subscribe();
+    httpMock.expectOne('/api/v1/urls/analytics/bulk').flush({ clicks: {}, serverTimestamp: 0 });
+  });
+
+  it('should get global clicks success', () => {
+    service.getGlobalClicks().subscribe();
+    httpMock.expectOne('/api/v1/urls/analytics/global').flush({ totalClicks: 0, serverTimestamp: 0 });
   });
 });

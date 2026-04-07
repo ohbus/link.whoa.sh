@@ -2,70 +2,75 @@ import 'zone.js';
 import 'zone.js/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AnimatedCounterComponent } from './animated-counter';
-import { Component, signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-
-@Component({
-  standalone: true,
-  imports: [AnimatedCounterComponent],
-  template: `<app-animated-counter [value]="targetValue()"></app-animated-counter>`,
-})
-class TestHostComponent {
-  targetValue = signal(0);
-}
 
 describe('AnimatedCounterComponent', () => {
   let component: AnimatedCounterComponent;
-  let fixture: ComponentFixture<TestHostComponent>;
-  let hostComponent: TestHostComponent;
+  let fixture: ComponentFixture<AnimatedCounterComponent>;
 
   beforeEach(async () => {
     vi.useFakeTimers();
     await TestBed.configureTestingModule({
-      imports: [AnimatedCounterComponent, TestHostComponent],
+      imports: [AnimatedCounterComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TestHostComponent);
-    hostComponent = fixture.componentInstance;
+    fixture = TestBed.createComponent(AnimatedCounterComponent);
+    component = fixture.componentInstance;
   });
 
   it('should animate from 0 to target value', async () => {
-    const componentFixture = TestBed.createComponent(AnimatedCounterComponent);
-    component = componentFixture.componentInstance;
-
-    // Set initial value
-    componentFixture.componentRef.setInput('value', 100);
-    componentFixture.detectChanges();
+    fixture.componentRef.setInput('value', 100);
+    fixture.detectChanges();
 
     // Initially it should be 0
     expect(component.displayValue()).toBe(0);
 
     vi.advanceTimersByTime(300);
-    componentFixture.detectChanges();
+    fixture.detectChanges();
     expect(component.displayValue()).toBeGreaterThan(0);
     expect(component.displayValue()).toBeLessThan(100);
 
     vi.advanceTimersByTime(1000);
-    componentFixture.detectChanges();
+    fixture.detectChanges();
     expect(component.displayValue()).toBe(100);
   });
 
   it('should handle decreasing values', async () => {
-    const componentFixture = TestBed.createComponent(AnimatedCounterComponent);
-    component = componentFixture.componentInstance;
-
     // Set initial
-    componentFixture.componentRef.setInput('value', 100);
-    componentFixture.detectChanges();
+    fixture.componentRef.setInput('value', 100);
+    fixture.detectChanges();
     vi.advanceTimersByTime(2000);
     expect(component.displayValue()).toBe(100);
 
     // Decrease
-    componentFixture.componentRef.setInput('value', 50);
-    componentFixture.detectChanges();
+    fixture.componentRef.setInput('value', 50);
+    fixture.detectChanges();
 
     vi.advanceTimersByTime(2000);
-    componentFixture.detectChanges();
+    fixture.detectChanges();
     expect(component.displayValue()).toBe(50);
+  });
+
+  it('should return early if target is same as current', () => {
+    fixture.componentRef.setInput('value', 0);
+    fixture.detectChanges();
+    
+    const spy = vi.spyOn(window, 'setInterval');
+    
+    // Set same value again
+    fixture.componentRef.setInput('value', 0);
+    fixture.detectChanges();
+    
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should cleanup interval on destroy', () => {
+    fixture.componentRef.setInput('value', 100);
+    fixture.detectChanges();
+    
+    const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
+    component.ngOnDestroy();
+    
+    expect(clearIntervalSpy).toHaveBeenCalled();
   });
 });
