@@ -15,7 +15,7 @@ Object.defineProperty(window, 'IntersectionObserver', {
 });
 
 import 'fake-indexeddb/auto';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { AppComponent } from './app';
 import { ApiService } from './services/api.service';

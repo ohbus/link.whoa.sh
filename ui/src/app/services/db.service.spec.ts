@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { DbService } from './db.service';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('DbService', () => {
   let service: DbService;
@@ -9,14 +9,12 @@ describe('DbService', () => {
     // Disable seeding by default for tests to have clean state
     DbService.skipSeeding = true;
 
-    const dbService = new DbService();
-    await dbService.db.urls.clear();
-    await dbService.db.analytics.clear();
-
     TestBed.configureTestingModule({
       providers: [DbService],
     });
     service = TestBed.inject(DbService);
+    await service.db.urls.clear();
+    await service.db.analytics.clear();
   });
 
   it('should be created', () => {

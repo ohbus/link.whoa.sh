@@ -8,7 +8,7 @@ import {
   UrlAnalyticsResponse,
   GlobalClicksResponse,
 } from './api.service';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -44,6 +44,7 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne('/api/v1/urls');
     expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(request);
     req.flush(mockResponse);
   });
 

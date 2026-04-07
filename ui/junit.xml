@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="53" failures="0" errors="0" time="0.327962625">
-    <testsuite name="src/app/app.config.spec.ts" timestamp="2026-04-07T08:20:47.344Z" hostname="CP-AT-D9CGW53372" tests="1" failures="0" errors="0" skipped="0" time="0.002275917">
-        <testcase classname="src/app/app.config.spec.ts" name="AppConfig &gt; should have providers defined" time="0.0015335">
+<testsuites name="vitest tests" tests="53" failures="0" errors="0" time="0.342895875">
+    <testsuite name="src/app/app.config.spec.ts" timestamp="2026-04-07T13:41:02.375Z" hostname="CP-AT-D9CGW53372" tests="1" failures="0" errors="0" skipped="0" time="0.002642459">
+        <testcase classname="src/app/app.config.spec.ts" name="AppConfig &gt; should have providers defined" time="0.001670083">
         </testcase>
     </testsuite>
-    <testsuite name="src/app/app.routes.spec.ts" timestamp="2026-04-07T08:20:47.344Z" hostname="CP-AT-D9CGW53372" tests="1" failures="0" errors="0" skipped="0" time="0.002252417">
-        <testcase classname="src/app/app.routes.spec.ts" name="AppRoutes &gt; should be defined as an array" time="0.001391542">
+    <testsuite name="src/app/app.routes.spec.ts" timestamp="2026-04-07T13:41:02.375Z" hostname="CP-AT-D9CGW53372" tests="1" failures="0" errors="0" skipped="0" time="0.002358666">
+        <testcase classname="src/app/app.routes.spec.ts" name="AppRoutes &gt; should be defined as an array" time="0.001499458">
         </testcase>
     </testsuite>
-    <testsuite name="src/app/app.spec.ts" timestamp="2026-04-07T08:20:47.345Z" hostname="CP-AT-D9CGW53372" tests="18" failures="0" errors="0" skipped="0" time="0.180509125">
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should create the app" time="0.038832333">
+    <testsuite name="src/app/app.spec.ts" timestamp="2026-04-07T13:41:02.375Z" hostname="CP-AT-D9CGW53372" tests="18" failures="0" errors="0" skipped="0" time="0.193016875">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should create the app" time="0.041388375">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -46,7 +46,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should toggle sidebar" time="0.011111">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should toggle sidebar" time="0.012459667">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -83,7 +83,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle successful shortening" time="0.010560417">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle successful shortening" time="0.01199625">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -120,7 +120,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle shortening error 409" time="0.010936584">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle shortening error 409" time="0.012078625">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -157,7 +157,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle shortening generic error" time="0.0080815">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle shortening generic error" time="0.009523541">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -194,7 +194,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should not execute shortening if form is invalid" time="0.007837541">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should not execute shortening if form is invalid" time="0.008391959">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -231,7 +231,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should open analytics drawer" time="0.007225041">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should open analytics drawer" time="0.007866792">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -268,7 +268,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should close analytics drawer" time="0.010359833">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should close analytics drawer" time="0.00942975">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -305,7 +305,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should focus destination input" time="0.009243083">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should focus destination input" time="0.008663791">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -342,7 +342,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should copy to clipboard and show notification" time="0.008236167">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should copy to clipboard and show notification" time="0.00845375">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -379,7 +379,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should navigate between pages" time="0.0066185">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should navigate between pages" time="0.007171625">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -416,7 +416,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle hovering over short links" time="0.007437292">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle hovering over short links" time="0.007740542">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -453,7 +453,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should poll global clicks and health" time="0.009218584">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should poll global clicks and health" time="0.009312">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -490,7 +490,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should cleanup observer on destroy" time="0.006648958">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should cleanup observer on destroy" time="0.006988875">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -527,7 +527,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle navigation edge cases" time="0.006319125">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle navigation edge cases" time="0.006828375">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -564,7 +564,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle analytics fetch error" time="0.006426166">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should handle analytics fetch error" time="0.007157417">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -601,7 +601,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should expose global WhoaApp hooks" time="0.007853792">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should expose global WhoaApp hooks" time="0.008775542">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -638,7 +638,7 @@
 
             </system-err>
         </testcase>
-        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should initialize viewport observer and handle changes" time="0.006746833">
+        <testcase classname="src/app/app.spec.ts" name="AppComponent &gt; should initialize viewport observer and handle changes" time="0.007841292">
             <system-err>
 
   It looks like you&apos;re using the disabled attribute with a reactive form directive. If you set disabled to true
@@ -676,82 +676,82 @@
             </system-err>
         </testcase>
     </testsuite>
-    <testsuite name="src/app/components/animated-counter.spec.ts" timestamp="2026-04-07T08:20:47.347Z" hostname="CP-AT-D9CGW53372" tests="4" failures="0" errors="0" skipped="0" time="0.036800833">
-        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should animate from 0 to target value" time="0.025994042">
+    <testsuite name="src/app/components/animated-counter.spec.ts" timestamp="2026-04-07T13:41:02.377Z" hostname="CP-AT-D9CGW53372" tests="4" failures="0" errors="0" skipped="0" time="0.037756584">
+        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should animate from 0 to target value" time="0.028211583">
         </testcase>
-        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should handle decreasing values" time="0.003678">
+        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should handle decreasing values" time="0.003848417">
         </testcase>
-        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should return early if target is same as current" time="0.002567833">
+        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should return early if target is same as current" time="0.00272025">
         </testcase>
-        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should cleanup interval on destroy" time="0.003791292">
-        </testcase>
-    </testsuite>
-    <testsuite name="src/app/services/api.service.spec.ts" timestamp="2026-04-07T08:20:47.347Z" hostname="CP-AT-D9CGW53372" tests="13" failures="0" errors="0" skipped="0" time="0.031504625">
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should be created" time="0.008937625">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should create a short URL" time="0.00650575">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle errors in createShortUrl" time="0.002179542">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle errors in getAnalytics" time="0.001217417">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle errors in getBulkAnalytics" time="0.00129275">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle errors in getPagedUrls" time="0.001473583">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle errors in getGlobalClicks" time="0.001394166">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should check health correctly" time="0.001400833">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should check health raw correctly" time="0.002191667">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle paged URLs with cursor" time="0.001030625">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get analytics success" time="0.000976167">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get bulk analytics success" time="0.001134">
-        </testcase>
-        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get global clicks success" time="0.000949667">
+        <testcase classname="src/app/components/animated-counter.spec.ts" name="AnimatedCounterComponent &gt; should cleanup interval on destroy" time="0.002116625">
         </testcase>
     </testsuite>
-    <testsuite name="src/app/services/db.service.spec.ts" timestamp="2026-04-07T08:20:47.347Z" hostname="CP-AT-D9CGW53372" tests="7" failures="0" errors="0" skipped="0" time="0.0507015">
-        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should be created" time="0.015394542">
+    <testsuite name="src/app/services/api.service.spec.ts" timestamp="2026-04-07T13:41:02.377Z" hostname="CP-AT-D9CGW53372" tests="13" failures="0" errors="0" skipped="0" time="0.031164791">
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should be created" time="0.009629167">
         </testcase>
-        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should seed data manually for testing" time="0.018397291">
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should create a short URL" time="0.007183834">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle errors in createShortUrl" time="0.002257583">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle errors in getAnalytics" time="0.001262792">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle errors in getBulkAnalytics" time="0.001371833">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle errors in getPagedUrls" time="0.001467083">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle errors in getGlobalClicks" time="0.001132833">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should check health correctly" time="0.001205417">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should check health raw correctly" time="0.001134084">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should handle paged URLs with cursor" time="0.00095375">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get analytics success" time="0.000857166">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get bulk analytics success" time="0.000951666">
+        </testcase>
+        <testcase classname="src/app/services/api.service.spec.ts" name="ApiService &gt; should get global clicks success" time="0.000875375">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/services/db.service.spec.ts" timestamp="2026-04-07T13:41:02.378Z" hostname="CP-AT-D9CGW53372" tests="7" failures="0" errors="0" skipped="0" time="0.051634834">
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should be created" time="0.01521175">
+        </testcase>
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should seed data manually for testing" time="0.019739917">
             <system-out>
 Local development mode: Seeding IndexedDB with sample data...
 
             </system-out>
         </testcase>
-        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should add a URL" time="0.003068334">
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should add a URL" time="0.002698541">
         </testcase>
-        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should bulk add URLs" time="0.004370167">
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should bulk add URLs" time="0.005619917">
         </testcase>
-        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should update analytics" time="0.002903625">
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should update analytics" time="0.003228125">
         </testcase>
-        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should get all URLs" time="0.003435708">
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should get all URLs" time="0.002302042">
         </testcase>
-        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should provide liveUrls (alias for getUrls)" time="0.002055125">
+        <testcase classname="src/app/services/db.service.spec.ts" name="DbService &gt; should provide liveUrls (alias for getUrls)" time="0.00200225">
         </testcase>
     </testsuite>
-    <testsuite name="src/app/services/sync.service.spec.ts" timestamp="2026-04-07T08:20:47.348Z" hostname="CP-AT-D9CGW53372" tests="9" failures="0" errors="0" skipped="0" time="0.023918208">
-        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should be created" time="0.008909833">
+    <testsuite name="src/app/services/sync.service.spec.ts" timestamp="2026-04-07T13:41:02.378Z" hostname="CP-AT-D9CGW53372" tests="9" failures="0" errors="0" skipped="0" time="0.024321666">
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should be created" time="0.009615875">
         </testcase>
-        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should not sync if already syncing" time="0.002128792">
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should not sync if already syncing" time="0.001908916">
         </testcase>
-        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should not sync if viewport is empty" time="0.001298">
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should not sync if viewport is empty" time="0.001044959">
         </testcase>
-        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should not sync if no visible links are registered" time="0.001263709">
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should not sync if no visible links are registered" time="0.001059042">
         </testcase>
-        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should perform sync successfully" time="0.002041">
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should perform sync successfully" time="0.001923709">
         </testcase>
-        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should handle API error during sync" time="0.001045875">
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should handle API error during sync" time="0.00102525">
         </testcase>
-        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should handle error in getUrls" time="0.002150791">
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should handle error in getUrls" time="0.002609291">
         </testcase>
-        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should start and stop scheduled sync" time="0.002701291">
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should start and stop scheduled sync" time="0.002707792">
         </testcase>
-        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should skip sync if skipSync is true" time="0.001524417">
+        <testcase classname="src/app/services/sync.service.spec.ts" name="SyncService &gt; should skip sync if skipSync is true" time="0.001119708">
         </testcase>
     </testsuite>
 </testsuites>
