@@ -12,90 +12,80 @@ private val log = KotlinLogging.logger {}
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
-    @ExceptionHandler(UrlNotFoundException::class)
-    fun handleUrlNotFoundException(ex: UrlNotFoundException): ResponseEntity<ErrorResponse> {
-        log.warn { "URL not found: ${ex.message}" }
-        val errorResponse =
-            ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                UrlNotFoundException.ERROR_CODE.toString(),
-                ex.message,
-            )
-        return ResponseEntity(errorResponse, HttpStatus.NOT_FOUND)
+    /**
+     * Handles all custom exceptions that implement [WhoaException].
+     */
+    @ExceptionHandler(RuntimeException::class)
+    fun handleWhoaException(ex: Exception): ResponseEntity<ErrorResponse> {
+        val whoaEx = ex as? WhoaException
+        if (whoaEx != null) {
+            val status = whoaEx.statusCode
+            if (status.is5xxServerError) {
+                log.error(ex) { "Server Error [${whoaEx.errorCode}]: ${ex.message}" }
+            } else {
+                log.warn { "Client Error [${whoaEx.errorCode}]: ${ex.message}" }
+            }
+
+            val response =
+                ErrorResponse(
+                    statusCode = status.value(),
+                    errorCode = whoaEx.errorCode,
+                    message = if (status.is5xxServerError) "Internal System Error" else ex.message,
+                )
+            return ResponseEntity(response, status)
+        }
+        return handleGenericException(ex)
     }
 
-    @ExceptionHandler(
-        ValidationException::class,
-        MethodArgumentNotValidException::class,
-    )
-    fun handleValidationException(ex: Exception): ResponseEntity<ErrorResponse> {
-        log.warn { "Validation failed: ${ex.message}" }
-        val errorResponse =
+    /**
+     * Specifically handles Bean Validation errors with field-level details.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationException(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+        val fieldErrors =
+            ex.bindingResult.fieldErrors.associate {
+                it.field to (it.defaultMessage ?: "Invalid value")
+            }
+
+        log.warn { "Validation failed: $fieldErrors" }
+
+        val response =
             ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                ValidationException.ERROR_CODE.toString(),
-                ex.message,
+                statusCode = HttpStatus.BAD_REQUEST.value(),
+                errorCode = "WHOA-1001",
+                message = "Validation failed for one or more fields",
+                errors = fieldErrors,
             )
-        return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
+        return ResponseEntity(response, HttpStatus.BAD_REQUEST)
     }
 
-    @ExceptionHandler(MethodNotSupportedException::class)
-    fun handleMethodNotSupportedException(ex: MethodNotSupportedException): ResponseEntity<ErrorResponse> {
-        log.warn { "Method not supported: ${ex.message}" }
-        val errorResponse =
-            ErrorResponse(
-                HttpStatus.METHOD_NOT_ALLOWED.value(),
-                MethodNotSupportedException.ERROR_CODE.toString(),
-                ex.message,
-            )
-        return ResponseEntity(errorResponse, HttpStatus.METHOD_NOT_ALLOWED)
-    }
-
-    @ExceptionHandler(ShortCodeAlreadyExistsException::class)
-    fun handleShortCodeAlreadyExistsException(ex: ShortCodeAlreadyExistsException): ResponseEntity<ErrorResponse> {
-        log.warn { "Short code already exists: ${ex.message}" }
-        val errorResponse =
-            ErrorResponse(
-                HttpStatus.CONFLICT.value(),
-                ShortCodeAlreadyExistsException.ERROR_CODE.toString(),
-                ex.message,
-            )
-        return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
-    }
-
+    /**
+     * Handles database constraint violations.
+     */
     @ExceptionHandler(DataIntegrityViolationException::class)
     fun handleDataIntegrityViolationException(ex: DataIntegrityViolationException): ResponseEntity<ErrorResponse> {
-        log.error(ex) { "Data integrity violation: ${ex.message}" }
-        val errorResponse =
+        log.error(ex) { "Database integrity violation" }
+        val response =
             ErrorResponse(
-                HttpStatus.CONFLICT.value(),
-                ShortCodeAlreadyExistsException.ERROR_CODE.toString(),
-                "Short code already exists or data integrity violation",
+                statusCode = HttpStatus.CONFLICT.value(),
+                errorCode = "WHOA-4001",
+                message = "A resource conflict occurred (possible duplicate)",
             )
-        return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
+        return ResponseEntity(response, HttpStatus.CONFLICT)
     }
 
-    @ExceptionHandler(InternalServerErrorException::class)
-    fun handleInternalServerErrorException(ex: InternalServerErrorException): ResponseEntity<ErrorResponse> {
-        log.error(ex) { "Internal server error: ${ex.message}" }
-        val errorResponse =
-            ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                InternalServerErrorException.ERROR_CODE.toString(),
-                ex.message,
-            )
-        return ResponseEntity(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
-    }
-
+    /**
+     * Final catch-all for unhandled exceptions.
+     */
     @ExceptionHandler(Exception::class)
     fun handleGenericException(ex: Exception): ResponseEntity<ErrorResponse> {
-        log.error(ex) { "Unexpected system error: ${ex.message}" }
-        val errorResponse =
+        log.error(ex) { "Unhandled exception occurred: ${ex.message}" }
+        val response =
             ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "696969",
-                "An unexpected error occurred",
+                statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                errorCode = "WHOA-9999",
+                message = "An unexpected error occurred",
             )
-        return ResponseEntity(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 }

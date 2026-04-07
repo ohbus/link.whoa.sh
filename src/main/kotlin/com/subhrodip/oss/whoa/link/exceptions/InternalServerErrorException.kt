@@ -1,9 +1,11 @@
 package com.subhrodip.oss.whoa.link.exceptions
 
+import org.springframework.http.HttpStatus
+
 class InternalServerErrorException(
     message: String,
-) : RuntimeException(message) {
-    companion object {
-        const val ERROR_CODE = 100001
-    }
+    override val errorCode: String = "WHOA-9001",
+) : RuntimeException(message),
+    WhoaException {
+    override val statusCode: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR
 }

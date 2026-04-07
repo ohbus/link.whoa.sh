@@ -1,9 +1,11 @@
 package com.subhrodip.oss.whoa.link.exceptions
 
+import org.springframework.http.HttpStatus
+
 class MethodNotSupportedException(
     message: String,
-) : RuntimeException(message) {
-    companion object {
-        const val ERROR_CODE = 400001
-    }
+    override val errorCode: String = "WHOA-1002",
+) : RuntimeException(message),
+    WhoaException {
+    override val statusCode: HttpStatus = HttpStatus.METHOD_NOT_ALLOWED
 }

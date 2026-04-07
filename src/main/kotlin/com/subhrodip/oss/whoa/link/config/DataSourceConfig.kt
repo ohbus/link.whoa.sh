@@ -18,7 +18,7 @@ private val log = KotlinLogging.logger {}
 enum class DataSourceType { WRITER, READER }
 
 class RoutingDataSource : AbstractRoutingDataSource() {
-    override fun determineCurrentLookupKey(): Any {
+    public override fun determineCurrentLookupKey(): Any {
         val isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly()
         val type = if (isReadOnly) DataSourceType.READER else DataSourceType.WRITER
         log.trace { "Routing database call to: $type" }

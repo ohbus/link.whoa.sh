@@ -1,9 +1,11 @@
 package com.subhrodip.oss.whoa.link.exceptions
 
+import org.springframework.http.HttpStatus
+
 class UrlNotFoundException(
     message: String,
-) : RuntimeException(message) {
-    companion object {
-        const val ERROR_CODE = 200001
-    }
+    override val errorCode: String = "WHOA-2001",
+) : RuntimeException(message),
+    WhoaException {
+    override val statusCode: HttpStatus = HttpStatus.NOT_FOUND
 }

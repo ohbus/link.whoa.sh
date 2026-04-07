@@ -5,7 +5,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 class BulkAnalyticsDtoTest {
-
     @Test
     fun `BulkAnalyticsRequest should implement equals and hashCode correctly`() {
         val req1 = BulkAnalyticsRequest(mapOf("code1" to 1L), 1000L)
@@ -16,7 +15,7 @@ class BulkAnalyticsDtoTest {
         assertEquals(req1.hashCode(), req2.hashCode())
         assertNotEquals(req1, req3)
         assertNotEquals(req1.hashCode(), req3.hashCode())
-        
+
         val reqStr = req1.toString()
         assert(reqStr.contains("code1"))
         assert(reqStr.contains("1000"))
@@ -40,7 +39,7 @@ class BulkAnalyticsDtoTest {
         assertEquals(res1.hashCode(), res2.hashCode())
         assertNotEquals(res1, res3)
         assertNotEquals(res1.hashCode(), res3.hashCode())
-        
+
         val resStr = res1.toString()
         assert(resStr.contains("code1"))
         assert(resStr.contains("1000"))

@@ -5,12 +5,12 @@ import com.subhrodip.oss.whoa.link.dto.CreateShortUrlRequest
 import com.subhrodip.oss.whoa.link.dto.CreateShortUrlResponse
 import com.subhrodip.oss.whoa.link.exceptions.ShortCodeAlreadyExistsException
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
+import com.subhrodip.oss.whoa.link.util.Base62Encoder
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.micrometer.core.annotation.Timed
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.security.SecureRandom
 
 private val log = KotlinLogging.logger {}
 
@@ -23,14 +23,11 @@ class UrlWriteService(
     @Value("\${app.baseUrl:http://localhost:8844}")
     private lateinit var baseUrl: String
 
-    private val random = SecureRandom()
-    private val shortCodeChars = "abcdefghijklmnopqrstuvwxyz".toCharArray()
-
     @Timed(value = "whoa.service.urls.create.time", description = "Execution time for creation logic")
     fun createShortUrl(request: CreateShortUrlRequest): CreateShortUrlResponse {
         val shortCode =
             if (request.shortCode.isNullOrBlank()) {
-                generateUniqueShortCode()
+                generateSequenceShortCode()
             } else {
                 if (urlRepository.findByShortCode(request.shortCode) != null) {
                     throw ShortCodeAlreadyExistsException("Short code '${request.shortCode}' already exists")
@@ -55,14 +52,8 @@ class UrlWriteService(
         )
     }
 
-    private fun generateUniqueShortCode(): String {
-        var shortCode: String
-        do {
-            shortCode =
-                (1..6)
-                    .map { shortCodeChars[random.nextInt(shortCodeChars.size)] }
-                    .joinToString("")
-        } while (urlRepository.findByShortCode(shortCode) != null)
-        return shortCode
+    private fun generateSequenceShortCode(): String {
+        val nextId = urlRepository.getNextShortCodeId()
+        return Base62Encoder.encode(nextId)
     }
 }

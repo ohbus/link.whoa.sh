@@ -1,72 +1,54 @@
 package com.subhrodip.oss.whoa.link.controllers
 
-import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
-import com.subhrodip.oss.whoa.link.services.AnalyticsService
-import com.subhrodip.oss.whoa.link.services.UrlCacheService
 import com.subhrodip.oss.whoa.link.services.UrlReadService
-import com.subhrodip.oss.whoa.link.services.UrlWriteService
+import jakarta.servlet.http.HttpServletRequest
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.whenever
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
-import org.springframework.cache.CacheManager
-import org.springframework.test.context.bean.override.mockito.MockitoBean
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.http.HttpStatus
 
-@WebMvcTest(RedirectController::class)
+@ExtendWith(MockitoExtension::class)
 class RedirectControllerTest {
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-
-    @MockitoBean
+    @Mock
     private lateinit var urlReadService: UrlReadService
 
-    @MockitoBean
-    private lateinit var urlWriteService: UrlWriteService
+    @Mock
+    private lateinit var request: HttpServletRequest
 
-    @MockitoBean
-    private lateinit var analyticsService: AnalyticsService
-
-    @MockitoBean
-    private lateinit var urlCacheService: UrlCacheService
-
-    @MockitoBean
-    private lateinit var cacheManager: CacheManager
+    @InjectMocks
+    private lateinit var redirectController: RedirectController
 
     @Test
-    fun `should redirect to original url when short code exists`() {
-        val shortCode = "abcdef"
-        val originalUrl = "https://example.com"
-        val userAgent = "Test Agent"
-        val ipAddress = "127.0.0.1"
+    fun `test redirectToOriginalUrl`() {
+        val shortCode = "abc"
+        val originalUrl = "https://google.com"
 
-        whenever(urlReadService.getOriginalUrl(shortCode, userAgent, ipAddress)).thenReturn(originalUrl)
+        `when`(request.getHeader("User-Agent")).thenReturn("test-agent")
+        `when`(request.remoteAddr).thenReturn("127.0.0.1")
+        `when`(urlReadService.getOriginalUrl(shortCode, "test-agent", "127.0.0.1")).thenReturn(originalUrl)
 
-        mockMvc
-            .perform(
-                get("/$shortCode")
-                    .header("User-Agent", userAgent)
-                    .remoteAddress(ipAddress),
-            ).andExpect(status().isFound)
-            .andExpect(header().string("Location", originalUrl))
+        val response = redirectController.redirectToOriginalUrl(shortCode, request)
+
+        assertEquals(HttpStatus.FOUND, response.statusCode)
+        assertEquals(originalUrl, response.headers.location?.toString())
     }
 
     @Test
-    fun `should return 404 when short code does not exist`() {
-        val shortCode = "nonexistent"
-        val userAgent = "Test Agent"
-        val ipAddress = "127.0.0.1"
+    fun `test redirectToOriginalUrl with missing user agent`() {
+        val shortCode = "abc"
+        val originalUrl = "https://google.com"
 
-        whenever(urlReadService.getOriginalUrl(shortCode, userAgent, ipAddress)).thenThrow(UrlNotFoundException("Url not found"))
+        `when`(request.getHeader("User-Agent")).thenReturn(null)
+        `when`(request.remoteAddr).thenReturn("127.0.0.1")
+        `when`(urlReadService.getOriginalUrl(shortCode, "", "127.0.0.1")).thenReturn(originalUrl)
 
-        mockMvc
-            .perform(
-                get("/$shortCode")
-                    .header("User-Agent", userAgent)
-                    .remoteAddress(ipAddress),
-            ).andExpect(status().isNotFound)
+        val response = redirectController.redirectToOriginalUrl(shortCode, request)
+
+        assertEquals(HttpStatus.FOUND, response.statusCode)
+        assertEquals(originalUrl, response.headers.location?.toString())
     }
 }

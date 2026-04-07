@@ -40,7 +40,7 @@ class RedirectController(
         request: HttpServletRequest,
     ): ResponseEntity<Unit> {
         log.trace { "Redirect request for code: $shortCode" }
-        val userAgent = request.getHeader("User-Agent")
+        val userAgent = request.getHeader("User-Agent") ?: ""
         val ipAddress = request.remoteAddr
         val originalUrl = urlReadService.getOriginalUrl(shortCode, userAgent, ipAddress)
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(originalUrl)).build()

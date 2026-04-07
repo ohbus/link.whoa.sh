@@ -80,15 +80,23 @@ class WhoaFullLifecycleE2ETest {
             })
         }
 
-        // 3. Verify Analytics
-        Thread.sleep(1000)
-        val analyticsResponse =
-            restTemplate.getForEntity(
-                "${baseUrl()}/api/v1/urls/$customShortCode/analytics",
-                UrlAnalyticsResponse::class.java,
-            )
-        assertEquals(HttpStatus.OK, analyticsResponse.statusCode)
-        assertEquals(3, analyticsResponse.body?.clicks)
+        // 3. Verify Analytics (Polling to handle async processing)
+        var lastClicks = -1L
+        var success = false
+        repeat(10) {
+            val analyticsResponse =
+                restTemplate.getForEntity(
+                    "${baseUrl()}/api/v1/urls/$customShortCode/analytics",
+                    UrlAnalyticsResponse::class.java,
+                )
+            lastClicks = analyticsResponse.body?.clicks ?: -1L
+            if (lastClicks == 3L) {
+                success = true
+                return@repeat
+            }
+            Thread.sleep(500)
+        }
+        assertTrue(success, "Expected 3 clicks, but got $lastClicks after 5 seconds")
     }
 
     @Test

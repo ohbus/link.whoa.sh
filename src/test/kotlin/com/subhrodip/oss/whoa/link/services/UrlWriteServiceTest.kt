@@ -10,10 +10,10 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
-import org.mockito.kotlin.verify
 import org.springframework.test.util.ReflectionTestUtils
 
 @ExtendWith(MockitoExtension::class)
@@ -28,54 +28,36 @@ class UrlWriteServiceTest {
     private lateinit var urlWriteService: UrlWriteService
 
     @Test
-    fun `test createShortUrl with random short code`() {
+    fun `test createShortUrl with generated code`() {
         ReflectionTestUtils.setField(urlWriteService, "baseUrl", "http://localhost:8844")
-        val request = CreateShortUrlRequest(url = "https://example.com")
-        `when`(urlRepository.findByShortCode(any())).thenReturn(null)
+        val request = CreateShortUrlRequest("https://google.com")
+        `when`(urlRepository.getNextShortCodeId()).thenReturn(12345L)
         `when`(urlRepository.save(any<UrlEntity>())).thenAnswer { it.arguments[0] }
 
-        val response = urlWriteService.createShortUrl(request)
+        val result = urlWriteService.createShortUrl(request)
 
-        assertEquals("https://example.com", response.originalUrl)
-        assertEquals(28, response.shortUrl.length) // http://localhost:8844/ + 6 chars
-        verify(urlCacheService).putInCache(any())
+        assertEquals("https://google.com", result.originalUrl)
+        verify(urlRepository).save(any<UrlEntity>())
+        verify(urlCacheService).putInCache(any<UrlEntity>())
     }
 
     @Test
-    fun `test createShortUrl with custom short code`() {
+    fun `test createShortUrl with custom code success`() {
         ReflectionTestUtils.setField(urlWriteService, "baseUrl", "http://localhost:8844")
-        val request = CreateShortUrlRequest(url = "https://example.com", shortCode = "custom")
-        `when`(urlRepository.findByShortCode("custom")).thenReturn(null)
+        val request = CreateShortUrlRequest("https://google.com", "my-custom-code")
+        `when`(urlRepository.findByShortCode("my-custom-code")).thenReturn(null)
         `when`(urlRepository.save(any<UrlEntity>())).thenAnswer { it.arguments[0] }
 
-        val response = urlWriteService.createShortUrl(request)
+        val result = urlWriteService.createShortUrl(request)
 
-        assertEquals("https://example.com", response.originalUrl)
-        assertEquals("http://localhost:8844/custom", response.shortUrl)
-        verify(urlCacheService).putInCache(any())
+        assertEquals("http://localhost:8844/my-custom-code", result.shortUrl)
+        verify(urlRepository).save(any<UrlEntity>())
     }
 
     @Test
-    fun `test createShortUrl with collision`() {
-        ReflectionTestUtils.setField(urlWriteService, "baseUrl", "http://localhost:8844")
-        val request = CreateShortUrlRequest(url = "https://example.com")
-        val existingUrl = UrlEntity(originalUrl = "https://another.com", shortCode = "abcdef")
-
-        // Simulate a collision on the first attempt
-        `when`(urlRepository.findByShortCode(any())).thenReturn(existingUrl).thenReturn(null)
-        `when`(urlRepository.save(any<UrlEntity>())).thenAnswer { it.arguments[0] }
-
-        val response = urlWriteService.createShortUrl(request)
-
-        assertEquals("https://example.com", response.originalUrl)
-        assertEquals(28, response.shortUrl.length) // http://localhost:8844/ + 6 chars
-    }
-
-    @Test
-    fun `test createShortUrl with existing custom short code`() {
-        val request = CreateShortUrlRequest(url = "https://example.com", shortCode = "custom")
-        val urlEntity = UrlEntity(originalUrl = "https://another.com", shortCode = "custom")
-        `when`(urlRepository.findByShortCode("custom")).thenReturn(urlEntity)
+    fun `test createShortUrl with custom code conflict`() {
+        val request = CreateShortUrlRequest("https://google.com", "existing-code")
+        `when`(urlRepository.findByShortCode("existing-code")).thenReturn(UrlEntity("http://other.com", "existing-code"))
 
         assertThrows<ShortCodeAlreadyExistsException> {
             urlWriteService.createShortUrl(request)

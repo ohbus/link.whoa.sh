@@ -6,10 +6,11 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import java.util.Objects
 
 @Entity
 @Table(name = "url_analytics")
-data class UrlAnalyticsEntity(
+class UrlAnalyticsEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "url_id", nullable = false)
     val urlEntity: UrlEntity,
@@ -17,4 +18,14 @@ data class UrlAnalyticsEntity(
     val userAgent: String?,
     @Column(name = "ip_address")
     val ipAddress: String?,
-) : BaseEntity()
+) : BaseEntity() {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is UrlAnalyticsEntity) return false
+        return id != 0L && id == other.id
+    }
+
+    override fun hashCode(): Int = Objects.hash(id)
+
+    override fun toString(): String = "UrlAnalyticsEntity(id=$id, ipAddress='$ipAddress')"
+}
