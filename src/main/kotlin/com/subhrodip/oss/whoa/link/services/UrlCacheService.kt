@@ -5,6 +5,7 @@ import com.subhrodip.oss.whoa.link.dto.UrlDto
 import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
@@ -41,7 +42,7 @@ class UrlCacheService(
             createdAt = urlEntity.createdAt,
         )
 
-    @org.springframework.cache.annotation.CacheEvict(value = ["urls"], key = "'url:' + #shortCode")
+    @CacheEvict(value = ["urls"], key = "'url:' + #shortCode")
     fun evictUrlCache(shortCode: String) {
         log.trace { "Evicted short code $shortCode from cache" }
     }

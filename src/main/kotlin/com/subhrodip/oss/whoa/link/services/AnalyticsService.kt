@@ -73,7 +73,7 @@ class AnalyticsService(
     ): BulkAnalyticsResponse {
         val requestedCodes = currentCounts.keys.toList()
         if (requestedCodes.isEmpty()) {
-            return BulkAnalyticsResponse(emptyMap(), System.currentTimeMillis())
+            return BulkAnalyticsResponse(emptyMap(), Instant.now().toEpochMilli())
         }
 
         // 1. Resolve codes to IDs via Cache (No DB hit for lookup)
@@ -103,7 +103,7 @@ class AnalyticsService(
 
         return BulkAnalyticsResponse(
             clicks = clickMap,
-            serverTimestamp = System.currentTimeMillis(),
+            serverTimestamp = Instant.now().toEpochMilli(),
         )
     }
 }
