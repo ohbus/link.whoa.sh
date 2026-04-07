@@ -1,10 +1,8 @@
 package com.subhrodip.oss.whoa.link.services
 
 import com.subhrodip.oss.whoa.link.domain.UrlAnalyticsEntity
-import com.subhrodip.oss.whoa.link.domain.UrlEntity
 import com.subhrodip.oss.whoa.link.dto.BulkAnalyticsResponse
 import com.subhrodip.oss.whoa.link.dto.UrlAnalyticsResponse
-import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import io.github.oshai.kotlinlogging.KotlinLogging

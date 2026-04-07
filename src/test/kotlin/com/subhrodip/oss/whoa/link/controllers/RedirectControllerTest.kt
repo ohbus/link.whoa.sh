@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus
 
 @ExtendWith(MockitoExtension::class)
 class RedirectControllerTest {
-
     @Mock
     private lateinit var urlReadService: UrlReadService
 
@@ -27,7 +26,7 @@ class RedirectControllerTest {
     fun `test redirectToOriginalUrl`() {
         val shortCode = "abc"
         val originalUrl = "https://google.com"
-        
+
         `when`(request.getHeader("User-Agent")).thenReturn("test-agent")
         `when`(request.remoteAddr).thenReturn("127.0.0.1")
         `when`(urlReadService.getOriginalUrl(shortCode, "test-agent", "127.0.0.1")).thenReturn(originalUrl)
@@ -42,7 +41,7 @@ class RedirectControllerTest {
     fun `test redirectToOriginalUrl with missing user agent`() {
         val shortCode = "abc"
         val originalUrl = "https://google.com"
-        
+
         `when`(request.getHeader("User-Agent")).thenReturn(null)
         `when`(request.remoteAddr).thenReturn("127.0.0.1")
         `when`(urlReadService.getOriginalUrl(shortCode, "", "127.0.0.1")).thenReturn(originalUrl)

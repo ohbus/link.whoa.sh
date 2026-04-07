@@ -7,7 +7,6 @@ import org.springframework.test.context.ActiveProfiles
 @SpringBootTest
 @ActiveProfiles("test")
 class WhoaApplicationTest {
-
     @Test
     fun contextLoads() {
         // This test ensures the application context loads successfully.

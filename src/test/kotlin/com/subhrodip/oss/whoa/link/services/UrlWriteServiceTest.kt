@@ -18,7 +18,6 @@ import org.springframework.test.util.ReflectionTestUtils
 
 @ExtendWith(MockitoExtension::class)
 class UrlWriteServiceTest {
-
     @Mock
     private lateinit var urlRepository: UrlRepository
 

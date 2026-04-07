@@ -12,7 +12,6 @@ import org.springframework.test.util.ReflectionTestUtils
 
 @ExtendWith(MockitoExtension::class)
 class ConfigTest {
-
     @Mock
     private lateinit var meterRegistry: MeterRegistry
 
@@ -34,7 +33,7 @@ class ConfigTest {
         val config = CacheConfig()
         ReflectionTestUtils.setField(config, "initialCapacity", 10)
         ReflectionTestUtils.setField(config, "maximumSize", 100L)
-        
+
         // Test durations: s, m, h, d, and default
         val units = listOf("10s", "5m", "1h", "1d", "10x", "10")
         units.forEach { unit ->

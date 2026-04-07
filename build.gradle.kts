@@ -116,7 +116,7 @@ tasks.withType<Test> {
 }
 
 ktlint {
-    version.set("1.8.0")
+    version.set("1.5.0")
     debug.set(true)
     verbose.set(true)
     android.set(false)

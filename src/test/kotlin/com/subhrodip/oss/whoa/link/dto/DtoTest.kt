@@ -3,10 +3,8 @@ package com.subhrodip.oss.whoa.link.dto
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import java.time.OffsetDateTime
 
 class DtoTest {
-
     @Test
     fun `test UrlAnalyticsResponse default values`() {
         val response = UrlAnalyticsResponse("orig", "short", 10L)

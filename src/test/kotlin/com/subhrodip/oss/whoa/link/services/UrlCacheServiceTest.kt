@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension
 
 @ExtendWith(MockitoExtension::class)
 class UrlCacheServiceTest {
-
     @Mock
     private lateinit var urlRepository: UrlRepository
 
@@ -26,11 +25,11 @@ class UrlCacheServiceTest {
         val shortCode = "abc"
         val entity = UrlEntity("https://url.com", shortCode)
         entity.id = 1L
-        
+
         `when`(urlRepository.findByShortCode(shortCode)).thenReturn(entity)
-        
+
         val result = urlCacheService.getCachedUrl(shortCode)
-        
+
         assertEquals(1L, result.id)
         assertEquals(shortCode, result.shortCode)
     }
@@ -39,7 +38,7 @@ class UrlCacheServiceTest {
     fun `test getCachedUrl not found`() {
         val shortCode = "abc"
         `when`(urlRepository.findByShortCode(shortCode)).thenReturn(null)
-        
+
         assertThrows<UrlNotFoundException> {
             urlCacheService.getCachedUrl(shortCode)
         }
@@ -49,9 +48,9 @@ class UrlCacheServiceTest {
     fun `test putInCache`() {
         val entity = UrlEntity("https://url.com", "abc")
         entity.id = 1L
-        
+
         val result = urlCacheService.putInCache(entity)
-        
+
         assertEquals(1L, result.id)
         assertEquals("abc", result.shortCode)
     }

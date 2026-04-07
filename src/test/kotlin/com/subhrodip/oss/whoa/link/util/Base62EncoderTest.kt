@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class Base62EncoderTest {
-
     @Test
     fun `test encode`() {
         assertEquals("a", Base62Encoder.encode(0))

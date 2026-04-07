@@ -7,7 +7,6 @@ import com.subhrodip.oss.whoa.link.exceptions.UrlNotFoundException
 import com.subhrodip.oss.whoa.link.repositories.UrlAnalyticsRepository
 import com.subhrodip.oss.whoa.link.repositories.UrlRepository
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -21,7 +20,6 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.springframework.test.util.ReflectionTestUtils
 import java.time.OffsetDateTime
-import java.util.Optional
 
 @ExtendWith(MockitoExtension::class)
 class AnalyticsServiceTest {

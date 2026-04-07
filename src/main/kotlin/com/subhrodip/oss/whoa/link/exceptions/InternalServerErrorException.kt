@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus
 class InternalServerErrorException(
     message: String,
     override val errorCode: String = "WHOA-9001",
-) : RuntimeException(message), WhoaException {
+) : RuntimeException(message),
+    WhoaException {
     override val statusCode: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR
 }

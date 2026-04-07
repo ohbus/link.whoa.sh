@@ -10,7 +10,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyNoInteractions
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.cache.Cache
@@ -19,7 +18,6 @@ import org.springframework.http.HttpStatus
 
 @ExtendWith(MockitoExtension::class)
 class TestingControllerTest {
-
     @Mock
     private lateinit var urlRepository: UrlRepository
 
@@ -45,7 +43,7 @@ class TestingControllerTest {
 
         assertEquals(HttpStatus.OK, result.statusCode)
         assertEquals("success", result.body?.get("status"))
-        
+
         verify(urlAnalyticsRepository).deleteAllInBatch()
         verify(urlRepository).deleteAllInBatch()
         verify(mockCache).clear()

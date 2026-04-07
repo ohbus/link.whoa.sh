@@ -6,7 +6,6 @@ import org.mockito.Mockito.mockStatic
 import org.springframework.transaction.support.TransactionSynchronizationManager
 
 class DataSourceConfigTest {
-
     @Test
     fun `test RoutingDataSource determineCurrentLookupKey`() {
         val routingDataSource = RoutingDataSource()

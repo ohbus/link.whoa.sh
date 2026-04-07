@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus
 
 @ExtendWith(MockitoExtension::class)
 class UrlWriteControllerTest {
-
     @Mock
     private lateinit var urlWriteService: UrlWriteService
 
@@ -25,11 +24,11 @@ class UrlWriteControllerTest {
     fun `test createShortUrl`() {
         val request = CreateShortUrlRequest("https://google.com")
         val response = CreateShortUrlResponse("https://google.com", "http://localhost/abc")
-        
+
         `when`(urlWriteService.createShortUrl(request)).thenReturn(response)
-        
+
         val result = controller.createShortUrl(request)
-        
+
         assertEquals(HttpStatus.CREATED, result.statusCode)
         assertEquals(response, result.body)
     }

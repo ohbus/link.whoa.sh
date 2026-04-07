@@ -7,7 +7,6 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
 class OffsetDateTimeConverterTest {
-
     private val converter = OffsetDateTimeConverter()
 
     @Test

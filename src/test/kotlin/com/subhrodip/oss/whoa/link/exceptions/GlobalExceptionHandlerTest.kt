@@ -13,7 +13,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 
 @ExtendWith(MockitoExtension::class)
 class GlobalExceptionHandlerTest {
-
     @InjectMocks
     private lateinit var handler: GlobalExceptionHandler
 
@@ -39,12 +38,15 @@ class GlobalExceptionHandlerTest {
     fun `test handleValidationException`() {
         val bindingResult = org.mockito.Mockito.mock(BindingResult::class.java)
         val fieldError = FieldError("object", "url", "must be valid")
-        org.mockito.Mockito.`when`(bindingResult.fieldErrors).thenReturn(listOf(fieldError))
-        
-        val ex = MethodArgumentNotValidException(org.mockito.Mockito.mock(org.springframework.core.MethodParameter::class.java), bindingResult)
-        
+        org.mockito.Mockito
+            .`when`(bindingResult.fieldErrors)
+            .thenReturn(listOf(fieldError))
+
+        val ex =
+            MethodArgumentNotValidException(org.mockito.Mockito.mock(org.springframework.core.MethodParameter::class.java), bindingResult)
+
         val response = handler.handleValidationException(ex)
-        
+
         assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
         assertEquals("WHOA-1001", response.body?.errorCode)
         assertEquals("must be valid", response.body?.errors?.get("url"))
