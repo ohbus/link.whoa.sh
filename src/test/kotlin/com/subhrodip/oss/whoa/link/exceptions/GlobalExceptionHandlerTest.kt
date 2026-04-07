@@ -2,43 +2,52 @@ package com.subhrodip.oss.whoa.link.exceptions
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.InjectMocks
+import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
+import org.springframework.validation.BindingResult
+import org.springframework.validation.FieldError
+import org.springframework.web.bind.MethodArgumentNotValidException
 
+@ExtendWith(MockitoExtension::class)
 class GlobalExceptionHandlerTest {
 
-    private val handler = GlobalExceptionHandler()
+    @InjectMocks
+    private lateinit var handler: GlobalExceptionHandler
 
     @Test
-    fun `test handleUrlNotFoundException`() {
+    fun `test handleWhoaException client error`() {
         val ex = UrlNotFoundException("Not found")
-        val response = handler.handleUrlNotFoundException(ex)
+        val response = handler.handleWhoaException(ex)
         assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+        assertEquals("WHOA-2001", response.body?.errorCode)
         assertEquals("Not found", response.body?.message)
     }
 
     @Test
+    fun `test handleWhoaException server error`() {
+        val ex = InternalServerErrorException("Secret internal detail")
+        val response = handler.handleWhoaException(ex)
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.statusCode)
+        assertEquals("WHOA-9001", response.body?.errorCode)
+        assertEquals("Internal System Error", response.body?.message) // Sanitized
+    }
+
+    @Test
     fun `test handleValidationException`() {
-        val ex = ValidationException("Invalid")
+        val bindingResult = org.mockito.Mockito.mock(BindingResult::class.java)
+        val fieldError = FieldError("object", "url", "must be valid")
+        org.mockito.Mockito.`when`(bindingResult.fieldErrors).thenReturn(listOf(fieldError))
+        
+        val ex = MethodArgumentNotValidException(org.mockito.Mockito.mock(org.springframework.core.MethodParameter::class.java), bindingResult)
+        
         val response = handler.handleValidationException(ex)
+        
         assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
-        assertEquals("Invalid", response.body?.message)
-    }
-
-    @Test
-    fun `test handleMethodNotSupportedException`() {
-        val ex = MethodNotSupportedException("Not supported")
-        val response = handler.handleMethodNotSupportedException(ex)
-        assertEquals(HttpStatus.METHOD_NOT_ALLOWED, response.statusCode)
-        assertEquals("Not supported", response.body?.message)
-    }
-
-    @Test
-    fun `test handleShortCodeAlreadyExistsException`() {
-        val ex = ShortCodeAlreadyExistsException("Exists")
-        val response = handler.handleShortCodeAlreadyExistsException(ex)
-        assertEquals(HttpStatus.CONFLICT, response.statusCode)
-        assertEquals("Exists", response.body?.message)
+        assertEquals("WHOA-1001", response.body?.errorCode)
+        assertEquals("must be valid", response.body?.errors?.get("url"))
     }
 
     @Test
@@ -46,14 +55,7 @@ class GlobalExceptionHandlerTest {
         val ex = DataIntegrityViolationException("Conflict")
         val response = handler.handleDataIntegrityViolationException(ex)
         assertEquals(HttpStatus.CONFLICT, response.statusCode)
-    }
-
-    @Test
-    fun `test handleInternalServerErrorException`() {
-        val ex = InternalServerErrorException("Internal error")
-        val response = handler.handleInternalServerErrorException(ex)
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.statusCode)
-        assertEquals("Internal error", response.body?.message)
+        assertEquals("WHOA-4001", response.body?.errorCode)
     }
 
     @Test
@@ -61,6 +63,7 @@ class GlobalExceptionHandlerTest {
         val ex = Exception("Unknown")
         val response = handler.handleGenericException(ex)
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.statusCode)
+        assertEquals("WHOA-9999", response.body?.errorCode)
         assertEquals("An unexpected error occurred", response.body?.message)
     }
 }

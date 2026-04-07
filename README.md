@@ -104,6 +104,34 @@ A: To prevent collisions between your generated short links (e.g., `link.whoa.sh
 **Q: How do I change the rate limiting thresholds for local testing?**
 A: Rate limiting is configured via Bucket4j in `application.properties`. You can adjust `bucket4j.filters[0].rate-limits[0].bandwidths[0].capacity` to a higher number if you are running stress tests locally.
 
+## API Error Reference
+
+Whoa uses structured error responses to help developers debug integration issues. Every error response includes a unique `errorCode` and a `traceId` for log correlation.
+
+| Code | Status | Description |
+| :--- | :--- | :--- |
+| `WHOA-1001` | 400 | Validation failed (field-level details in `errors` map). |
+| `WHOA-1002` | 405 | HTTP Method not supported. |
+| `WHOA-2001` | 404 | Short code not found. |
+| `WHOA-2002` | 409 | Short code already exists. |
+| `WHOA-4001` | 409 | Database integrity violation. |
+| `WHOA-9001` | 500 | Explicit internal server error. |
+| `WHOA-9999` | 500 | Unexpected system failure. |
+
+**Example Error Response:**
+```json
+{
+  "statusCode": 400,
+  "errorCode": "WHOA-1001",
+  "message": "Validation failed for one or more fields",
+  "timestamp": "2024-04-07T12:00:00Z",
+  "traceId": "5f3e9a8b2c1d4e0f",
+  "errors": {
+    "url": "must be a valid URL"
+  }
+}
+```
+
 ## Building the Application
 
 To build the project and create an executable JAR file, run the following command. The resulting JAR will be located in the `build/libs/` directory.
