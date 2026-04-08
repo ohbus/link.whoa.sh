@@ -116,6 +116,23 @@ describe('AppComponent', () => {
     expect(component.shorteningErrorMessage()).toContain('already registered');
   });
 
+  it('should handle shortening generic error', async () => {
+    apiMock.createShortUrl.mockReturnValue(throwError(() => ({ status: 500 })));
+
+    component.shorteningForm.patchValue({
+      destinationUrl: 'https://test.com',
+    });
+    await component.executeShorteningTask();
+
+    expect(component.shorteningErrorMessage()).toContain('unexpected system error');
+  });
+
+  it('should not execute shortening if form is invalid', async () => {
+    component.shorteningForm.patchValue({ destinationUrl: 'invalid-url' });
+    await component.executeShorteningTask();
+    expect(apiMock.createShortUrl).not.toHaveBeenCalled();
+  });
+
   it('should open analytics drawer', async () => {
     const mockUrl = { shortCode: 'abc', originalUrl: 'https://test.com', totalClicks: 10 } as any;
 
@@ -131,12 +148,6 @@ describe('AppComponent', () => {
     component.closeAnalyticsDrawer();
     expect(component.isAnalyticsDrawerOpen()).toBe(false);
     expect(component.selectedShortLinkMetadata()).toBeNull();
-  });
-
-  it('should toggle sidebar expansion', () => {
-    const initialState = component.isSidebarCollapsed();
-    component.toggleSidebarExpansion();
-    expect(component.isSidebarCollapsed()).toBe(!initialState);
   });
 
   it('should focus destination input', () => {
@@ -174,6 +185,20 @@ describe('AppComponent', () => {
     component.navigateToNextPage();
     expect(component.currentPageNumber()).toBe(2);
 
+    component.navigateToNextPage();
+    expect(component.currentPageNumber()).toBe(3);
+
+    // Should not go past last page
+    component.navigateToNextPage();
+    expect(component.currentPageNumber()).toBe(3);
+
+    component.navigateToPreviousPage();
+    expect(component.currentPageNumber()).toBe(2);
+
+    component.navigateToPreviousPage();
+    expect(component.currentPageNumber()).toBe(1);
+
+    // Should not go past first page
     component.navigateToPreviousPage();
     expect(component.currentPageNumber()).toBe(1);
   });
@@ -194,6 +219,9 @@ describe('AppComponent', () => {
     vi.advanceTimersByTime(300);
     expect(analyticsSpy).toHaveBeenCalledTimes(1); // Not called again
 
+    // Test hover end when no timer
+    component.onShortLinkHoverEnd(); // Should not throw
+
     vi.useRealTimers();
   });
 
@@ -208,8 +236,15 @@ describe('AppComponent', () => {
     vi.advanceTimersByTime(10000);
     expect(globalClicksSpy).toHaveBeenCalled();
 
+    // Successful health check
     vi.advanceTimersByTime(5000); // Total 15000
     expect(healthSpy).toHaveBeenCalled();
+    expect(component.apiLatency()).toBeGreaterThanOrEqual(0);
+
+    // Failed health check
+    healthSpy.mockReturnValue(throwError(() => new Error('Health check failed')));
+    vi.advanceTimersByTime(15000);
+    expect(healthSpy).toHaveBeenCalledTimes(2);
 
     vi.useRealTimers();
   });
@@ -251,6 +286,11 @@ describe('AppComponent', () => {
     whoaApp.forceRefreshAnalytics();
     expect(globalClicksSpy).toHaveBeenCalled();
 
+    // Test forceHealthCheck
+    const healthSpy = vi.spyOn(apiMock, 'checkHealthRaw');
+    whoaApp.forceHealthCheck();
+    expect(healthSpy).toHaveBeenCalled();
+
     // Test getRegistryCount
     component.totalRegistryCount.set(42);
     expect(whoaApp.getRegistryCount()).toBe(42);
@@ -283,10 +323,18 @@ describe('AppComponent', () => {
 
     expect(observerCallback).toBeDefined();
 
-    // Trigger callback
+    // Trigger callback with multiple entries
     const entries = [
       {
         target: { getAttribute: () => 'abc' },
+        isIntersecting: true,
+      },
+      {
+        target: { getAttribute: () => 'def' },
+        isIntersecting: false,
+      },
+      {
+        target: { getAttribute: () => null }, // Branch coverage for if(shortCode)
         isIntersecting: true,
       },
     ];

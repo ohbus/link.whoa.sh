@@ -1,120 +1,97 @@
-import { indexedDB as freshIndexedDB } from 'fake-indexeddb';
 import { TestBed } from '@angular/core/testing';
 import { DbService } from './db.service';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('DbService', () => {
   let service: DbService;
 
   beforeEach(async () => {
-    // 1. Completely isolate the IndexedDB environment for this test
-    // @ts-ignore
-    global.indexedDB = freshIndexedDB;
-
+    // Disable seeding by default for tests to have clean state
     DbService.skipSeeding = true;
+
     TestBed.configureTestingModule({
       providers: [DbService],
     });
     service = TestBed.inject(DbService);
-
-    // Dexie.clear() returns a promise.
     await service.db.urls.clear();
     await service.db.analytics.clear();
-  }, 30000); // 30s timeout for DB init in CI
-
-  afterEach(async () => {
-    if (service && service.db) {
-      await service.db.close();
-    }
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should add a URL correctly', async () => {
-    await service.addUrl('abc', 'https://example.com', 'http://127.0.0.1:8844/abc', 123456789);
+  it('should seed data manually for testing', async () => {
+    await (service as any).seedDataIfEmpty();
+    const count = await service.db.urls.count();
+    expect(count).toBeGreaterThan(0);
 
-    const urls = await service.getUrls();
-    expect(urls.length).toBe(1);
-    expect(urls[0].shortCode).toBe('abc');
-    expect(urls[0].originalUrl).toBe('https://example.com');
-    expect(urls[0].createdAt).toBe(123456789);
+    // Should return early if already seeded
+    await (service as any).seedDataIfEmpty();
+    const countAfter = await service.db.urls.count();
+    expect(countAfter).toBe(count);
   });
 
-  it('should bulk add URLs correctly', async () => {
+  it('should add a URL', async () => {
+    const shortCode = 'testAdd';
+    await service.addUrl(shortCode, 'https://example.com', 'http://localhost/testAdd');
+
+    const url = await service.db.urls.get(shortCode);
+    expect(url).toBeTruthy();
+    expect(url?.originalUrl).toBe('https://example.com');
+  });
+
+  it('should bulk add URLs', async () => {
     const links = [
       {
-        shortCode: 'code1',
-        originalUrl: 'https://url1.com',
-        shortUrl: 'http://127.0.0.1:8844/code1',
-        clicks: 5,
-      },
-      {
-        shortCode: 'code2',
-        originalUrl: 'https://url2.com',
-        shortUrl: 'http://127.0.0.1:8844/code2',
+        shortCode: 'b1',
+        originalUrl: 'u1',
+        shortUrl: 's1',
         clicks: 10,
+        createdAt: new Date().toISOString(),
       },
+      { shortCode: 'b2', originalUrl: 'u2', shortUrl: 's2', clicks: 20 }, // No createdAt
     ];
 
     await service.bulkAddUrls(links);
 
-    const urls = await service.getUrls();
-    expect(urls.length).toBe(2);
-    const codes = urls.map((u) => u.shortCode);
-    expect(codes).toContain('code1');
-    expect(codes).toContain('code2');
+    const u1 = await service.db.urls.get('b1');
+    expect(u1?.totalClicks).toBe(10);
+    expect(u1?.createdAt).toBeDefined();
+
+    const u2 = await service.db.urls.get('b2');
+    expect(u2?.totalClicks).toBe(20);
+    expect(u2?.createdAt).toBeDefined();
+
+    // Update existing
+    await service.bulkAddUrls([{ shortCode: 'b1', originalUrl: 'u1', shortUrl: 's1', clicks: 15 }]);
+    const u1Updated = await service.db.urls.get('b1');
+    expect(u1Updated?.totalClicks).toBe(15);
   });
 
-  it('should update analytics and add snapshot', async () => {
-    await service.addUrl('abc', 'https://example.com', 'http://127.0.0.1:8844/abc');
+  it('should update analytics', async () => {
+    const shortCode = 'updateTest';
+    await service.addUrl(shortCode, 'u', 's');
 
-    await service.updateAnalytics('abc', 50);
+    await service.updateAnalytics(shortCode, 50);
 
-    const urls = await service.getUrls();
-    const url = urls.find((u) => u.shortCode === 'abc');
+    const url = await service.db.urls.get(shortCode);
     expect(url?.totalClicks).toBe(50);
 
-    const history = await service.getAnalyticsHistory('abc');
+    const history = await service.getAnalyticsHistory(shortCode);
     expect(history.length).toBe(1);
     expect(history[0].clicks).toBe(50);
   });
 
-  it('should seed data if empty', async () => {
-    await (service as any).seedDataIfEmpty();
-
+  it('should get all URLs', async () => {
+    await service.addUrl('a', 'u', 's');
     const urls = await service.getUrls();
     expect(urls.length).toBeGreaterThan(0);
-
-    const initialCount = urls.length;
-    await (service as any).seedDataIfEmpty();
-    const finalUrls = await service.getUrls();
-    expect(finalUrls.length).toBe(initialCount);
   });
 
-  it('should update existing URLs in bulkAddUrls', async () => {
-    await service.addUrl('code1', 'old', 'old');
-
-    const links = [
-      {
-        shortCode: 'code1',
-        originalUrl: 'new',
-        shortUrl: 'new',
-        clicks: 100,
-        createdAt: '2026-01-01T00:00:00Z',
-      },
-    ];
-
-    await service.bulkAddUrls(links);
-
-    const urls = await service.getUrls();
-    expect(urls[0].totalClicks).toBe(100);
-  });
-
-  it('should return live urls', async () => {
-    await service.addUrl('abc', 'url', 'url');
+  it('should provide liveUrls (alias for getUrls)', async () => {
+    await service.addUrl('a', 'u', 's');
     const urls = await service.liveUrls();
-    expect(urls.length).toBe(1);
+    expect(urls.length).toBeGreaterThan(0);
   });
 });

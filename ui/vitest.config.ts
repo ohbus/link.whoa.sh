@@ -20,7 +20,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       include: ['src/app/**/*.ts'],
-      exclude: ['src/app/**/*.spec.ts', 'src/app/app.config.ts', 'src/app/app.routes.ts', 'src/vitest.setup.ts']
+      exclude: ['src/app/**/*.spec.ts', 'src/vitest.setup.ts']
     },
   },
 });
