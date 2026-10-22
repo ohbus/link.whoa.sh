@@ -34,7 +34,7 @@
     "@analogjs/vite-plugin-angular": "^2.4.0",
     "@analogjs/vitest-angular": "^2.4.0",
     "@angular/build": "^21.2.6",
-    "@angular/cli": "^21.2.26",
+    "@angular/cli": "^21.2.28",
     "@angular/compiler-cli": "^21.2.0",
     "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4.2.2",
